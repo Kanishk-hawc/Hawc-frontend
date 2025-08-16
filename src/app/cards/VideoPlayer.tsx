@@ -1,13 +1,20 @@
 import React, { useRef, useState, useEffect } from "react";
 import * as Hls from "hls.js";
-import { FaPlay, FaPause, FaForward, FaBackward, FaCog, FaClosedCaptioning } from "react-icons/fa";
+import {
+  FaPlay,
+  FaPause,
+  FaForward,
+  FaBackward,
+  FaCog,
+  FaClosedCaptioning,
+} from "react-icons/fa";
 
 interface VideoPlayerProps {
   url?: string;
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
-  url = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+  url = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hlsRef = useRef<Hls.default | null>(null);
@@ -82,7 +89,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     for (let i = 0; i < video.textTracks.length; i++) {
       video.textTracks[i].mode = showCC ? "disabled" : "showing";
     }
-    setShowCC(prev => !prev);
+    setShowCC((prev) => !prev);
   };
 
   return (
@@ -126,10 +133,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
           <div className="relative">
             <button
-              onClick={() => setShowQualityOptions(prev => !prev)}
+              onClick={() => setShowQualityOptions((prev) => !prev)}
               className="text-white px-2 py-1 border border-white rounded"
             >
-              {currentLevel === -1 ? "AUTO" : `${levels[currentLevel]?.height}p`}
+              {currentLevel === -1
+                ? "AUTO"
+                : `${levels[currentLevel]?.height}p`}
               <FaCog className="inline ml-1" />
             </button>
 

@@ -8,7 +8,7 @@ import CourseClass from "./components/CourseClass";
 import VideoPlayer from "./cards/VideoPlayer";
 
 const AppFront: React.FC = () => {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
     document.documentElement.classList.remove("light", "dark");
@@ -22,13 +22,17 @@ const AppFront: React.FC = () => {
   const isDarkMode = theme === "dark";
 
   return (
-    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-black' : 'bg-white'} transition-colors duration-300`}>
+    <div
+      className={`min-h-screen flex flex-col ${
+        isDarkMode ? "bg-black" : "bg-white"
+      } transition-colors duration-300`}
+    >
       <Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
 
       <main className="flex-grow w-full text-gray-900 dark:text-white">
         <Switch>
           <Route exact path="/">
-             <Home isDarkMode={isDarkMode} />
+            <Home isDarkMode={isDarkMode} />
           </Route>
           <Route path="/live">
             <LiveVedio isDarkMode={isDarkMode} />
@@ -37,9 +41,8 @@ const AppFront: React.FC = () => {
             <CourseClass isDarkMode={isDarkMode} />
           </Route>
           <Route path="/play">
-            <VideoPlayer  />
+            <VideoPlayer />
           </Route>
-
         </Switch>
       </main>
 

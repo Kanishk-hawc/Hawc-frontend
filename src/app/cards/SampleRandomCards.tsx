@@ -48,7 +48,10 @@ const Recommendation: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
 
     if (direction === "right") {
       // If we're at or near the end, scroll to start
-      if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+      if (
+        container.scrollLeft + container.clientWidth >=
+        container.scrollWidth - 10
+      ) {
         container.scrollTo({ left: 0, behavior: "smooth" });
       } else {
         // Calculate how much we can scroll without going past the end
@@ -67,7 +70,11 @@ const Recommendation: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
   };
 
   return (
-    <div className={`p-6 space-y-12 ${isDarkMode ? "bg-black text-white" : "bg-white text-black"}`}>
+    <div
+      className={`p-6 space-y-12 ${
+        isDarkMode ? "bg-black text-white" : "bg-white text-black"
+      }`}
+    >
       {sections.map((section, sectionIndex) => (
         <div key={section.title}>
           <h2 className="text-3xl font-bold mb-6">{section.title}</h2>
@@ -111,13 +118,25 @@ const Recommendation: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
                       {isHovered && (
                         <>
                           <div className="absolute bottom-0 left-0 p-3 w-full">
-                            <h4 className={`font-semibold ${isDarkMode ? "text-white" : "text-black"}`}>
+                            <h4
+                              className={`font-semibold ${
+                                isDarkMode ? "text-white" : "text-black"
+                              }`}
+                            >
                               {topic.name}
                             </h4>
-                            <span className={`text-sm opacity-80 ${isDarkMode ? "text-white" : "text-black"}`}>
+                            <span
+                              className={`text-sm opacity-80 ${
+                                isDarkMode ? "text-white" : "text-black"
+                              }`}
+                            >
                               {topic.duration}
                             </span>
-                            <p className={`text-xs opacity-70 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
+                            <p
+                              className={`text-xs opacity-70 ${
+                                isDarkMode ? "text-gray-300" : "text-gray-600"
+                              }`}
+                            >
                               {topic.subject}
                             </p>
                           </div>
@@ -128,10 +147,18 @@ const Recommendation: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
                       )}
                       {!isHovered && (
                         <div className="flex flex-col items-center">
-                          <span className={`text-gray-500 ${isDarkMode ? "dark:text-gray-400" : ""}`}>
+                          <span
+                            className={`text-gray-500 ${
+                              isDarkMode ? "dark:text-gray-400" : ""
+                            }`}
+                          >
                             Photo
                           </span>
-                          <p className={`text-xs mt-1 opacity-70 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
+                          <p
+                            className={`text-xs mt-1 opacity-70 ${
+                              isDarkMode ? "text-gray-300" : "text-gray-600"
+                            }`}
+                          >
                             {topic.subject}
                           </p>
                         </div>
@@ -141,8 +168,14 @@ const Recommendation: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
                     {!isHovered && (
                       <div className="mt-2 flex flex-col gap-1">
                         <h4 className="font-semibold">{topic.name}</h4>
-                        <span className="text-sm opacity-70">{topic.duration}</span>
-                        <p className={`text-xs opacity-70 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
+                        <span className="text-sm opacity-70">
+                          {topic.duration}
+                        </span>
+                        <p
+                          className={`text-xs opacity-70 ${
+                            isDarkMode ? "text-gray-300" : "text-gray-600"
+                          }`}
+                        >
                           {topic.subject}
                         </p>
                       </div>
