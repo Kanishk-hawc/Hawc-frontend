@@ -1,0 +1,1 @@
+export async function validateCoupon(code:string){ const map:any={'LAUNCH50':50,'LAUNCH10':10}; await new Promise(r=>setTimeout(r,200)); const d=map[(code||'').toUpperCase()]||0; return {valid:d>0, discount:d} }

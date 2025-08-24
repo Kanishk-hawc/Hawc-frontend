@@ -1,0 +1,1 @@
+export default function Demos(){ return <div className='p-6'>This is the **Demos** page. (Stub)</div> }
