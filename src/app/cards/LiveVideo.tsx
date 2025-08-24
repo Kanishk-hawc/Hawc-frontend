@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 // import { FaCog, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
-import { FaCog, FaVolumeMute, FaVolumeUp, FaPlay } from "react-icons/fa";
+import { FaVolumeMute, FaVolumeUp, FaPlay } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
 interface PlayProps {
@@ -28,7 +28,7 @@ const LiveVideo: React.FC<PlayProps> = ({ isDarkMode }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
 
-  const [showQualityOptions, setShowQualityOptions] = useState(false);
+  // const [showQualityOptions, setShowQualityOptions] = useState(false);
   const [liveEnded, setLiveEnded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [classInfo, setClassInfo] = useState<ClassInfo | null>(null);

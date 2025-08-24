@@ -46,14 +46,13 @@ const LiveClass: React.FC<LiveClassProps> = ({
 }) => {
   const history = useHistory();
   const [isMobile, setIsMobile] = useState(false);
-  const sliderRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isMuted, setIsMuted] = useState(true); // Start with muted by default
+  const [isMuted, setIsMuted] = useState(true);
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -162,7 +161,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [animateKey, setAnimateKey] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
-  const [videoTimer, setVideoTimer] = useState<NodeJS.Timeout | null>(null);
+  const [videoTimer, setVideoTimer] = useState<any>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [contentOpacity, setContentOpacity] = useState(1);
 

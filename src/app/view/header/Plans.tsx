@@ -347,6 +347,8 @@
 
 
 
+
+
 // Plans.tsx - Updated with custom icons
 import { useState, useEffect } from 'react';
 import PlanCard from '../components/PlanCard';
@@ -665,7 +667,6 @@ export default function Plans() {
   // Checkout Panel Component
   function CheckoutPanel({ checkoutData }: { checkoutData: any }) {
     const { plan, subjects, subjectPrices, totalPrice } = checkoutData;
-    const isDarkMode = true; // Assuming dark mode for the checkout panel
 
     return (
       <div className="flex flex-col h-full">
@@ -794,19 +795,6 @@ export default function Plans() {
     if (name.toLowerCase().includes('stranded')) return 'Essential';
     if (name.toLowerCase().includes('premium')) return 'Premium';
     return '';
-  }
-
-  function getButtonColor(planType: string): string {
-    switch (planType) {
-      case 'Premium':
-        return 'bg-[#665bfe] hover:bg-[#5a50e5] text-white';
-      case 'Essential':
-        return 'bg-[#665bfe] hover:bg-[#5a50e5] text-white';
-      case 'Experience':
-        return 'bg-[#665bfe] hover:bg-[#5a50e5] text-white';
-    default:
-        return 'bg-[#665bfe] hover:bg-[#5a50e5] text-white';
-    }
   }
 }
 

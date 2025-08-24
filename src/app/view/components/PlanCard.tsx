@@ -1,5 +1,5 @@
 // PlanCard.tsx - Updated with custom icons
-import { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
 
 // import AllSubjectsIcon from '../../view/header/icons/all-subjects.png';
 // import ChemistryIcon from '../../view/header/icons/chemistry.png';

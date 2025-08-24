@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { FaEdit, FaSave, FaUserCircle, FaPhone, FaEnvelope, FaSchool, FaMapMarkerAlt, FaUser, FaBook } from "react-icons/fa";
+import { FaEdit, FaUserCircle, FaPhone, FaEnvelope, FaSchool, FaMapMarkerAlt, FaUser,  } from "react-icons/fa";
 
 const Profile: React.FC = () => {
   const { username } = useParams<{ username: string }>();
