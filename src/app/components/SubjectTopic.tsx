@@ -108,7 +108,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     index: number;
     side: "left" | "right" | null;
   }>({ index: -1, side: null });
-  const [playingVideos, setPlayingVideos] = useState<{[key: string]: boolean}>({});
+  const [, setPlayingVideos] = useState<{[key: string]: boolean}>({});
   const [videoProgress, setVideoProgress] = useState<{[key: string]: number}>({});
   const [videoTimes, setVideoTimes] = useState<{[key: string]: {current: string, total: string}}>({});
 
@@ -342,20 +342,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     }));
   };
 
-  // Handle progress bar hover to show time preview
-  const handleProgressHover = (uniqueId: string, e: React.MouseEvent<HTMLDivElement>) => {
-    const video = videoRefs.current[uniqueId];
-    if (!video) return;
-    
-    // const progressBar = e.currentTarget;
-    // const rect = progressBar.getBoundingClientRect();
-    // const hoverPosition = (e.clientX - rect.left) / rect.width;
-    // Remove the unused previewTime variable
-    // const previewTime = hoverPosition * video.duration;
-    
-    // You could implement a preview tooltip here if needed
-  };
-
   // ✅ Observer for lazy load
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useCallback(
@@ -521,7 +507,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                                 <div 
                                   className="w-full h-1.5 bg-gray-600 rounded-full cursor-pointer"
                                   onClick={(e) => handleProgressClick(uniqueId, e)}
-                                  onMouseMove={(e) => handleProgressHover(uniqueId, e)}
                                 >
                                   <div 
                                     className="h-full bg-red-600 rounded-full transition-all duration-100"
