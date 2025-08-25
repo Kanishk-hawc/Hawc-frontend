@@ -47,8 +47,11 @@ const LoginPanel: React.FC<LoginPanelProps> = ({ isOpen, onClose, onLoginSuccess
     setShowSignup(false);
   };
 
-  const handleSignupSuccess = (user: any) => {
+  const handleSignupSuccess = (user:any) => {
     setShowSignup(false);
+    
+    onLoginSuccess(user);
+    onClose();
   };
 
   return (
@@ -58,7 +61,6 @@ const LoginPanel: React.FC<LoginPanelProps> = ({ isOpen, onClose, onLoginSuccess
           isOpen ? "translate-x-0" : "translate-x-full"
         } flex flex-col`}
       >
-        {/* Header */}
         <div className="flex items-center p-4">
           <button
             onClick={onClose}
