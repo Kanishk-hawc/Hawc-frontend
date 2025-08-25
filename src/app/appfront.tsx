@@ -24,7 +24,6 @@ import SettingsPage from "./view/sidebar_pages/settings";
 import ContactPage from "./view/footer/ContectUs";
 
 const AppFront: React.FC = () => {
-  // Start in dark mode
   const [theme, setTheme] = useState("dark");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -52,9 +51,8 @@ const AppFront: React.FC = () => {
         setSidebarOpen={setSidebarOpen}
       />
 
-      {/* Main layout: sidebar + content */}
-      <div className="flex flex-1 pt-16"> {/* pushes below fixed header */}
-        {/* Sidebar */}
+      <div className="flex flex-1 pt-16"> 
+       
         {sidebarOpen && (
           <aside
             className={`w-80 shrink-0 border-r border-gray-300 dark:border-gray-700 ${
@@ -63,11 +61,9 @@ const AppFront: React.FC = () => {
                 : "bg-gray-100 text-gray-800"
             } transition-all duration-300`}
           >
-            {/* Sidebar content is inside Header component */}
           </aside>
         )}
 
-        {/* Page Content */}
         <main
           className={`flex-1 overflow-x-hidden ${
             sidebarOpen ? "md:ml-0" : "md:ml-16"

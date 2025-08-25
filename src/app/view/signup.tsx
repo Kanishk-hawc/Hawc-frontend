@@ -5,7 +5,7 @@ import axios from "axios";
 type SignupPanelProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSignupSuccess: (user: any) => void; // return user info from backend
+  onSignupSuccess: (user: any) => void; 
 };
 
 const SignupPanel: React.FC<SignupPanelProps> = ({
@@ -48,8 +48,6 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
       setPassword("");
       setConfirmPassword("");
       setStudentClass("9");
-
-      // Save user locally if needed
       localStorage.setItem("user", JSON.stringify(user));
 
       onSignupSuccess(user);
@@ -67,7 +65,6 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
         isOpen ? "translate-x-0" : "translate-x-full"
       } flex flex-col`}
     >
-      {/* Header */}
       <div className="flex items-center p-4">
         <button
           onClick={onClose}
@@ -84,7 +81,6 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
         {error && <p className="text-red-500 text-sm">{error}</p>}
         {message && <p className="text-green-600 text-sm">{message}</p>}
 
-        {/* Name */}
         <label className="text-gray-700 dark:text-gray-300 text-sm self-start ml-6 md:ml-20">
           Name
         </label>
@@ -95,8 +91,6 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
           onChange={(e) => setName(e.target.value)}
           className="w-72 sm:w-80 md:w-96 p-3 rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
         />
-
-        {/* Email */}
         <label className="text-gray-700 dark:text-gray-300 text-sm self-start ml-6 md:ml-20">
           Email
         </label>
@@ -107,8 +101,6 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
           onChange={(e) => setEmail(e.target.value)}
           className="w-72 sm:w-80 md:w-96 p-3 rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
         />
-
-        {/* Password */}
         <label className="text-gray-700 dark:text-gray-300 text-sm self-start ml-6 md:ml-20">
           Password
         </label>
@@ -120,7 +112,6 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
           className="w-72 sm:w-80 md:w-96 p-3 rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
         />
 
-        {/* Confirm Password */}
         <label className="text-gray-700 dark:text-gray-300 text-sm self-start ml-6 md:ml-20">
           Re-enter Password
         </label>
@@ -132,7 +123,6 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
           className="w-72 sm:w-80 md:w-96 p-3 rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
         />
 
-        {/* Class Dropdown */}
         <label className="text-gray-700 dark:text-gray-300 text-sm self-start ml-6 md:ml-20">
           Class
         </label>
@@ -147,7 +137,6 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
           <option value="12">12</option>
         </select>
 
-        {/* Submit button */}
         <button
           onClick={handleSignup}
           disabled={loading}

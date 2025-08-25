@@ -170,7 +170,7 @@ export default function Plans() {
 
   return (
     <div className="flex flex-col bg-white dark:bg-[#091E37] md:px-4 lg:px-8 xl:px-20 min-h-screen relative">
-      <div className="flex justify-center items-center mt-4 mb-2 space-x-4">
+      <div className="flex justify-center items-center mt-4 mb-16 space-x-4">
         {(["stranded", "premium"] as const).map((type) => (
           <button
             key={type}
@@ -192,7 +192,7 @@ export default function Plans() {
             showCheckout ? "blur-sm opacity-70" : ""
           }`}
         >
-          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center mx-auto max-w-screen-2xl">
+          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center md:mb-20 mx-auto max-w-screen-2xl">
             {plans.map((p, i) => (
               <div key={p.id} className="w-full flex justify-center">
                 <PlanCard

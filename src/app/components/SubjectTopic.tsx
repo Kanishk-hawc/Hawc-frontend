@@ -610,12 +610,12 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                         </div>
                         <div className="flex justify-between mt-2">
                           <span className="text-sm opacity-70">
-                            6 days ago
+                            6 days ago .  6k Views
                           </span>
                         </div>
-                        <span className="text-sm opacity-70 block mt-1">
-                          6k Views
-                        </span>
+                        
+                         
+                    
                       </div>
                     </div>
                   );

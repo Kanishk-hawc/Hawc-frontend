@@ -17,7 +17,7 @@ import {
   FaCog,
   FaCrown
 } from "react-icons/fa";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory, Link, useLocation } from "react-router-dom";
 import LoginPanel from "./login";
 import SignupPanel from "./signup";
 import LanguageSwitcher from "./components/LanguageSwitcher";
@@ -40,6 +40,7 @@ const Header: React.FC<HeaderProps> = ({
   const [userName, setUserName] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const history = useHistory();
+  const location = useLocation();
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -108,6 +109,10 @@ const Header: React.FC<HeaderProps> = ({
     }
   };
 
+  const isActivePath = (path: string) => {
+    return location.pathname === path;
+  };
+
   return (
     <>
       <header
@@ -139,24 +144,35 @@ const Header: React.FC<HeaderProps> = ({
         </div>
 
         <nav className="hidden md:flex items-center gap-4 text-gray-800 dark:text-gray-200">
-          <button onClick={() => history.push("/")} className="hover:underline">
+          <button 
+            onClick={() => history.push("/")} 
+            className={`hover:underline ${isActivePath("/") ? 
+              `${isDarkMode ? "text-blue-400 border-b-2 border-blue-400" : "text-blue-600 border-b-2 border-blue-600"} font-medium` : 
+              ""}`}
+          >
             Home
           </button>
           <button
             onClick={() => history.push("/test")}
-            className="hover:underline"
+            className={`hover:underline ${isActivePath("/test") ? 
+              `${isDarkMode ? "text-blue-400 border-b-2 border-blue-400" : "text-blue-600 border-b-2 border-blue-600"} font-medium` : 
+              ""}`}
           >
             Tests
           </button>
           <button
             onClick={() => history.push("/tests/weekly")}
-            className="hover:underline"
+            className={`hover:underline ${isActivePath("/tests/weekly") ? 
+              `${isDarkMode ? "text-blue-400 border-b-2 border-blue-400" : "text-blue-600 border-b-2 border-blue-600"} font-medium` : 
+              ""}`}
           >
             Weekly Tests
           </button>
           <button
             onClick={() => history.push("/plan")}
-            className="hover:underline"
+            className={`hover:underline ${isActivePath("/plan") ? 
+              `${isDarkMode ? "text-blue-400 border-b-2 border-blue-400" : "text-blue-600 border-b-2 border-blue-600"} font-medium` : 
+              ""}`}
           >
             Plans
           </button>
@@ -275,7 +291,9 @@ const Header: React.FC<HeaderProps> = ({
         <button
           onClick={() => history.push("/")}
           className={`flex flex-col items-center ${
-            isDarkMode ? "text-gray-300" : "text-gray-600"
+            isActivePath("/") ? 
+              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium` : 
+              `${isDarkMode ? "text-gray-300" : "text-gray-600"}`
           }`}
         >
           <FaHome size={20} />
@@ -284,7 +302,9 @@ const Header: React.FC<HeaderProps> = ({
         <button
           onClick={() => history.push("/test")}
           className={`flex flex-col items-center ${
-            isDarkMode ? "text-gray-300" : "text-gray-600"
+            isActivePath("/test") ? 
+              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium` : 
+              `${isDarkMode ? "text-gray-300" : "text-gray-600"}`
           }`}
         >
           <FaClipboardCheck size={20} />
@@ -293,7 +313,9 @@ const Header: React.FC<HeaderProps> = ({
         <button
           onClick={() => history.push("/tests/weekly")}
           className={`flex flex-col items-center ${
-            isDarkMode ? "text-gray-300" : "text-gray-600"
+            isActivePath("/tests/weekly") ? 
+              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium` : 
+              `${isDarkMode ? "text-gray-300" : "text-gray-600"}`
           }`}
         >
           <FaCalendarWeek size={20} />
@@ -302,7 +324,9 @@ const Header: React.FC<HeaderProps> = ({
         <button
           onClick={() => history.push("/plan")}
           className={`flex flex-col items-center ${
-            isDarkMode ? "text-gray-300" : "text-gray-600"
+            isActivePath("/plan") ? 
+              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium` : 
+              `${isDarkMode ? "text-gray-300" : "text-gray-600"}`
           }`}
         >
           <FaTasks size={20} />
@@ -324,7 +348,9 @@ const Header: React.FC<HeaderProps> = ({
         <button
           onClick={handleProfileClick}
           className={`flex flex-col items-center ${
-            isDarkMode ? "text-gray-300" : "text-gray-600"
+            isActivePath(`/profile/${userName}`) ? 
+              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium` : 
+              `${isDarkMode ? "text-gray-300" : "text-gray-600"}`
           }`}
         >
           <FaUser size={20} className={userName ? "text-green-500" : ""} />
@@ -346,8 +372,8 @@ const Header: React.FC<HeaderProps> = ({
                   onClick={handleSidebarProfileClick}
                   className={`flex flex-col items-center p-2 rounded-lg w-full ${
                     isDarkMode
-                      ? "text-gray-300 hover:bg-gray-700"
-                      : "text-gray-600 hover:bg-gray-200"
+                      ? `text-gray-300 hover:bg-gray-700 ${isActivePath(`/profile/${userName}`) ? "bg-gray-700" : ""}`
+                      : `text-gray-600 hover:bg-gray-200 ${isActivePath(`/profile/${userName}`) ? "bg-gray-200" : ""}`
                   }`}
                 >
                   <FaUserCircle size={24} className={userName ? "text-blue-500" : ""} />
@@ -363,6 +389,7 @@ const Header: React.FC<HeaderProps> = ({
                 label="Doubts"
                 isDarkMode={isDarkMode}
                 showLabel={false}
+                isActive={isActivePath("/doubts")}
               />
               <SidebarIcon
                 icon={<FaBook size={20} />}
@@ -370,6 +397,7 @@ const Header: React.FC<HeaderProps> = ({
                 label="Practice"
                 isDarkMode={isDarkMode}
                 showLabel={false}
+                isActive={isActivePath("/practice")}
               />
               <SidebarIcon
                 icon={<FaStickyNote size={20} />}
@@ -377,6 +405,7 @@ const Header: React.FC<HeaderProps> = ({
                 label="Notes"
                 isDarkMode={isDarkMode}
                 showLabel={false}
+                isActive={isActivePath("/notes")}
               />
               <SidebarIcon
                 icon={<FaClipboardList size={20} />}
@@ -384,6 +413,7 @@ const Header: React.FC<HeaderProps> = ({
                 label="Tests"
                 isDarkMode={isDarkMode}
                 showLabel={false}
+                isActive={isActivePath("/tests")}
               />
               <SidebarIcon
                 icon={<FaTasks size={20} />}
@@ -391,6 +421,7 @@ const Header: React.FC<HeaderProps> = ({
                 label="Assignments"
                 isDarkMode={isDarkMode}
                 showLabel={false}
+                isActive={isActivePath("/assignments")}
               />
               <SidebarIcon
                 icon={<FaCube size={20} />}
@@ -398,6 +429,7 @@ const Header: React.FC<HeaderProps> = ({
                 label="3D Demos"
                 isDarkMode={isDarkMode}
                 showLabel={false}
+                isActive={isActivePath("/demos")}
               />
               <SidebarIcon
                 icon={<FaCalendarWeek size={20} />}
@@ -405,6 +437,7 @@ const Header: React.FC<HeaderProps> = ({
                 label="Weekly"
                 isDarkMode={isDarkMode}
                 showLabel={false}
+                isActive={isActivePath("/tests/weekly")}
               />
             </div>
             <div className="space-y-6">
@@ -414,6 +447,7 @@ const Header: React.FC<HeaderProps> = ({
                 label="Settings"
                 isDarkMode={isDarkMode}
                 showLabel={false}
+                isActive={isActivePath("/settings")}
               />
               <SidebarIcon
                 icon={<FiHeadphones size={20} />}
@@ -421,6 +455,7 @@ const Header: React.FC<HeaderProps> = ({
                 label="Help & Support"
                 isDarkMode={isDarkMode}
                 showLabel={false}
+                isActive={isActivePath("/support")}
               />
             </div>
           </div>
@@ -485,42 +520,49 @@ const Header: React.FC<HeaderProps> = ({
               to="/doubts"
               label="Doubts"
               isDarkMode={isDarkMode}
+              isActive={isActivePath("/doubts")}
             />
             <SidebarItem
               icon={<FaBook size={18} />}
               to="/practice"
               label="Practice"
               isDarkMode={isDarkMode}
+              isActive={isActivePath("/practice")}
             />
             <SidebarItem
               icon={<FaStickyNote size={18} />}
               to="/notes"
               label="Notes"
               isDarkMode={isDarkMode}
+              isActive={isActivePath("/notes")}
             />
             <SidebarItem
               icon={<FaClipboardList size={18} />}
               to="/tests"
               label="Tests"
               isDarkMode={isDarkMode}
+              isActive={isActivePath("/tests")}
             />
             <SidebarItem
               icon={<FaTasks size={18} />}
               to="/assignments"
               label="Assignments"
               isDarkMode={isDarkMode}
+              isActive={isActivePath("/assignments")}
             />
             <SidebarItem
               icon={<FaCube size={18} />}
               to="/demos"
               label="3D Demos"
               isDarkMode={isDarkMode}
+              isActive={isActivePath("/demos")}
             />
             <SidebarItem
               icon={<FaCalendarWeek size={18} />}
               to="/tests/weekly"
               label="Weekly Tests"
               isDarkMode={isDarkMode}
+              isActive={isActivePath("/tests/weekly")}
             />
           </div>
 
@@ -530,12 +572,14 @@ const Header: React.FC<HeaderProps> = ({
               to="/settings"
               label="Settings"
               isDarkMode={isDarkMode}
+              isActive={isActivePath("/settings")}
             />
             <SidebarItem
               icon={<FiHeadphones size={18} />}
               to="/support"
               label="Help & Support"
               isDarkMode={isDarkMode}
+              isActive={isActivePath("/support")}
             />
           </div>
         </div>
@@ -581,12 +625,14 @@ function SidebarIcon({
   label,
   isDarkMode,
   showLabel = true,
+  isActive = false,
 }: {
   icon: React.ReactNode;
   to: string;
   label: string;
   isDarkMode: boolean;
   showLabel?: boolean;
+  isActive?: boolean;
 }) {
   return (
     <div className="relative group">
@@ -594,8 +640,8 @@ function SidebarIcon({
         to={to}
         className={`flex flex-col items-center p-2 rounded-lg w-full ${
           isDarkMode
-            ? "text-gray-300 hover:bg-gray-700"
-            : "text-gray-600 hover:bg-gray-200"
+            ? `text-gray-300 hover:bg-gray-700 ${isActive ? "bg-gray-700" : ""}`
+            : `text-gray-600 hover:bg-gray-200 ${isActive ? "bg-gray-200" : ""}`
         }`}
         title={label}
       >
@@ -615,19 +661,21 @@ function SidebarItem({
   to,
   label,
   isDarkMode,
+  isActive = false,
 }: {
   icon: React.ReactNode;
   to: string;
   label: string;
   isDarkMode: boolean;
+  isActive?: boolean;
 }) {
   return (
     <Link
       to={to}
       className={`flex items-center p-3 rounded-lg w-full ${
         isDarkMode
-          ? "text-gray-300 hover:bg-gray-700"
-          : "text-gray-600 hover:bg-gray-200"
+          ? `text-gray-300 hover:bg-gray-700 ${isActive ? "bg-gray-700" : ""}`
+          : `text-gray-600 hover:bg-gray-200 ${isActive ? "bg-gray-200" : ""}`
       }`}
     >
       <span className="mr-3">{icon}</span>
