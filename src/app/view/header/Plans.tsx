@@ -426,7 +426,7 @@ export default function Plans() {
     icon,
     isSelected = false,
     onClick,
-    isHovered = false,
+    // isHovered = false,
     onHover,
     onLeave,
   }: {
