@@ -15,6 +15,7 @@ import {
   FaTimes,
   FaUserCircle,
   FaCog,
+  FaCrown
 } from "react-icons/fa";
 import { useHistory, Link } from "react-router-dom";
 import LoginPanel from "./login";
@@ -43,7 +44,6 @@ const Header: React.FC<HeaderProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Check for user data in localStorage on component mount
     const userData = localStorage.getItem("user");
     if (userData) {
       try {
@@ -81,12 +81,9 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleProfileClick = () => {
     if (userName) {
-      // On mobile, just show profile info or navigate to profile page
       if (window.innerWidth < 768) {
-        // For mobile, we'll keep the current behavior (logout)
         handleLogout();
       } else {
-        // On desktop, navigate to profile page
         history.push(`/profile/${userName}`);
       }
     } else {
@@ -96,45 +93,52 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleDesktopProfileClick = () => {
     if (userName) {
-      // Navigate to profile page on desktop with username parameter
       history.push(`/profile/${userName}`);
     } else {
-      // Open login panel if not logged in
       setLoginOpen(true);
     }
   };
 
   const handleSidebarProfileClick = () => {
     if (userName) {
-      // Navigate to profile page with username parameter
       history.push(`/profile/${userName}`);
     }
     else {
-      // Open login panel if not logged in
       setLoginOpen(true);
     }
   };
 
   return (
     <>
-      {/* Desktop Header */}
       <header
         className={`${
           isDarkMode ? "bg-[#091E37]" : "bg-white"
         } transition-colors duration-300 p-4 flex items-center justify-between fixed top-0 left-0 right-0 z-40`}
       >
-        <nav className="hidden md:flex items-center gap-4 ml-6 text-gray-800 dark:text-gray-200">
-          {/* Sidebar toggle */}
-          <button
-            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            {sidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-          </button>
+        <div className="flex items-center">
+          <nav className="hidden md:flex items-center gap-4 ml-6 text-gray-800 dark:text-gray-200">
+            <button
+              className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              {sidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+            </button>
 
-          <Link to="/" className="font-semibold">
-            How & Why
-          </Link>
+            <Link to="/" className="font-semibold text-xl flex items-center">
+              How & Why
+            </Link>
+            
+            <Link
+              className="subscribe-btn ml-4 flex items-center mr-6"
+              to="/plans"
+            >
+              <FaCrown className="mr-2 text-ecba12" />
+              Subscribe
+            </Link>
+          </nav>
+        </div>
+
+        <nav className="hidden md:flex items-center gap-4 text-gray-800 dark:text-gray-200">
           <button onClick={() => history.push("/")} className="hover:underline">
             Home
           </button>
@@ -196,7 +200,6 @@ const Header: React.FC<HeaderProps> = ({
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              {/* Profile icon instead of username text */}
               <button
                 onClick={handleDesktopProfileClick}
                 className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -205,17 +208,10 @@ const Header: React.FC<HeaderProps> = ({
                 <FaUserCircle size={24} className="text-blue-500" />
                 <span className="hidden lg:inline">{userName}</span>
               </button>
-              <Link
-                className="chip bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                to="/plans"
-              >
-                Subscribe
-              </Link>
             </div>
           )}
         </div>
 
-        {/* Mobile Header Elements - only visible on mobile */}
         <div className="md:hidden flex items-center justify-between w-full">
           <div
             className={`font-semibold text-lg ${
@@ -236,8 +232,6 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </header>
-
-      {/* Mobile Search Bar - appears above header when active */}
       {showMobileSearch && (
         <div
           className={`fixed top-0 left-0 right-0 ${
@@ -273,8 +267,6 @@ const Header: React.FC<HeaderProps> = ({
           </form>
         </div>
       )}
-
-      {/* Mobile Bottom Navigation - only on mobile */}
       <div
         className={`fixed bottom-0 left-0 right-0 ${
           isDarkMode ? "bg-[#091E37] border-gray-700" : "bg-white border-gray-200"
@@ -339,116 +331,111 @@ const Header: React.FC<HeaderProps> = ({
           <span className="text-xs mt-1">{userName ? "Profile" : "Login"}</span>
         </button>
       </div>
-
-      {/* Collapsed Sidebar - only icons */}
       {!sidebarOpen && (
         <div
-          className={`fixed left-0 top-16 bottom-0 z-30 w-16 flex flex-col items-center pt-4 space-y-6 ${
+          className={`fixed left-0 top-16 bottom-0 z-30 w-16 flex flex-col items-center py-4 ${
             isDarkMode ? "bg-[#091E37]" : "bg-gray-100"
           } border-r ${
             isDarkMode ? "border-gray-700" : "border-gray-200"
           } hidden md:flex`}
         >
-          {/* Profile Icon with Hover Effect */}
-          <div className="relative group">
-            <button
-              onClick={handleSidebarProfileClick}
-              className={`flex flex-col items-center p-2 rounded-lg w-full ${
-                isDarkMode
-                  ? "text-gray-300 hover:bg-gray-700"
-                  : "text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              <FaUserCircle size={24} className={userName ? "text-blue-500" : ""} />
-            </button>
-            
-            {/* Hover Tooltip */}
-            <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-              {userName ? userName : "Login"}
+          <div className="flex flex-col justify-between h-full">
+            <div className="space-y-6">
+              <div className="relative group">
+                <button
+                  onClick={handleSidebarProfileClick}
+                  className={`flex flex-col items-center p-2 rounded-lg w-full ${
+                    isDarkMode
+                      ? "text-gray-300 hover:bg-gray-700"
+                      : "text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  <FaUserCircle size={24} className={userName ? "text-blue-500" : ""} />
+                </button>
+             <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                  {userName ? userName : "Login"}
+                </div>
+              </div>
+
+              <SidebarIcon
+                icon={<FaQuestionCircle size={20} />}
+                to="/doubts"
+                label="Doubts"
+                isDarkMode={isDarkMode}
+                showLabel={false}
+              />
+              <SidebarIcon
+                icon={<FaBook size={20} />}
+                to="/practice"
+                label="Practice"
+                isDarkMode={isDarkMode}
+                showLabel={false}
+              />
+              <SidebarIcon
+                icon={<FaStickyNote size={20} />}
+                to="/notes"
+                label="Notes"
+                isDarkMode={isDarkMode}
+                showLabel={false}
+              />
+              <SidebarIcon
+                icon={<FaClipboardList size={20} />}
+                to="/tests"
+                label="Tests"
+                isDarkMode={isDarkMode}
+                showLabel={false}
+              />
+              <SidebarIcon
+                icon={<FaTasks size={20} />}
+                to="/assignments"
+                label="Assignments"
+                isDarkMode={isDarkMode}
+                showLabel={false}
+              />
+              <SidebarIcon
+                icon={<FaCube size={20} />}
+                to="/demos"
+                label="3D Demos"
+                isDarkMode={isDarkMode}
+                showLabel={false}
+              />
+              <SidebarIcon
+                icon={<FaCalendarWeek size={20} />}
+                to="/tests/weekly"
+                label="Weekly"
+                isDarkMode={isDarkMode}
+                showLabel={false}
+              />
             </div>
-          </div>
-
-          <SidebarIcon
-            icon={<FaQuestionCircle size={20} />}
-            to="/doubts"
-            label="Doubts"
-            isDarkMode={isDarkMode}
-            showLabel={false}
-          />
-          <SidebarIcon
-            icon={<FaBook size={20} />}
-            to="/practice"
-            label="Practice"
-            isDarkMode={isDarkMode}
-            showLabel={false}
-          />
-          <SidebarIcon
-            icon={<FaStickyNote size={20} />}
-            to="/notes"
-            label="Notes"
-            isDarkMode={isDarkMode}
-            showLabel={false}
-          />
-          <SidebarIcon
-            icon={<FaClipboardList size={20} />}
-            to="/tests"
-            label="Tests"
-            isDarkMode={isDarkMode}
-            showLabel={false}
-          />
-          <SidebarIcon
-            icon={<FaTasks size={20} />}
-            to="/assignments"
-            label="Assignments"
-            isDarkMode={isDarkMode}
-            showLabel={false}
-          />
-          <SidebarIcon
-            icon={<FaCube size={20} />}
-            to="/demos"
-            label="3D Demos"
-            isDarkMode={isDarkMode}
-            showLabel={false}
-          />
-          <SidebarIcon
-            icon={<FaCalendarWeek size={20} />}
-            to="/tests/weekly"
-            label="Weekly"
-            isDarkMode={isDarkMode}
-            showLabel={false}
-          />
-
-          {/* Settings and Help & Support at the bottom */}
-          <div className="relative top-80 space-y-6">
-            <SidebarIcon
-              icon={<FaCog size={20} />}
-              to="/settings"
-              label="Settings"
-              isDarkMode={isDarkMode}
-              showLabel={false}
-            />
-            <SidebarIcon
-              icon={<FiHeadphones size={20} />}
-              to="/support"
-              label="Help & Support"
-              isDarkMode={isDarkMode}
-              showLabel={false}
-            />
+            <div className="space-y-6">
+              <SidebarIcon
+                icon={<FaCog size={20} />}
+                to="/settings"
+                label="Settings"
+                isDarkMode={isDarkMode}
+                showLabel={false}
+              />
+              <SidebarIcon
+                icon={<FiHeadphones size={20} />}
+                to="/support"
+                label="Help & Support"
+                isDarkMode={isDarkMode}
+                showLabel={false}
+              />
+            </div>
           </div>
         </div>
       )}
 
-      {/* Expanded Sidebar - with text labels */}
       {sidebarOpen && (
         <div
-          className={`fixed left-0 top-16 bottom-0 z-30 w-80 pt-4 space-y-2 px-2 ${
+          className={`fixed left-0 top-16 bottom-0 z-30 w-80 flex flex-col ${
             isDarkMode ? "bg-[#091E37]" : "bg-gray-100"
           } border-r ${
             isDarkMode ? "border-gray-700" : "border-gray-200"
-          } hidden md:block flex flex-col`}
+          } hidden md:flex`}
         >
-          {/* Profile Section */}
-          <div className={`p-4 mb-4 rounded-lg ${isDarkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
+          <div className={`p-4 mb-2 ${isDarkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
             {!userName ? (
               <div className="flex items-center">
                 <div className="mr-3">
@@ -492,7 +479,7 @@ const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto py-2">
             <SidebarItem
               icon={<FaQuestionCircle size={18} />}
               to="/doubts"
@@ -537,8 +524,7 @@ const Header: React.FC<HeaderProps> = ({
             />
           </div>
 
-          {/* Settings and Help & Support at the bottom */}
-          <div className="relative top-96 pt-4 pb-4 border-t border-gray-300 dark:border-gray-700">
+          <div className="py-4 border-t border-gray-300 dark:border-gray-700">
             <SidebarItem
               icon={<FaCog size={18} />}
               to="/settings"
@@ -566,11 +552,29 @@ const Header: React.FC<HeaderProps> = ({
         onClose={() => setSignupOpen(false)}
         onSignupSuccess={handleSignupSuccess}
       />
+
+      <style>{`
+        .subscribe-btn {
+          background-color: #2f2504;
+          color: #ecba12;
+          font-weight: 600;
+          padding: 0.5rem 1rem;
+          border-radius: 0.375rem;
+          transition: all 0.3s ease;
+        }
+        
+        .subscribe-btn:hover {
+          opacity: 0.9;
+        }
+        
+        .text-ecba12 {
+          color: #ecba12;
+        }
+      `}</style>
     </>
   );
 };
 
-// Collapsed Sidebar Icon Component
 function SidebarIcon({
   icon,
   to,
@@ -599,7 +603,6 @@ function SidebarIcon({
         {showLabel && <span className="text-xs mt-1">{label}</span>}
       </Link>
       
-      {/* Hover Tooltip for all sidebar icons */}
       <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
         {label}
       </div>
@@ -607,7 +610,6 @@ function SidebarIcon({
   );
 }
 
-// Expanded Sidebar Item Component
 function SidebarItem({
   icon,
   to,

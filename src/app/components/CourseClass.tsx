@@ -101,10 +101,8 @@ const CourseClass: React.FC<CourseClassProps> = ({ isDarkMode }) => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Desktop View (unchanged) */}
       {!isMobile && (
         <div className="relative w-full" style={{ height: "85vh" }}>
-          {/* Image placeholder */}
           {showImage && (
             <img
               src={maths}
@@ -113,8 +111,6 @@ const CourseClass: React.FC<CourseClassProps> = ({ isDarkMode }) => {
               style={{ transition: "opacity 0.5s" }}
             />
           )}
-
-          {/* Video */}
           {!showImage && (
             <video
               ref={videoRef}
@@ -224,8 +220,6 @@ const CourseClass: React.FC<CourseClassProps> = ({ isDarkMode }) => {
               <FaPlay size={24} className="text-white/80" />
             </div>
           </div>
-
-          {/* Content Below Media */}
           <div className="p-4" >
             <div className="flex justify-between items-start">
               <div>
@@ -236,7 +230,6 @@ const CourseClass: React.FC<CourseClassProps> = ({ isDarkMode }) => {
                 </p>
               </div>
               
-              {/* Icons Row */}
               <div className="flex items-center gap-3">
                 <button 
                   onClick={() => setIsWishlisted(!isWishlisted)}
@@ -258,8 +251,6 @@ const CourseClass: React.FC<CourseClassProps> = ({ isDarkMode }) => {
                 </button>
               </div>
             </div>
-
-            {/* Details */}
             <div className="mt-3 flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400">
               <div className="flex items-center gap-1">
                 <FaClock size={12} />
@@ -285,12 +276,9 @@ const CourseClass: React.FC<CourseClassProps> = ({ isDarkMode }) => {
         </div>
       )}
 
-      {/* Recommendations Section */}
       <div className="flex-grow py-6 md:py-8 relative bottom-20 md:bottom-0">
         <Recommendation isDarkMode={isDarkMode} />
       </div>
-
-      {/* Share Popup */}
       {sharePopup && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className={`p-6 rounded-lg shadow-xl max-w-md w-full mx-4 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>

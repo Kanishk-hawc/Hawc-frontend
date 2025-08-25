@@ -1,14 +1,11 @@
-// PlanCard.tsx - Updated with custom icons
+// PlanCard.tsx
 // import { useState, useEffect } from 'react';
-
-// import AllSubjectsIcon from '../../view/header/icons/all-subjects.png';
-// import ChemistryIcon from '../../view/header/icons/chemistry.png';
-// import PhysicsIcon from '../../view/header/icons/physics.png';
-// import MathIcon from '../../view/header/icons/math.png';
 
 type Props = {
   name: string;
   price: string;
+  originalPrice?: number;
+  discountText?: string;
   period: string;
   perks: string[];
   popular?: boolean;
@@ -22,6 +19,8 @@ type Props = {
 export default function PlanCard({ 
   name, 
   price, 
+  originalPrice,
+  discountText,
   period,
   perks, 
   popular, 
@@ -47,7 +46,6 @@ export default function PlanCard({
     }
   };
 
-  // Function to get color scheme based on plan type
   const getColorScheme = (planType: string) => {
     switch (planType) {
       case 'Premium':
@@ -95,21 +93,22 @@ export default function PlanCard({
 
   const colorScheme = getColorScheme(type);
   
-  // Check if this is the Stranded plan to treat it as normal
   const isStrandedPlan = name.toLowerCase().includes('stranded');
   const displayAsPopular = popular && !isStrandedPlan;
+  
+  const isDayPass = name.toLowerCase().includes('day') || period === 'day';
+  const isFreePlan = name.toLowerCase().includes('free') || price.includes('0');
+  const showRecommendedBadge = period === 'month' && !isDayPass && !isFreePlan;
 
-  // Apply selected styles if the card is selected - border color changed to [#665bfe]
   const selectedStyles = isSelected 
     ? `scale-105 border-2 shadow-xl border-[#665bfe] ${colorScheme.bg}` 
     : `border border-black ${colorScheme.bg}`;
 
-  // Desktop view (with increased height and width)
   if (!isMobile) {
     return (
       <div
         className={`relative flex flex-col h-full p-6 rounded-xl transition-all 
-          min-h-[560px] w-[300px] mx-auto cursor-pointer
+          min-h-[560px] w-full max-w-[300px] mx-auto cursor-pointer
           transform hover:scale-105 duration-300
           ${selectedStyles}
           ${displayAsPopular 
@@ -118,14 +117,12 @@ export default function PlanCard({
           }`}
         onClick={onCardClick}
       >
-        {/* Plan Type Tile */}
-        {type && (
+        {showRecommendedBadge && (
           <div className={`absolute -top-3 left-3 text-sm font-bold px-3 py-1.5 rounded-md ${colorScheme.badge}`}>
-            {type}
+            Recommended
           </div>
         )}
 
-        {/* Name first, then price - both aligned left */}
         <h3 className={`text-lg font-bold mt-3 mb-4 ${colorScheme.text}`}>
           {name}
         </h3>
@@ -135,12 +132,29 @@ export default function PlanCard({
           <span className="text-sm text-gray-300">/{period === 'year' ? 'Year' : period === 'day' ? 'Day' : 'Month'}</span>
         </div>
 
-        {/* Special quote for each plan */}
+        {originalPrice && (
+          <div className="mb-2">
+            <span className="text-sm text-gray-400 line-through mr-2">
+              {price.split(' ')[0]} {originalPrice}
+            </span>
+            <span className="text-sm text-green-400 font-semibold">
+              {Math.round((1 - parseInt(price.split(' ')[1])/originalPrice) * 100)}% off
+            </span>
+          </div>
+        )}
+
+        {discountText && (
+          <div className="mb-2">
+            <span className="text-sm text-green-400 font-semibold">
+              {discountText}
+            </span>
+          </div>
+        )}
+
         <p className="text-sm text-gray-300 italic mb-4 text-left mt-6 mb-7">
           {getPlanQuote(type)}
         </p>
         
-        {/* Divider line after quote */}
         <div className="w-full h-px bg-gray-700 mb-5"></div>
 
         <ul className="flex-1 space-y-2.5 mb-4">
@@ -172,7 +186,6 @@ export default function PlanCard({
     );
   }
 
-  // Mobile view - only shows basic info (no button)
   return (
     <div
       className={`relative flex flex-col p-5 rounded-xl transition-all 
@@ -183,7 +196,6 @@ export default function PlanCard({
         }`}
       onClick={onCardClick}
     >
-      {/* Selection circle - moved down a bit */}
       <div className="absolute left-4 top-12 flex items-center justify-center">
         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
           ${isSelected 
@@ -197,20 +209,16 @@ export default function PlanCard({
         </div>
       </div>
 
-      {/* Selection circle and Plan Type on the right */}
       <div className="flex justify-between items-center">
-        {/* Empty div to balance the layout */}
         <div className="w-6 h-6"></div>
         
-        {/* Plan Type moved to border line */}
-        {type && (
+        {showRecommendedBadge && (
           <div className={`absolute -top-2 right-3 text-sm font-bold px-3 py-1.5 rounded-md ${colorScheme.badge}`}>
-            {type}
+            Recommended
           </div>
         )}
       </div>
 
-      {/* Header with name and price when not selected */}
       {!isSelected && (
         <div className="flex justify-between items-center ml-10">
           <h3 className={`text-base font-bold ${colorScheme.text}`}>
@@ -223,34 +231,65 @@ export default function PlanCard({
         </div>
       )}
 
-      {/* Quote when not selected */}
+      {!isSelected && originalPrice && (
+        <div className="ml-10 mt-1">
+          <span className="text-xs text-gray-400 line-through mr-2">
+            {price.split(' ')[0]} {originalPrice}
+          </span>
+          <span className="text-xs text-green-400 font-semibold">
+            {Math.round((1 - parseInt(price.split(' ')[1])/originalPrice) * 100)}% off
+          </span>
+        </div>
+      )}
+
+      {!isSelected && discountText && (
+        <div className="ml-10 mt-1">
+          <span className="text-xs text-green-400 font-semibold">
+            {discountText}
+          </span>
+        </div>
+      )}
+
       {!isSelected && (
         <p className="text-sm text-gray-300 italic mt-2 text-left ml-10">
           "{getPlanQuote(type)}"
         </p>
       )}
 
-      {/* Expanded content if selected */}
       {isSelected && (
         <div className="mt-3 ml-10">
-          {/* Name only when selected */}
           <h3 className={`text-base font-bold ${colorScheme.text} mb-3`}>
             {name}
           </h3>
-          
-          {/* Special quote for each plan */}
-          <p className="text-sm text-gray-300 italic mb-4 text-left">
+                    <p className="text-sm text-gray-300 italic mb-4 text-left">
             {getPlanQuote(type)}
           </p>
           
-          {/* Divider line after quote */}
           <div className="w-full h-px bg-gray-700 mb-4"></div>
 
-          {/* Price moved below the quote when selected */}
           <div className={`flex items-baseline mb-4 ${colorScheme.text}`}>
             <span className="text-lg font-extrabold mr-1">{price}</span>
             <span className="text-sm text-gray-300">/{period === 'year' ? 'year' : period === 'day' ? 'day' : 'month'}</span>
           </div>
+
+          {originalPrice && (
+            <div className="mb-2">
+              <span className="text-sm text-gray-400 line-through mr-2">
+                {price.split(' ')[0]} {originalPrice}
+              </span>
+              <span className="text-sm text-green-400 font-semibold">
+                {Math.round((1 - parseInt(price.split(' ')[1])/originalPrice) * 100)}% off
+              </span>
+            </div>
+          )}
+
+          {discountText && (
+            <div className="mb-2">
+              <span className="text-sm text-green-400 font-semibold">
+                {discountText}
+              </span>
+            </div>
+          )}
 
           <ul className="space-y-2">
             {perks.map((perk, i) => (
@@ -273,4 +312,4 @@ export default function PlanCard({
   );
 }
 
-export type Plan = { id:string, name:string, price:number, currency:string, perks:string[] };
+export type Plan = { id:string, name:string, price:number, currency:string, perks:string[], originalPrice?: number, discountText?: string };

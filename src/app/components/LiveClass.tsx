@@ -13,17 +13,14 @@ import {
   FaCalendarAlt,
   FaVolumeMute,
   FaVolumeUp,
+  FaClock,
+  FaGlobe
 } from "react-icons/fa";
 
 interface LiveClassProps {
   isDarkMode: boolean;
   selectedSubjectId: number | null;
   onSubjectSelect: (subjectId: number) => void;
-}
-
-interface Video {
-  key: string;
-  url: string;
 }
 
 interface ClassInfo {
@@ -37,6 +34,7 @@ interface ClassInfo {
   genres: string[];
   description: string;
   videoUrl: string;
+  language: string;
 }
 
 const LiveClass: React.FC<LiveClassProps> = ({
@@ -49,12 +47,41 @@ const LiveClass: React.FC<LiveClassProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
 
-  // Check if mobile on mount and resize
+  // Provided videos data
+  const providedVideos = {
+    videos: [
+      {
+        key: "Basics Of Bond Formation.mp4",
+        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Basics%20Of%20Bond%20Formation.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=c54264b7f0cf5c03f8e439950b22638a736ee215c97b89869e2c65f67487cfcd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+      },
+      {
+        key: "Capacitor.mp4",
+        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Capacitor.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=ecc692c80b4a311be1a7cd010dc446664dd90b9a4ce9dd6256993b7f05d77830&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+      },
+      {
+        key: "Divya Bio.mp4",
+        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Divya%20Bio.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=08e51b390f6d14031e3692ace9e8b2b0b0901ecd3e6d9840f463781e215d5745&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+      },
+      {
+        key: "PTS Introduction Quantum Mechanical Model.mp4",
+        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS%20Introduction%20Quantum%20Mechanical%20Model.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=df3eb3beedd83ca76c6238906b709e87c392652010da759c2f635da14de4a99f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+      },
+      {
+        key: "PTS _ HUP.mp4",
+        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS%20_%20HUP.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=3e0dc96ee08b3f71f1a4cdac3dadf4f2b59ad2f92500ac92dce51660d4ca63c9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+      },
+      {
+        key: "SN Reactions PTS.mp4",
+        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/SN%20Reactions%20PTS.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=91690bc82cae225a83b643a3b59de6a4817cc54f51a37a557212b0f212074c95&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+      },
+      {
+        key: "Solutions 3.mp4",
+        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Solutions%203.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=5d411f617fe578f396ba4ecf3f2524f8a3bcffc1d2b3899b6ed5d531dde17d1d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+      }
+    ]
+  };
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -68,91 +95,76 @@ const LiveClass: React.FC<LiveClassProps> = ({
     };
   }, []);
 
-  // Fetch videos from backend
-  useEffect(() => {
-    async function fetchVideos() {
-      try {
-        setLoading(true);
-        const res = await fetch("http://localhost:4000/videos");
-        if (!res.ok) throw new Error("Network response was not ok");
-        const data = await res.json();
-        setVideos(data.videos);
-      } catch (err: any) {
-        console.error(err);
-        setError(err.message || "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchVideos();
-  }, []);
-
   const images = [
     {
       id: 1,
       src: biology,
       alt: "Biology",
       subject: "Biology",
-      time: "10.20hr",
+      time: "10:20AM",
+      language: "English",
       topic: "Cell Biology",
       date: "Dec 15, 2024",
       genres: ["Science", "Life", "Molecular"],
       description:
         "Exploring the fundamental unit of life - the cell. In this session, we will dive into cell structure, organelles, and their functions, along with an overview of cell communication and division.",
-      videoUrl: videos[2]?.url || "",
+      videoUrl: providedVideos.videos[2]?.url || "",
     },
     {
       id: 2,
       src: zoology1,
       alt: "Zoology",
       subject: "Zoology",
-      time: "11.15hr",
+      time: "11:15AM",
       topic: "Animal Behavior",
+      language: "English",
       date: "Dec 18, 2024",
       genres: ["Science", "Animal", "Behavior"],
       description:
         "Understanding patterns and reasons behind animal actions. We'll explore instinctive behaviors, learned responses, and how environment shapes animal life.",
-      videoUrl: videos[1]?.url || "",
+      videoUrl: providedVideos.videos[1]?.url || "",
     },
     {
       id: 3,
       src: chemistry1,
       alt: "Chemistry",
       subject: "Chemistry",
-      time: "12.30hr",
+      time: "12:30PM",
       topic: "Organic Chemistry",
+      language: "Hindi",
       date: "Dec 20, 2024",
       genres: ["Science", "Molecular", "Reactions"],
       description:
         "Study of carbon-containing compounds and their reactions. This class covers hydrocarbons, functional groups, and reaction mechanisms.",
-      videoUrl: videos[0]?.url || "",
+      videoUrl: providedVideos.videos[0]?.url || "",
     },
     {
       id: 4,
       src: physics,
       alt: "Physics",
       subject: "Physics",
-      time: "14.00hr",
+      time: "6:00AM",
+      language: "English",
       topic: "Quantum Mechanics",
       date: "Dec 22, 2024",
       genres: ["Science", "Quantum", "Theory"],
       description:
         "Fundamental theory in physics describing nature at small scales. We'll discuss wave-particle duality, quantum states, and real-world applications.",
-      videoUrl: videos[3]?.url || "",
+      videoUrl: providedVideos.videos[3]?.url || "",
     },
     {
       id: 5,
       src: maths,
       alt: "Maths",
       subject: "Maths",
-      time: "15.15hr",
+      time: "3:15PM",
+      language: "Hindi",
       topic: "Calculus",
       date: "Dec 25, 2024",
       genres: ["Mathematics", "Analysis", "Applications"],
       description:
         "Mathematical study of continuous change. Learn limits, derivatives, integrals, and their applications in science and engineering.",
-      videoUrl: videos[4]?.url || "",
+      videoUrl: providedVideos.videos[4]?.url || "",
     },
   ];
 
@@ -171,14 +183,11 @@ const LiveClass: React.FC<LiveClassProps> = ({
     }
   }, [selectedSubjectId, images, onSubjectSelect]);
 
-  // Handle video mute state
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = isMuted;
     }
   }, [isMuted, showVideo]);
-
-  // Video handling for desktop only
   useEffect(() => {
     if (!isMobile) {
       if (videoTimer) clearTimeout(videoTimer);
@@ -240,8 +249,6 @@ const LiveClass: React.FC<LiveClassProps> = ({
   };
 
   const currentImage = images[centerIndex];
-
-  // Handle touch events for mobile swipe
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
   };
@@ -252,12 +259,10 @@ const LiveClass: React.FC<LiveClassProps> = ({
 
   const handleTouchEnd = () => {
     if (touchStart - touchEnd > 50) {
-      // Swipe left
       setCenterIndex((prev) => (prev + 1) % images.length);
     }
 
     if (touchStart - touchEnd < -50) {
-      // Swipe right
       setCenterIndex((prev) => (prev - 1 + images.length) % images.length);
     }
   };
@@ -267,7 +272,6 @@ const LiveClass: React.FC<LiveClassProps> = ({
   };
 
   const handleJoinClass = (classInfo: ClassInfo) => {
-    // Navigate to the live class page with state containing class information
     history.push("/live", { 
       classInfo: {
         id: classInfo.id,
@@ -277,20 +281,16 @@ const LiveClass: React.FC<LiveClassProps> = ({
         date: classInfo.date,
         description: classInfo.description,
         image: classInfo.src,
-        videoUrl: classInfo.videoUrl
+        videoUrl: classInfo.videoUrl,
+        language: classInfo.language
       }
     });
   };
-
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading videos...</div>;
-  if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
-  if (videos.length === 0) return <div className="flex justify-center items-center h-screen">No videos found in the bucket.</div>;
 
   if (isMobile) {
     return (
       <div className={`relative w-full overflow-hidden bottom-0 ${isDarkMode ? "bg-[#091E37]" : "bg-gray-100"}`}>
         <div className="h-full flex flex-col">
-          {/* Image Slider with swipe handlers */}
           <div 
             className="relative w-full rounded-xl overflow-hidden mx-auto"
             onTouchStart={handleTouchStart}
@@ -302,7 +302,6 @@ const LiveClass: React.FC<LiveClassProps> = ({
               alt={currentImage.alt}
               className="w-full h-72 object-contain bg-black"
             />
-            {/* LIVE indicator */}
             <div className="absolute top-4 right-4 bg-red-600 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
               <span className="text-red-400">●</span> LIVE
             </div>
@@ -310,7 +309,6 @@ const LiveClass: React.FC<LiveClassProps> = ({
               <h3 className="font-bold text-lg">{currentImage.subject}</h3>
               <p className="text-sm">{currentImage.topic}</p>
             </div>
-            {/* Play Button on image */}
             <button
               onClick={() => handleJoinClass(currentImage)}
               className="absolute bottom-4 right-4 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full flex items-center justify-center transition-all duration-300"
@@ -318,8 +316,6 @@ const LiveClass: React.FC<LiveClassProps> = ({
               <FaPlay className="text-sm" />
             </button>
           </div>
-          
-          {/* Dot indicators */}
           <div className="flex justify-center space-x-2 my-4">
             {images.map((_, index) => (
               <button
@@ -335,24 +331,27 @@ const LiveClass: React.FC<LiveClassProps> = ({
               />
             ))}
           </div>
-
-          {/* Content below image */}
           <div className={`flex-1 p-4 overflow-y-auto ${isDarkMode ? "bg-[#091E37]" : "bg-gray-100"}`}>
             <div className="mb-4">
               <h2 className={`text-xl font-bold mb-2 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
                 {currentImage.topic}
               </h2>
               <div className="flex items-center gap-4 mb-2">
-                <div className={`flex items-center gap-1 text-sm ${isDarkMode ? "text-yellow-400" : "text-yellow-600"}`}>
-                  <FaCalendarAlt />
+                <div className={`flex items-center gap-1 text-sm ${isDarkMode ? "text-white" : "text-gray-700"}`}>
+                  <FaCalendarAlt className="text-white" />
                   <span className={`ml-1 ${isDarkMode ? "text-white" : "text-gray-700"}`}>
                     {currentImage.date}
                   </span>
                 </div>
                 <div className={isDarkMode ? "text-white" : "text-gray-700"}>●</div>
                 <div className={`flex items-center gap-1 text-sm ${isDarkMode ? "text-white" : "text-gray-700"}`}>
-                  {currentImage.time}
+                  <FaClock className="text-white" />
+                  <span className="ml-1">{currentImage.time}</span>
                 </div>
+              </div>
+              <div className={`flex items-center gap-1 text-sm mb-4 ${isDarkMode ? "text-white" : "text-gray-700"}`}>
+                <FaGlobe className="text-white" />
+                <span className="ml-1">{currentImage.language}</span>
               </div>
               <p className={`text-sm mb-4 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
                 {currentImage.description}
@@ -406,8 +405,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/30"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent w-1/2"></div>
-        
-        {/* Mute/Unmute Button */}
+      
         {showVideo && (
           <button
             onClick={toggleMute}
@@ -417,8 +415,6 @@ const LiveClass: React.FC<LiveClassProps> = ({
           </button>
         )}
       </div>
-
-      {/* Arrows */}
       <div className="absolute top-12 z-20 ml-52">
         <button
           onClick={moveUp}
@@ -435,8 +431,6 @@ const LiveClass: React.FC<LiveClassProps> = ({
           <FaChevronDown className="text-xl" />
         </button>
       </div>
-
-      {/* Sidebar */}
       <div className="relative z-10 flex flex-col justify-center items-start pl-16 w-96 gap-6">
         {getDisplayImages().map((img, index) => {
           let animationClass =
@@ -472,7 +466,10 @@ const LiveClass: React.FC<LiveClassProps> = ({
                     <FaCalendarAlt className="text-xs" />
                     {img.date}
                   </p>
-                  <p className="text-xs opacity-85 drop-shadow-md">{img.time}</p>
+                  <p className="text-xs opacity-85 flex items-center gap-1 drop-shadow-md">
+                    <FaClock className="text-xs" />
+                    {img.time}
+                  </p>
                 </div>
                 {index === 1 && (
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-red-600 animate-pulse shadow-lg"></div>
@@ -482,8 +479,6 @@ const LiveClass: React.FC<LiveClassProps> = ({
           );
         })}
       </div>
-
-      {/* Main content */}
       <div
         className="flex-1 flex flex-col justify-center items-start pl-20 pr-8 relative z-10"
         style={{ opacity: contentOpacity, transition: "opacity 300ms ease-in-out" }}
@@ -500,19 +495,27 @@ const LiveClass: React.FC<LiveClassProps> = ({
         </div>
         <h1 className="text-6xl font-bold text-white mb-4 animate-fade-in">{currentImage.topic}</h1>
         <div className="flex items-center gap-4 mb-6 animate-fade-in">
-          <div className="flex items-center gap-1 text-yellow-400">
+          <div className="flex items-center gap-1 text-white">
             <FaCalendarAlt />
-            <span className="text-white ml-1">{currentImage.date}</span>
+            <span className="ml-1">{currentImage.date}</span>
           </div>
           <div className="text-white">●</div>
-          <div className="text-white flex items-center gap-1">{currentImage.time}</div>
+          <div className="text-white flex items-center gap-1">
+            <FaClock className="mr-1" />
+            {currentImage.time}
+          </div>
+        </div>
+        {/* Language section */}
+        <div className="flex items-center gap-1 text-white mb-6 animate-fade-in">
+          <FaGlobe className="mr-1" />
+          {currentImage.language}
         </div>
         <p className="text-white text-lg max-w-2xl mb-8 leading-relaxed animate-fade-in">
           {currentImage.description}
         </p>
         <button
           onClick={() => handleJoinClass(currentImage)}
-          className="bg-red-600 hover:bg-red-700 text-white py-4 px-8 rounded-lg flex items-center text-lg font-semibold transition-all duration-300 hover:scale-105 animate-fade-in"
+          className="bg-[#665bfe] hover:bg-[#665bfe] text-white py-4 px-8 rounded-lg flex items-center text-lg font-semibold transition-all duration-300 hover:scale-105 animate-fade-in"
         >
           <FaPlay className="mr-3" /> Join Class
         </button>

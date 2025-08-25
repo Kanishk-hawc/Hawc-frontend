@@ -7,8 +7,6 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
-
-// Import the subject images
 import biologyImage from "../assets/images/biology.jpg";
 import chemistryImage from "../assets/images/chemistry.jpg";
 import mathsImage from "../assets/images/maths.jpg";
@@ -30,13 +28,9 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
   isDarkMode,
 }) => {
   const history = useHistory();
+  const subject = subjectsData.find((subj) => subj.id === selectedSubjectId);
 
-  // ✅ Find the subject index based on selected ID
-  const subjectIndex = subjectsData.findIndex(
-    (subj) => subj.id === selectedSubjectId
-  );
-
-  if (subjectIndex === -1) {
+  if (!subject) {
     return (
       <div
         className={`p-6 flex justify-center items-center ${
@@ -48,50 +42,66 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     );
   }
 
-  const rotatedSubjects = [
-    ...subjectsData.slice(subjectIndex),
-    ...subjectsData.slice(0, subjectIndex),
-  ];
-
-  // ✅ Lazy load state for subjects
-  const [visibleSubjects, setVisibleSubjects] = useState<number>(1);
+  const [visibleChapters, setVisibleChapters] = useState<number>(2); 
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [videos, setVideos] = useState<Video[]>([]);
   const [, setVideoLoading] = useState<boolean>(true);
-  const [, setVideoError] = useState<string | null>(null);
+  // const [, setVideoError] = useState<string | null>(null);
+  const [scrollPositions, setScrollPositions] = useState<{[key: string]: number}>({});
 
-  // ✅ Fetch videos on component mount
   useEffect(() => {
-    async function fetchVideos() {
-      try {
-        setVideoLoading(true);
-        const res = await fetch("http://localhost:4000/videos");
-        if (!res.ok) throw new Error("Network response was not ok");
-        const data = await res.json();
-        setVideos(data.videos);
-      } catch (err: any) {
-        console.error(err);
-        setVideoError(err.message || "Something went wrong");
-      } finally {
-        setVideoLoading(false);
-      }
-    }
-
-    fetchVideos();
+    const videoData = {
+      videos: [
+        {
+          key: "Basics Of Bond Formation.mp4",
+          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Basics%20Of%20Bond%20Formation.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=c54264b7f0cf5c03f8e439950b22638a736ee215c97b89869e2c65f67487cfcd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+        },
+        {
+          key: "Capacitor.mp4",
+          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Capacitor.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=ecc692c80b4a311be1a7cd010dc446664dd90b9a4ce9dd6256993b7f05d77830&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+        },
+        {
+          key: "Divya Bio.mp4",
+          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Divya%20Bio.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=08e51b390f6d14031e3692ace9e8b2b0b0901ecd3e6d9840f463781e215d5745&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+        },
+        {
+          key: "PTS Introduction Quantum Mechanical Model.mp4",
+          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS%20Introduction%20Quantum%20Mechanical%20Model.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=df3eb3beedd83ca76c6238906b709e87c392652010da759c2f635da14de4a99f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+        },
+        {
+          key: "PTS _ HUP.mp4",
+          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS%20_%20HUP.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=3e0dc96ee08b3f71f1a4cdac3dadf4f2b59ad2f92500ac92dce51660d4ca63c9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+        },
+        {
+          key: "SN Reactions PTS.mp4",
+          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/SN%20Reactions%20PTS.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=91690bc82cae225a83b643a3b59de6a4817cc54f51a37a557212b0f212074c95&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+        },
+        {
+          key: "Solutions 3.mp4",
+          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Solutions%203.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=5d411f617fe578f396ba4ecf3f2524f8a3bcffc1d2b3899b6ed5d531dde17d1d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+        }
+      ]
+    };
+    
+    setVideos(videoData.videos);
+    setVideoLoading(false);
   }, []);
 
-  // ✅ Get a random video URL
   const getRandomVideoUrl = useCallback(() => {
     if (videos.length === 0) return "";
     const randomIndex = Math.floor(Math.random() * videos.length);
     return videos[randomIndex].url;
   }, [videos]);
 
-  // ✅ Reset when subject changes
   useEffect(() => {
-    setVisibleSubjects(1);
+    setVisibleChapters(2);
     setLoadingMore(false);
-  }, [selectedSubjectId]);
+    const newPositions: {[key: string]: number} = {};
+    subject.chapters.forEach((_, index) => {
+      newPositions[`${index}`] = 0;
+    });
+    setScrollPositions(newPositions);
+  }, [selectedSubjectId, subject]);
 
   const scrollRefs = useRef<(HTMLDivElement | null)[]>([]);
   const videoRefs = useRef<{[key: string]: HTMLVideoElement | null}>({});
@@ -119,7 +129,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  // Function to get the appropriate subject image
   const getSubjectImage = (subjectName: string) => {
     const lowerCaseName = subjectName.toLowerCase();
     if (lowerCaseName.includes("biology")) return biologyImage;
@@ -127,60 +136,92 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     if (lowerCaseName.includes("math")) return mathsImage;
     if (lowerCaseName.includes("physics")) return physicsImage;
     if (lowerCaseName.includes("zoology")) return zoologyImage;
-    return biologyImage; // default image
+    return biologyImage; 
   };
 
-  // Format time in MM:SS format
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  // ✅ Scroll functions
+  const getInfiniteTopics = useCallback((topics: any[]) => {
+    return [...topics, ...topics, ...topics];
+  }, []);
+
   const scrollCards = (index: number, direction: "left" | "right") => {
     const container = scrollRefs.current[index];
     if (!container) return;
 
-    const cardWidth =
-      container.querySelector(".flex-shrink-0")?.clientWidth || 300;
+    const cardWidth = container.querySelector(".card-item")?.clientWidth || 300;
     const gap = 24;
-    const totalScroll = (cardWidth + gap) * 3;
+    const scrollAmount = (cardWidth + gap) * 3;
     const maxScrollLeft = container.scrollWidth - container.clientWidth;
+    const currentPosition = scrollPositions[`${index}`] || 0;
 
+    let newPosition;
+    
     if (direction === "right") {
-      if (container.scrollLeft + totalScroll >= maxScrollLeft) {
-        container.scrollTo({ left: 0, behavior: "smooth" });
-      } else {
-        container.scrollBy({ left: totalScroll, behavior: "smooth" });
+      newPosition = currentPosition + scrollAmount;
+      
+      if (newPosition >= maxScrollLeft) {
+        newPosition = newPosition - (container.scrollWidth / 3);
       }
     } else {
-      if (container.scrollLeft - totalScroll <= 0) {
-        container.scrollTo({ left: maxScrollLeft, behavior: "smooth" });
-      } else {
-        container.scrollBy({ left: -totalScroll, behavior: "smooth" });
+      newPosition = currentPosition - scrollAmount;
+      
+      if (newPosition <= 0) {
+        newPosition = newPosition + (container.scrollWidth / 3);
       }
     }
+
+    container.scrollTo({
+      left: newPosition,
+      behavior: 'smooth'
+    });
+
+    setScrollPositions(prev => ({
+      ...prev,
+      [`${index}`]: newPosition
+    }));
   };
 
   const startAutoScroll = (index: number) => {
     if (autoScrollIntervals.current[index]) return;
-    const container = scrollRefs.current[index];
-    if (!container) return;
-
+    
     autoScrollIntervals.current[index] = window.setInterval(() => {
-      const cardWidth =
-        container.querySelector(".flex-shrink-0")?.clientWidth || 300;
+      const container = scrollRefs.current[index];
+      if (!container) return;
+      
+      const cardWidth = container.querySelector(".card-item")?.clientWidth || 300;
       const gap = 24;
-      const totalScroll = cardWidth + gap;
+      const scrollAmount = (cardWidth + gap) * 3;
       const maxScrollLeft = container.scrollWidth - container.clientWidth;
-
-      if (container.scrollLeft + totalScroll >= maxScrollLeft) {
-        container.scrollTo({ left: 0, behavior: "smooth" });
+      const currentPosition = scrollPositions[`${index}`] || 0;
+      
+      let newPosition = currentPosition + scrollAmount;
+      
+      if (newPosition >= maxScrollLeft) {
+        newPosition = newPosition - (container.scrollWidth / 3);
+        
+       
+        container.scrollLeft = newPosition;
+        setScrollPositions(prev => ({
+          ...prev,
+          [`${index}`]: newPosition
+        }));
       } else {
-        container.scrollBy({ left: totalScroll, behavior: "smooth" });
+        container.scrollTo({
+          left: newPosition,
+          behavior: 'smooth'
+        });
+        
+        setScrollPositions(prev => ({
+          ...prev,
+          [`${index}`]: newPosition
+        }));
       }
-    }, 5000);
+    }, 3000); 
   };
 
   const stopAutoScroll = (index: number) => {
@@ -210,11 +251,9 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     const x = e.clientX - rect.left;
     const width = rect.width;
     
-    // Show left arrow when hovering on left 20% of container
     if (x < width * 0.2) {
       setHoveredContainerSide({ index, side: "left" });
     } 
-    // Show right arrow when hovering on right 20% of container
     else if (x > width * 0.8) {
       setHoveredContainerSide({ index, side: "right" });
     } else {
@@ -263,14 +302,11 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       },
     });
   };
-
-  // Handle video play on hover
   const handleCardHover = (uniqueId: string, chapterIndex: number) => {
     setHoveredCard(uniqueId);
     setHoveredRow(chapterIndex);
     stopAutoScroll(chapterIndex);
-    
-    // Start playing the video for this card
+  
     setPlayingVideos(prev => ({
       ...prev,
       [uniqueId]: true
@@ -280,15 +316,12 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
   const handleCardLeave = (uniqueId: string, chapterIndex: number) => {
     setHoveredCard(null);
     startAutoScroll(chapterIndex);
-    
-    // Pause the video for this card
+  
     setPlayingVideos(prev => ({
       ...prev,
       [uniqueId]: false
     }));
   };
-
-  // Handle video progress
   const handleTimeUpdate = (uniqueId: string, e: React.SyntheticEvent<HTMLVideoElement>) => {
     const video = e.target as HTMLVideoElement;
     const progress = (video.currentTime / video.duration) * 100;
@@ -306,8 +339,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       }
     }));
   };
-
-  // Handle video loaded metadata to get duration
   const handleLoadedMetadata = (uniqueId: string, e: React.SyntheticEvent<HTMLVideoElement>) => {
     const video = e.target as HTMLVideoElement;
     setVideoTimes(prev => ({
@@ -318,8 +349,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       }
     }));
   };
-
-  // Handle progress bar click to seek
   const handleProgressClick = (uniqueId: string, e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     const video = videoRefs.current[uniqueId];
@@ -332,7 +361,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     
     video.currentTime = newTime;
     
-    // Update the time display immediately
     setVideoTimes(prev => ({
       ...prev,
       [uniqueId]: {
@@ -342,7 +370,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     }));
   };
 
-  // ✅ Observer for lazy load
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -350,30 +377,26 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       if (observerRef.current) observerRef.current.disconnect();
 
       observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && !loadingMore) {
+        if (entries[0].isIntersecting && !loadingMore && visibleChapters < subject.chapters.length) {
           setLoadingMore(true);
-          
-          // Load next subject after a delay
+    
           setTimeout(() => {
-            setVisibleSubjects((prev) =>
-              Math.min(prev + 1, rotatedSubjects.length)
+            setVisibleChapters((prev) =>
+              Math.min(prev + 2, subject.chapters.length)
             );
             setLoadingMore(false);
-          }, 1000); // 1 second delay
+          }, 1000);
         }
       });
 
       observerRef.current.observe(node);
     },
-    [rotatedSubjects, loadingMore]
+    [subject.chapters.length, loadingMore, visibleChapters]
   );
 
-  // ✅ Start auto-scroll when subjects become visible
   useEffect(() => {
-    for (let i = 0; i < visibleSubjects; i++) {
-      rotatedSubjects[i].chapters.forEach((_, chapterIndex) => {
-        startAutoScroll(chapterIndex);
-      });
+    for (let i = 0; i < visibleChapters; i++) {
+      startAutoScroll(i);
     }
 
     return () => {
@@ -381,7 +404,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
         if (interval) clearInterval(interval);
       });
     };
-  }, [visibleSubjects]);
+  }, [visibleChapters]);
 
   return (
     <div
@@ -391,238 +414,227 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     >
       <h2 className="text-3xl mb-6">Recorded Video</h2>
 
-      {rotatedSubjects.slice(0, visibleSubjects).map((subject, sIndex) => (
-        <div key={subject.id} className="mb-12">
-          <h2 className="text-2xl mb-6">{subject.name}</h2>
+      <div className="mb-12">
+        <h2 className="text-2xl mb-6">{subject.name}</h2>
 
-          {subject.chapters.map((chapter, chapterIndex) => (
-            <div
-              key={chapter.chapterId}
-              className="mb-8 relative"
-              onMouseEnter={() => handleRowMouseEnter(chapterIndex)}
-              onMouseLeave={() => handleRowMouseLeave(chapterIndex)}
+        {subject.chapters.slice(0, visibleChapters).map((chapter, chapterIndex) => (
+          <div
+            key={chapter.chapterId}
+            className="mb-8 relative"
+            onMouseEnter={() => handleRowMouseEnter(chapterIndex)}
+            onMouseLeave={() => handleRowMouseLeave(chapterIndex)}
+          >
+            <h3 className="text-xl mb-4">
+              Chapter {chapterIndex + 1}: {chapter.chapterName}
+            </h3>
+
+            <div 
+              className="relative"
+              onMouseMove={(e) => handleContainerHover(chapterIndex, e)}
+              onMouseLeave={() => setHoveredContainerSide({ index: -1, side: null })}
             >
-              <h3 className="text-xl mb-4">
-                Chapter {chapterIndex + 1}: {chapter.chapterName}
-              </h3>
+              {!isMobile && (
+                <>
+                  <div className={`absolute left-0 top-0 h-full w-1/5 flex items-center justify-start z-10 pointer-events-none`}>
+                    <button
+                      onClick={() => scrollCards(chapterIndex, "left")}
+                      onMouseEnter={() => handleArrowHover(chapterIndex, "left")}
+                      onMouseLeave={handleArrowLeave}
+                      className={`pointer-events-auto p-2 transition-all duration-200 ${
+                        (hoveredContainerSide.index === chapterIndex && hoveredContainerSide.side === "left") || 
+                        (hoveredArrow.index === chapterIndex && hoveredArrow.side === "left")
+                          ? "opacity-100 scale-110 bg-black/20 rounded-full"
+                          : "opacity-0"
+                      }`}
+                    >
+                      <FaChevronLeft size={20} />
+                    </button>
+                  </div>
+                  
+                  <div className={`absolute right-0 top-0 h-full w-1/5 flex items-center justify-end z-10 pointer-events-none`}>
+                    <button
+                      onClick={() => scrollCards(chapterIndex, "right")}
+                      onMouseEnter={() => handleArrowHover(chapterIndex, "right")}
+                      onMouseLeave={handleArrowLeave}
+                      className={`pointer-events-auto p-2 transition-all duration-200 ${
+                        (hoveredContainerSide.index === chapterIndex && hoveredContainerSide.side === "right") || 
+                        (hoveredArrow.index === chapterIndex && hoveredArrow.side === "right")
+                          ? "opacity-100 scale-110 bg-black/20 rounded-full"
+                          : "opacity-0"
+                      }`}
+                    >
+                      <FaChevronRight size={20} />
+                    </button>
+                  </div>
+                </>
+              )}
 
-              <div 
-                className="relative"
-                onMouseMove={(e) => handleContainerHover(chapterIndex, e)}
-                onMouseLeave={() => setHoveredContainerSide({ index: -1, side: null })}
+              <div
+                ref={(el) => {
+                  scrollRefs.current[chapterIndex] = el;
+                }}
+                className={`flex gap-6 py-2 ${
+                  isMobile
+                    ? "overflow-x-auto overflow-y-hidden scrollbar-hide"
+                    : "overflow-x-hidden overflow-y-hidden"
+                }`}
               >
-                {!isMobile && (
-                  <>
-                    {/* Left arrow - show when hovering left side of container OR the arrow itself */}
-                    <div className={`absolute left-0 top-0 h-full w-1/5 flex items-center justify-start z-10 pointer-events-none`}>
-                      <button
-                        onClick={() => scrollCards(chapterIndex, "left")}
-                        onMouseEnter={() => handleArrowHover(chapterIndex, "left")}
-                        onMouseLeave={handleArrowLeave}
-                        className={`pointer-events-auto p-2 transition-all duration-200 ${
-                          (hoveredContainerSide.index === chapterIndex && hoveredContainerSide.side === "left") || 
-                          (hoveredArrow.index === chapterIndex && hoveredArrow.side === "left")
-                            ? "opacity-100"
-                            : "opacity-0"
-                        }`}
-                      >
-                        <FaChevronLeft />
-                      </button>
-                    </div>
-                    
-                    {/* Right arrow - show when hovering right side of container OR the arrow itself */}
-                    <div className={`absolute right-0 top-0 h-full w-1/5 flex items-center justify-end z-10 pointer-events-none`}>
-                      <button
-                        onClick={() => scrollCards(chapterIndex, "right")}
-                        onMouseEnter={() => handleArrowHover(chapterIndex, "right")}
-                        onMouseLeave={handleArrowLeave}
-                        className={`pointer-events-auto p-2 transition-all duration-200 ${
-                          (hoveredContainerSide.index === chapterIndex && hoveredContainerSide.side === "right") || 
-                          (hoveredArrow.index === chapterIndex && hoveredArrow.side === "right")
-                            ? "opacity-100"
-                            : "opacity-0"
-                        }`}
-                      >
-                        <FaChevronRight />
-                      </button>
-                    </div>
-                  </>
-                )}
+                {getInfiniteTopics(chapter.topics).map((topic, topicIndex) => {
+                  const uniqueId = `${chapterIndex}-${topicIndex}`;
+                  const isHovered = hoveredCard === uniqueId;
+                  const isMenuOpen = showMenu === uniqueId;
+                  const subjectImage = getSubjectImage(subject.name);
+                  const progress = videoProgress[uniqueId] || 0;
+                  const videoUrl = getRandomVideoUrl();
+                  const videoTime = videoTimes[uniqueId] || {current: "0:00", total: "0:00"};
 
-                <div
-                  ref={(el) => {
-                    scrollRefs.current[chapterIndex] = el;
-                  }}
-                  className={`flex gap-6 py-2 ${
-                    isMobile
-                      ? "overflow-x-auto overflow-y-hidden scrollbar-hide"
-                      : "overflow-x-hidden overflow-y-hidden scroll-smooth"
-                  }`}
-                >
-                  {chapter.topics.map((topic, topicIndex) => {
-                    const uniqueId = `${sIndex}-${chapterIndex}-${topicIndex}`;
-                    const isHovered = hoveredCard === uniqueId;
-                    const isMenuOpen = showMenu === uniqueId;
-                    const subjectImage = getSubjectImage(subject.name);
-                    // const isPlaying = playingVideos[uniqueId];
-                    const progress = videoProgress[uniqueId] || 0;
-                    const videoUrl = getRandomVideoUrl();
-                    const videoTime = videoTimes[uniqueId] || {current: "0:00", total: "0:00"};
-
-                    return (
-                      <div
-                        key={uniqueId}
-                        className="flex-shrink-0 w-80 relative" // Increased card width
-                        onMouseEnter={() => handleCardHover(uniqueId, chapterIndex)}
-                        onMouseLeave={() => handleCardLeave(uniqueId, chapterIndex)}
-                        onClick={() => handlePlay(chapter, topic)}
-                      >
-                        <div className="relative h-52 w-full rounded-lg shadow-md overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-left">
-                          {isHovered && videoUrl ? (
-                            <>
-                              <video
-                                ref={el => {
-                                  if (el) {
-                                    videoRefs.current[uniqueId] = el;
-                                  }
-                                }}
-                                autoPlay
-                                muted
-                                loop
-                                className="absolute inset-0 w-full h-full object-cover"
-                                onTimeUpdate={(e) => handleTimeUpdate(uniqueId, e)}
-                                onLoadedMetadata={(e) => handleLoadedMetadata(uniqueId, e)}
-                              >
-                                <source src={videoUrl} type="video/mp4" />
-                                Your browser does not support the video tag.
-                              </video>
-                              
-                              {/* Video time display */}
-                              <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                                {videoTime.current} / {videoTime.total}
-                              </div>
-                              
-                              {/* Progress bar */}
-                              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
-                                <div 
-                                  className="w-full h-1.5 bg-gray-600 rounded-full cursor-pointer"
-                                  onClick={(e) => handleProgressClick(uniqueId, e)}
-                                >
-                                  <div 
-                                    className="h-full bg-red-600 rounded-full transition-all duration-100"
-                                    style={{ width: `${progress}%` }}
-                                  ></div>
-                                </div>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <img 
-                                src={subjectImage} 
-                                alt={subject.name}
-                                className="absolute inset-0 w-full h-full object-cover"
-                              />
-                              <div className="absolute inset-0 bg-black/20"></div>
-                              
-                              {/* Video time display */}
-                              <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                                {videoTime.total}
-                              </div>
-                            </>
-                          )}
-                        </div>
-
-                        {/* Topic info (always visible) */}
-                        <div className="mt-3">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <FaUserCircle className="text-gray-500 mr-2" size={18} />
-                              <h4 className="font-semibold text-base">{topic.name}</h4>
+                  return (
+                    <div
+                      key={uniqueId}
+                      className="card-item flex-shrink-0 w-80 relative transition-transform duration-300 hover:scale-105"
+                      onMouseEnter={() => handleCardHover(uniqueId, chapterIndex)}
+                      onMouseLeave={() => handleCardLeave(uniqueId, chapterIndex)}
+                      onClick={() => handlePlay(chapter, topic)}
+                    >
+                      <div className="relative h-52 w-full rounded-lg shadow-md overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-left">
+                        {isHovered && videoUrl ? (
+                          <>
+                            <video
+                              ref={el => {
+                                if (el) {
+                                  videoRefs.current[uniqueId] = el;
+                                }
+                              }}
+                              autoPlay
+                              muted
+                              loop
+                              className="absolute inset-0 w-full h-full object-cover"
+                              onTimeUpdate={(e) => handleTimeUpdate(uniqueId, e)}
+                              onLoadedMetadata={(e) => handleLoadedMetadata(uniqueId, e)}
+                            >
+                              <source src={videoUrl} type="video/mp4" />
+                              Your browser does not support the video tag.
+                            </video>
+                            
+                            <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                              {videoTime.current} / {videoTime.total}
                             </div>
-                            {/* Three-dot menu (always visible) */}
-                            <div className="relative">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleMenuToggle(uniqueId, e);
-                                }}
-                                className={`p-1 rounded-full transition-colors ${
+                            
+                            <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                              <div 
+                                className="w-full h-1.5 bg-gray-600 rounded-full cursor-pointer"
+                                onClick={(e) => handleProgressClick(uniqueId, e)}
+                              >
+                                <div 
+                                  className="h-full bg-red-600 rounded-full transition-all duration-100"
+                                  style={{ width: `${progress}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <img 
+                              src={subjectImage} 
+                              alt={subject.name}
+                              className="absolute inset-0 w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/20"></div>
+                            
+                            <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                              {videoTime.total}
+                            </div>
+                          </>
+                        )}
+                      </div>
+
+                      <div className="mt-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <FaUserCircle className="text-gray-500 mr-2" size={18} />
+                            <h4 className="font-semibold text-base">{topic.name}</h4>
+                          </div>
+                          <div className="relative">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleMenuToggle(uniqueId, e);
+                              }}
+                              className={`p-1 rounded-full transition-colors ${
+                                isDarkMode
+                                  ? "hover:bg-gray-700 text-gray-300"
+                                  : "hover:bg-gray-200 text-gray-600"
+                              }`}
+                            >
+                              <FaEllipsisV size={14} />
+                            </button>
+
+                            {isMenuOpen && (
+                              <div
+                                className={`absolute bottom-full right-0 mb-1 w-32 rounded-lg shadow-lg border z-30 ${
                                   isDarkMode
-                                    ? "hover:bg-gray-700 text-gray-300"
-                                    : "hover:bg-gray-200 text-gray-600"
+                                    ? "bg-gray-800 border-gray-600"
+                                    : "bg-white border-gray-200"
                                 }`}
                               >
-                                <FaEllipsisV size={14} />
-                              </button>
-
-                              {isMenuOpen && (
-                                <div
-                                  className={`absolute bottom-full right-0 mb-1 w-32 rounded-lg shadow-lg border z-30 ${
-                                    isDarkMode
-                                      ? "bg-gray-800 border-gray-600"
-                                      : "bg-white border-gray-200"
-                                  }`}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleMenuOption("watch", chapter, topic);
+                                  }}
+                                  className="w-full text-left px-3 py-2 text-sm hover:bg-opacity-80 rounded-t-lg"
                                 >
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleMenuOption("watch", chapter, topic);
-                                    }}
-                                    className="w-full text-left px-3 py-2 text-sm hover:bg-opacity-80 rounded-t-lg"
-                                  >
-                                    Watch Now
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleMenuOption("bookmark", chapter, topic);
-                                    }}
-                                    className="w-full text-left px-3 py-2 text-sm hover:bg-opacity-80"
-                                  >
-                                    Bookmark
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleMenuOption("share", chapter, topic);
-                                    }}
-                                    className="w-full text-left px-3 py-2 text-sm hover:bg-opacity-80 rounded-b-lg"
-                                  >
-                                    Share
-                                  </button>
-                                </div>
-                              )}
-                            </div>
+                                  Watch Now
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleMenuOption("bookmark", chapter, topic);
+                                  }}
+                                  className="w-full text-left px-3 py-2 text-sm hover:bg-opacity-80"
+                                >
+                                  Bookmark
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleMenuOption("share", chapter, topic);
+                                  }}
+                                  className="w-full text-left px-3 py-2 text-sm hover:bg-opacity-80 rounded-b-lg"
+                                >
+                                  Share
+                                </button>
+                              </div>
+                            )}
                           </div>
-                          <div className="flex justify-between mt-2">
-                            <span className="text-sm opacity-70">
-                              6 days ago
-                            </span>
-                          </div>
-                          <span className="text-sm opacity-70 block mt-1">
-                            6k Views
+                        </div>
+                        <div className="flex justify-between mt-2">
+                          <span className="text-sm opacity-70">
+                            6 days ago
                           </span>
                         </div>
+                        <span className="text-sm opacity-70 block mt-1">
+                          6k Views
+                        </span>
                       </div>
-                    );
-                  })}
-                </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          ))}
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
 
-      {/* ✅ Lazy load trigger */}
-      {visibleSubjects < rotatedSubjects.length && (
+      {visibleChapters < subject.chapters.length && (
         <div ref={loadMoreRef} className="h-20 flex justify-center items-center">
           {loadingMore ? (
             <div className="flex flex-col items-center">
               <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-2"></div>
-              <p className="text-sm opacity-70">Loading next subject...</p>
+              <p className="text-sm opacity-70">Loading more chapters...</p>
             </div>
           ) : (
-            <p className="text-sm opacity-70">Scroll down to load more subjects</p>
+            <p className="text-sm opacity-70">Scroll down to load more chapters</p>
           )}
         </div>
       )}

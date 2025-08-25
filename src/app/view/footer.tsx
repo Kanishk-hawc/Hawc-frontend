@@ -19,7 +19,6 @@ type FooterProps = {
 const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
   return (
     <>
-      {/* Decorative line above footer */}
       <div className={`w-full h-px ${isDarkMode ? "bg-gray-700" : "bg-gray-300"} ${sidebarOpen ? "ml-80" : "ml-16"}`}></div>
       
       <footer
@@ -31,12 +30,11 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
       >
         <div className="w-full px-4 py-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-16 text-left">
-            {/* Contact Info */}
             <div>
               <div className="flex items-center mb-2">
                 <h3
                   className={`text-3xl font-bold mb-1 ${
-                    isDarkMode ? "text-red-700" : "text-black"
+                    isDarkMode ? "text-[#665bfe]" : "text-black"
                   }`}
                 >
                   HAWC
@@ -64,8 +62,6 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 +(080) 31604490
               </p>
             </div>
-
-            {/* Movies to Watch */}
             <div>
               <h3
                 className={`text-2xl font-bold mb-4 ${
@@ -79,7 +75,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   (movie) => (
                     <li
                       key={movie}
-                      className={`text-lg hover:text-red-500 cursor-pointer transition-colors ${
+                      className={`text-lg hover:text-[#665bfe] cursor-pointer transition-colors ${
                         isDarkMode ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
@@ -89,8 +85,6 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 )}
               </ul>
             </div>
-
-            {/* Quick Links */}
             <div>
               <h3
                 className={`text-2xl font-bold mb-4 ${
@@ -114,7 +108,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   >
                     <Link 
                       to={link.path}
-                      className="hover:text-red-500 transition-colors inline-block"
+                      className="hover:text-[#665bfe] transition-colors inline-block"
                     >
                       {link.name}
                     </Link>
@@ -146,7 +140,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                     >
                       <Link 
                         to={item.path}
-                        className="hover:text-red-500 transition-colors inline-block"
+                        className="hover:text-[#665bfe] transition-colors inline-block"
                       >
                         {item.name}
                       </Link>
@@ -155,8 +149,6 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 )}
               </ul>
             </div>
-
-            {/* Follow Us Section */}
             <div>
               <h3
                 className={`text-2xl font-bold mb-4 ${
@@ -210,8 +202,8 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   href="https://www.youtube.com/@HowAndWhyClasses"
                   className={`text-2xl transition-colors ${
                     isDarkMode
-                      ? "text-gray-300 hover:text-red-500"
-                      : "text-gray-700 hover:text-red-600"
+                      ? "text-gray-300 hover:text-[#665bfe]"
+                      : "text-gray-700 hover:text-[#665bfe]"
                     }`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -221,29 +213,24 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
               </div>
             </div>
           </div>
-
-          {/* Bottom Section */}
           <div
             className={`pt-6 border-t ${
               isDarkMode ? "border-gray-700" : "border-gray-300"
             } flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4`}
           >
-            {/* Copyright */}
             <div className="flex-1">
               <p
                 className={`text-base leading-relaxed max-w-2xl ${
                   isDarkMode ? "text-gray-300" : "text-gray-700"
                 }`}
               >
-                © 2025 <span className="text-red-500 font-bold">HAWC</span> All
+                © 2025 <span className="text-[#665bfe] font-bold">HAWC</span> All
                 Rights Reserved. All videos and shows on this platform are
                 trademarks of, and all related images and content are the
                 property of, HAWC Inc. Duplication and copy of this is strictly
                 prohibited.
               </p>
             </div>
-
-            {/* Download App */}
             <div className="flex flex-col items-start lg:items-end">
               <h3
                 className={`text-xl font-bold mb-3 ${
