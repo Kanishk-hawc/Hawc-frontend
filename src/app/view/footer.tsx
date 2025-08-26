@@ -1,7 +1,6 @@
 import React from "react";
 import {
   FaFacebook,
-  // FaTwitter,
   FaInstagram,
   FaLinkedin,
   FaApple,
@@ -10,6 +9,7 @@ import {
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import HawcLogo from "./icons/Hawc Revised Logo.svg";
 
 type FooterProps = {
   isDarkMode: boolean;
@@ -32,12 +32,18 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-16 text-left">
             <div>
               <div className="flex items-center mb-2">
+                {/* Added the logo here */}
+                <img 
+                  src={HawcLogo} 
+                  alt="HAWC Logo" 
+                  className="h-8 w-8 mr-2" 
+                />
                 <h3
                   className={`text-3xl font-bold mb-1 ${
-                    isDarkMode ? "text-[#665bfe]" : "text-black"
+                    isDarkMode ? "text-[#123a66]" : "text-black"
                   }`}
                 >
-                  HAWC
+                  How and Why
                 </h3>
               </div>
               <p
@@ -75,7 +81,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   (movie) => (
                     <li
                       key={movie}
-                      className={`text-lg hover:text-[#665bfe] cursor-pointer transition-colors ${
+                      className={`text-lg hover:text-[#123a66] cursor-pointer transition-colors ${
                         isDarkMode ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
@@ -108,7 +114,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   >
                     <Link 
                       to={link.path}
-                      className="hover:text-[#665bfe] transition-colors inline-block"
+                      className="hover:text-[#123a66] transition-colors inline-block"
                     >
                       {link.name}
                     </Link>
@@ -140,7 +146,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                     >
                       <Link 
                         to={item.path}
-                        className="hover:text-[#665bfe] transition-colors inline-block"
+                        className="hover:text-[#123a66] transition-colors inline-block"
                       >
                         {item.name}
                       </Link>
@@ -202,8 +208,8 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   href="https://www.youtube.com/@HowAndWhyClasses"
                   className={`text-2xl transition-colors ${
                     isDarkMode
-                      ? "text-gray-300 hover:text-[#665bfe]"
-                      : "text-gray-700 hover:text-[#665bfe]"
+                      ? "text-gray-300 hover:text-[#123a66]"
+                      : "text-gray-700 hover:text-[#123a66]"
                     }`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -224,7 +230,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   isDarkMode ? "text-gray-300" : "text-gray-700"
                 }`}
               >
-                © 2025 <span className="text-[#665bfe] font-bold">HAWC</span> All
+                © 2025 <span className="text-[#123a66] font-bold">How and Why</span> All
                 Rights Reserved. All videos and shows on this platform are
                 trademarks of, and all related images and content are the
                 property of, HAWC Inc. Duplication and copy of this is strictly

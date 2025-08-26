@@ -68,53 +68,53 @@ const TermsOfUse: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen py-10 px-4 bg-gray-100 dark:bg-[#091E37] transition-colors duration-300">
+    <div className="min-h-screen py-8 px-4 bg-white dark:bg-[#091E37] transition-colors duration-300 font-custom">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold mb-3 text-gray-900 dark:text-white">Terms of Use</h1>
-        <p className="text-gray-700 dark:text-gray-300 text-xl mb-10">Last updated: {new Date().toLocaleDateString()}</p>
+        <h1 className="text-3xl md:text-4xl font-bold mb-3 text-gray-900 dark:text-white">Terms of Use</h1>
+        <p className="text-gray-700 dark:text-gray-300 text-lg mb-8">Last updated: {new Date().toLocaleDateString()}</p>
 
-        <div className="mb-10 text-xl text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
-          <p className="mb-5">
+        <div className="mb-8 text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 p-5 rounded-xl shadow-md">
+          <p className="mb-4 text-base">
             These Terms of Use set out the terms and conditions for use of this Platform and any content, Public Forums, or services offered on or through the Website and/or through any mobile application.
           </p>
-          <p>
+          <p className="text-base">
             By accessing this Platform, You are agreeing to be bound by the terms of this Agreement, all applicable laws and regulations. If You disagree with any part of this Agreement or do not wish to be bound by the same, then please do not use the Platform in any manner.
           </p>
         </div>
 
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="relative">
             <input
               type="text"
               placeholder="Search terms..."
-              className="w-full p-4 text-xl border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-3 text-base border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 absolute right-4 top-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 absolute right-3 top-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
         </div>
 
-        <div className="space-y-10">
+        <div className="space-y-8">
           {filteredSections.length > 0 ? (
             filteredSections.map((section, index) => (
-              <div key={index} id={`section-${index}`} className="pt-8 pb-8 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+              <div key={index} id={`section-${index}`} className="pt-6 pb-6 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+                <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
                   {index + 1}. {section.title}
                 </h2>
-                <div className="text-gray-800 dark:text-gray-200 space-y-5 text-xl leading-relaxed">
+                <div className="text-gray-800 dark:text-gray-200 space-y-4 text-base leading-relaxed">
                   <p>{section.content}</p>
                 </div>
               </div>
             ))
           ) : (
-            <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="text-center py-12 bg-gray-100 dark:bg-gray-800 rounded-xl shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-14 w-14 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <p className="text-2xl text-gray-700 dark:text-gray-300">No matching terms found. Try a different search.</p>
+              <p className="text-xl text-gray-700 dark:text-gray-300">No matching terms found. Try a different search.</p>
             </div>
           )}
         </div>

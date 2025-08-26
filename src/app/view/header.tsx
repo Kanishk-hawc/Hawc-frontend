@@ -21,6 +21,7 @@ import { useHistory, Link, useLocation } from "react-router-dom";
 import LoginPanel from "./login";
 import SignupPanel from "./signup";
 import LanguageSwitcher from "./components/LanguageSwitcher";
+import Asset106 from "./icons/Asset.png"; 
 
 type HeaderProps = {
   toggleTheme: () => void;
@@ -130,7 +131,8 @@ const Header: React.FC<HeaderProps> = ({
             </button>
 
             <Link to="/" className="font-semibold text-xl flex items-center">
-              How & Why
+              {/* Replaced text with SVG icon */}
+              <img src={Asset106} alt="Logo" className="h-10 w-auto" />
             </Link>
             
             <Link
@@ -143,36 +145,36 @@ const Header: React.FC<HeaderProps> = ({
           </nav>
         </div>
 
-        <nav className="hidden md:flex items-center gap-4 text-gray-800 dark:text-gray-200">
+        <nav className="hidden md:flex items-center gap-6 text-gray-800 dark:text-gray-200">
           <button 
             onClick={() => history.push("/")} 
-            className={`hover:underline ${isActivePath("/") ? 
-              `${isDarkMode ? "text-blue-400 border-b-2 border-blue-400" : "text-blue-600 border-b-2 border-blue-600"} font-medium` : 
-              ""}`}
+            className={`relative pb-1 ${isActivePath("/") ? 
+              `${isDarkMode ? "text-[#62c2f1]" : "text-[#62c2f1]"} font-medium after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-[#62c2f1]` : 
+              "hover:text-[#62c2f1] transition-colors"}`}
           >
             Home
           </button>
           <button
             onClick={() => history.push("/test")}
-            className={`hover:underline ${isActivePath("/test") ? 
-              `${isDarkMode ? "text-blue-400 border-b-2 border-blue-400" : "text-blue-600 border-b-2 border-blue-600"} font-medium` : 
-              ""}`}
+            className={`relative pb-1 ${isActivePath("/test") ? 
+              `${isDarkMode ? "text-[#62c2f1]" : "text-[#62c2f1]"} font-medium after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-[#62c2f1]` : 
+              "hover:text-[#62c2f1] transition-colors"}`}
           >
             Tests
           </button>
           <button
             onClick={() => history.push("/tests/weekly")}
-            className={`hover:underline ${isActivePath("/tests/weekly") ? 
-              `${isDarkMode ? "text-blue-400 border-b-2 border-blue-400" : "text-blue-600 border-b-2 border-blue-600"} font-medium` : 
-              ""}`}
+            className={`relative pb-1 ${isActivePath("/tests/weekly") ? 
+              `${isDarkMode ? "text-[#62c2f1]" : "text-[#62c2f1]"} font-medium after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-[#62c2f1]` : 
+              "hover:text-[#62c2f1] transition-colors"}`}
           >
             Weekly Tests
           </button>
           <button
             onClick={() => history.push("/plan")}
-            className={`hover:underline ${isActivePath("/plan") ? 
-              `${isDarkMode ? "text-blue-400 border-b-2 border-blue-400" : "text-blue-600 border-b-2 border-blue-600"} font-medium` : 
-              ""}`}
+            className={`relative pb-1 ${isActivePath("/plan") ? 
+              `${isDarkMode ? "text-[#62c2f1]" : "text-[#62c2f1]"} font-medium after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-[#62c2f1]` : 
+              "hover:text-[#62c2f1] transition-colors"}`}
           >
             Plans
           </button>
@@ -203,13 +205,13 @@ const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setLoginOpen(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors duration-300"
+                className="bg-[#123a66] hover:bg-[#185494] text-white px-4 py-2 rounded transition-colors duration-300"
               >
                 Login
               </button>
               <button
                 onClick={() => setSignupOpen(true)}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors duration-300"
+                className="bg-[#196867] hover:bg-[#1c807e] text-white px-4 py-2 rounded transition-colors duration-300"
               >
                 Signup
               </button>
@@ -229,12 +231,9 @@ const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="md:hidden flex items-center justify-between w-full">
-          <div
-            className={`font-semibold text-lg ${
-              isDarkMode ? "text-gray-200" : "text-gray-800"
-            }`}
-          >
-            How & Why
+          <div className="flex items-center">
+            {/* Mobile logo */}
+            <img src={Asset106} alt="Logo" className="h-7 w-auto" />
           </div>
           <div className="flex items-center">
             <button
@@ -290,9 +289,9 @@ const Header: React.FC<HeaderProps> = ({
       >
         <button
           onClick={() => history.push("/")}
-          className={`flex flex-col items-center ${
+          className={`flex flex-col items-center relative ${
             isActivePath("/") ? 
-              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium` : 
+              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-3 after:h-0.5 ${isDarkMode ? "after:bg-blue-400" : "after:bg-blue-600"}` : 
               `${isDarkMode ? "text-gray-300" : "text-gray-600"}`
           }`}
         >
@@ -301,9 +300,9 @@ const Header: React.FC<HeaderProps> = ({
         </button>
         <button
           onClick={() => history.push("/test")}
-          className={`flex flex-col items-center ${
+          className={`flex flex-col items-center relative ${
             isActivePath("/test") ? 
-              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium` : 
+              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-3 after:h-0.5 ${isDarkMode ? "after:bg-blue-400" : "after:bg-blue-600"}` : 
               `${isDarkMode ? "text-gray-300" : "text-gray-600"}`
           }`}
         >
@@ -312,9 +311,9 @@ const Header: React.FC<HeaderProps> = ({
         </button>
         <button
           onClick={() => history.push("/tests/weekly")}
-          className={`flex flex-col items-center ${
+          className={`flex flex-col items-center relative ${
             isActivePath("/tests/weekly") ? 
-              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium` : 
+              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-3 after:h-0.5 ${isDarkMode ? "after:bg-blue-400" : "after:bg-blue-600"}` : 
               `${isDarkMode ? "text-gray-300" : "text-gray-600"}`
           }`}
         >
@@ -323,9 +322,9 @@ const Header: React.FC<HeaderProps> = ({
         </button>
         <button
           onClick={() => history.push("/plan")}
-          className={`flex flex-col items-center ${
+          className={`flex flex-col items-center relative ${
             isActivePath("/plan") ? 
-              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium` : 
+              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-3 after:h-0.5 ${isDarkMode ? "after:bg-blue-400" : "after:bg-blue-600"}` : 
               `${isDarkMode ? "text-gray-300" : "text-gray-600"}`
           }`}
         >
@@ -347,9 +346,9 @@ const Header: React.FC<HeaderProps> = ({
         </button>
         <button
           onClick={handleProfileClick}
-          className={`flex flex-col items-center ${
+          className={`flex flex-col items-center relative ${
             isActivePath(`/profile/${userName}`) ? 
-              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium` : 
+              `${isDarkMode ? "text-blue-400" : "text-blue-600"} font-medium after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-3 after:h-0.5 ${isDarkMode ? "after:bg-blue-400" : "after:bg-blue-600"}` : 
               `${isDarkMode ? "text-gray-300" : "text-gray-600"}`
           }`}
         >

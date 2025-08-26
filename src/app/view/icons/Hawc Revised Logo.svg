@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 822.72 823.39">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient-4);
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        opacity: .7;
+      }
+
+      .cls-7 {
+        fill: url(#linear-gradient-10);
+      }
+
+      .cls-2 {
+        fill: url(#linear-gradient-5);
+      }
+
+      .cls-8 {
+        fill: url(#linear-gradient-7);
+        stroke: url(#linear-gradient-8);
+      }
+
+      .cls-8, .cls-9 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-10 {
+        fill: #65c7f7;
+      }
+
+      .cls-9 {
+        fill: url(#linear-gradient-11);
+        stroke: url(#linear-gradient-12);
+      }
+
+      .cls-3 {
+        fill: url(#linear-gradient-6);
+      }
+
+      .cls-11 {
+        fill: url(#linear-gradient-9);
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-5 {
+        fill: url(#linear-gradient-3);
+      }
+
+      .cls-6 {
+        fill: url(#linear-gradient-2);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="411.54" y1="478.45" x2="411.54" y2="332.47" gradientTransform="translate(1.18 -1.14) rotate(.17)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0052d4"/>
+      <stop offset=".51" stop-color="#65c7f7"/>
+      <stop offset="1" stop-color="#9cecfb"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="494.05" y1="431.23" x2="325.49" y2="431.23" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-3" x1="411.54" y1="451.79" x2="411.54" y2="311.23" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-4" x1="510.67" y1="455.17" x2="308.87" y2="455.17" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-5" x1="409.77" y1="434.13" x2="409.77" y2="288.82" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-6" x1="533.08" y1="475.21" x2="290" y2="475.21" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-7" x1="406.75" y1="213.41" x2="406.75" y2=".05" gradientTransform="translate(1.18 -1.14) rotate(.17)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9cecfb"/>
+      <stop offset=".66" stop-color="#65c7f7"/>
+      <stop offset="1" stop-color="#0052d4"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-8" x1="273.12" y1="106.73" x2="540.37" y2="106.73" gradientTransform="translate(1.18 -1.14) rotate(.17)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0052d4"/>
+      <stop offset=".07" stop-color="#1469db"/>
+      <stop offset=".19" stop-color="#3791e7"/>
+      <stop offset=".31" stop-color="#50afef"/>
+      <stop offset=".41" stop-color="#5fc0f5"/>
+      <stop offset=".49" stop-color="#65c7f7"/>
+      <stop offset="1" stop-color="#9cecfb"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-9" x1="413.98" y1="610.33" x2="413.98" y2="823.7" gradientTransform="translate(1.18 -1.14) rotate(.17)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9cecfb"/>
+      <stop offset=".59" stop-color="#65c7f7"/>
+      <stop offset="1" stop-color="#0052d4"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-10" x1="611.88" y1="412.12" x2="822.37" y2="412.12" gradientTransform="translate(1.18 -1.14) rotate(.17)" gradientUnits="userSpaceOnUse">
+      <stop offset=".04" stop-color="#9cecfb"/>
+      <stop offset=".51" stop-color="#65c7f7"/>
+      <stop offset="1" stop-color="#0052d4"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-11" x1=".94" y1="412.12" x2="211.44" y2="412.12" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-12" x1=".44" y1="412.12" x2="211.94" y2="412.12" xlink:href="#linear-gradient-8"/>
+  </defs>
+  <g id="UpTriangle_01" data-name="UpTriangle 01">
+    <polygon class="cls-4" points="411.73 332.55 327.01 478.28 495.58 478.78 411.73 332.55"/>
+  </g>
+  <g id="Down_Triangle_01" data-name="Down Triangle 01">
+    <polygon class="cls-6" points="409.45 504.3 494.17 358.57 325.6 358.06 409.45 504.3"/>
+  </g>
+  <g id="UpTriangle_02" data-name="UpTriangle 02">
+    <polygon class="cls-5" points="412.23 311.32 512.28 452.17 310.48 450.94 412.23 311.32"/>
+  </g>
+  <g id="Down_Triangle_02" data-name="Down Triangle 02">
+    <polygon class="cls-1" points="408.95 525.53 308.9 384.67 510.7 385.9 408.95 525.53"/>
+  </g>
+  <g id="UpTriangle_03" data-name="UpTriangle 03">
+    <polygon class="cls-2" points="410.54 288.9 531.2 434.57 288.12 433.09 410.54 288.9"/>
+  </g>
+  <g id="Down_Triangle_03" data-name="Down Triangle 03">
+    <polygon class="cls-3" points="410.64 547.95 289.98 402.28 533.06 403.75 410.64 547.95"/>
+  </g>
+  <g id="I.C_1" data-name="I.C 1">
+    <ellipse class="cls-10" cx="410.7" cy="262.4" rx="16.33" ry="5.28" transform="translate(-.89 1.39) rotate(-.19)"/>
+  </g>
+  <g id="I.C_2" data-name="I.C 2">
+    <ellipse class="cls-10" cx="519.11" cy="309.14" rx="5.28" ry="16.33" transform="translate(-66.07 459.51) rotate(-45.19)"/>
+  </g>
+  <g id="I.C_3" data-name="I.C 3">
+    <ellipse class="cls-10" cx="564.71" cy="419.74" rx="16.33" ry="5.28" transform="translate(141.61 981.94) rotate(-89.66)"/>
+  </g>
+  <g id="I.C_4" data-name="I.C 4">
+    <ellipse class="cls-10" cx="517.3" cy="529.64" rx="16.33" ry="5.28" transform="translate(-222.77 509.41) rotate(-44.11)"/>
+  </g>
+  <g id="I.C_5" data-name="I.C 5">
+    <ellipse class="cls-10" cx="407.52" cy="572.96" rx="5.28" ry="16.33" transform="translate(-171.7 971.53) rotate(-89.11)"/>
+  </g>
+  <g id="I.C_6" data-name="I.C 6">
+    <ellipse class="cls-10" cx="299.91" cy="524.75" rx="5.28" ry="16.33" transform="translate(-280.35 355.61) rotate(-44)"/>
+  </g>
+  <g id="I.C_7" data-name="I.C 7">
+    <ellipse class="cls-10" cx="257.37" cy="413.55" rx="16.33" ry="5.28" transform="translate(-162.1 661.14) rotate(-88.65)"/>
+  </g>
+  <g id="I.C_8" data-name="I.C 8">
+    <ellipse class="cls-10" cx="307.26" cy="304.31" rx="16.33" ry="5.28" transform="translate(-125.08 294.37) rotate(-43.41)"/>
+  </g>
+  <g id="O.C_1" data-name="O.C 1">
+    <ellipse id="O.C_1-2" data-name="O.C 1" class="cls-10" cx="408.43" cy="221.95" rx="27.89" ry="7.7" transform="translate(-3.46 6.48) rotate(-.91)"/>
+  </g>
+  <g id="O.C_2" data-name="O.C 2">
+    <ellipse id="O.C_2-2" data-name="O.C 2" class="cls-10" cx="482.87" cy="234.65" rx="7.72" ry="27.95" transform="translate(87.18 597.48) rotate(-68.44)"/>
+  </g>
+  <g id="O.C_3" data-name="O.C 3">
+    <ellipse id="O.C_3-2" data-name="O.C 3" class="cls-10" cx="546.5" cy="275.61" rx="7.72" ry="27.95" transform="translate(-31.49 476.96) rotate(-45.97)"/>
+  </g>
+  <g id="O.C_4" data-name="O.C 4">
+    <ellipse id="O.C_4-2" data-name="O.C 4" class="cls-10" cx="589.56" cy="337.91" rx="7.72" ry="27.95" transform="translate(-85.76 262.37) rotate(-23.44)"/>
+  </g>
+  <g id="O.C_5" data-name="O.C 5">
+    <ellipse id="O.C_5-2" data-name="O.C 5" class="cls-10" cx="605.59" cy="411.93" rx="7.72" ry="27.95" transform="translate(-6.43 9.62) rotate(-.91)"/>
+  </g>
+  <g id="O.C_6" data-name="O.C 6">
+    <ellipse id="O.C_6-2" data-name="O.C 6" class="cls-10" cx="585.4" cy="485.22" rx="27.47" ry="7.58" transform="translate(-81.01 851.32) rotate(-68.44)"/>
+  </g>
+  <g id="O.C_7" data-name="O.C 7">
+    <ellipse id="O.C_7-2" data-name="O.C 7" class="cls-10" cx="545.15" cy="547.75" rx="27.47" ry="7.58" transform="translate(-227.57 558.99) rotate(-45.97)"/>
+  </g>
+  <g id="O.C_8" data-name="O.C 8">
+    <ellipse id="O.C_8-2" data-name="O.C 8" class="cls-10" cx="483.92" cy="590.07" rx="27.47" ry="7.58" transform="translate(-194.77 241.16) rotate(-23.44)"/>
+  </g>
+  <g id="O.C_9" data-name="O.C 9">
+    <ellipse id="O.C_9-2" data-name="O.C 9" class="cls-10" cx="411.22" cy="602.87" rx="27.26" ry="7.53" transform="translate(-9.47 6.57) rotate(-.91)"/>
+  </g>
+  <g id="O.C_10" data-name="O.C 10">
+    <ellipse id="O.C_10-2" data-name="O.C 10" class="cls-10" cx="338.62" cy="589.6" rx="7.53" ry="27.26" transform="translate(-334.17 687.83) rotate(-68.44)"/>
+  </g>
+  <g id="O.C_11" data-name="O.C 11">
+    <ellipse id="O.C_11-2" data-name="O.C 11" class="cls-10" cx="276.56" cy="549.65" rx="7.53" ry="27.26" transform="translate(-310.85 366.46) rotate(-45.97)"/>
+  </g>
+  <g id="O.C_12" data-name="O.C 12">
+    <ellipse id="O.C_12-2" data-name="O.C 12" class="cls-10" cx="234.55" cy="488.89" rx="7.53" ry="27.26" transform="translate(-175.1 133.63) rotate(-23.44)"/>
+  </g>
+  <g id="O.C_13" data-name="O.C 13">
+    <ellipse id="O.C_13-2" data-name="O.C 13" class="cls-10" cx="218.92" cy="416.7" rx="7.53" ry="27.26" transform="translate(-6.56 3.51) rotate(-.91)"/>
+  </g>
+  <g id="O.C_14" data-name="O.C 14">
+    <ellipse id="O.C_14-2" data-name="O.C 14" class="cls-10" cx="230.78" cy="345.08" rx="27.47" ry="7.58" transform="translate(-174.97 432.89) rotate(-68.44)"/>
+  </g>
+  <g id="O.C_15" data-name="O.C 15">
+    <ellipse id="O.C_15-2" data-name="O.C 15" class="cls-10" cx="271.04" cy="282.55" rx="27.47" ry="7.58" transform="translate(-120.49 281.03) rotate(-45.97)"/>
+  </g>
+  <g id="O.C_16" data-name="O.C 16">
+    <ellipse id="O.C_16-2" data-name="O.C 16" class="cls-10" cx="332.26" cy="240.23" rx="27.47" ry="7.58" transform="translate(-68.14 151.98) rotate(-23.44)"/>
+  </g>
+  <g id="Top_Handle" data-name="Top Handle">
+    <polygon class="cls-8" points="453.03 90.97 454.66 212.16 365.36 213.36 363.74 92.17 275.99 93.35 274.8 4.06 539.57 .51 540.78 89.79 453.03 90.97"/>
+  </g>
+  <g id="Bottom_Handle" data-name="Bottom Handle">
+    <polygon class="cls-11" points="545.84 819.84 281.06 823.39 279.85 734.1 367.6 732.92 365.98 611.74 455.27 610.54 456.89 731.73 544.64 730.55 545.84 819.84"/>
+  </g>
+  <g id="Right_Handle" data-name="Right Handle">
+    <polygon class="cls-7" points="822.72 281.02 821.93 545.83 732.63 545.56 732.89 457.81 611.7 457.45 611.96 368.15 733.16 368.51 733.42 280.76 822.72 281.02"/>
+  </g>
+  <g id="Left_Handle" data-name="Left Handle">
+    <polygon class="cls-9" points="211.52 366.95 211.26 456.25 90.06 455.89 89.8 543.64 .5 543.38 1.29 278.57 90.59 278.84 90.33 366.59 211.52 366.95"/>
+  </g>
+</svg>

@@ -37,6 +37,15 @@ interface ClassInfo {
   language: string;
 }
 
+interface Video {
+  key: string;
+  url: string;
+}
+
+interface VideosResponse {
+  videos: Video[];
+}
+
 const LiveClass: React.FC<LiveClassProps> = ({
   isDarkMode,
   selectedSubjectId,
@@ -44,58 +53,63 @@ const LiveClass: React.FC<LiveClassProps> = ({
 }) => {
   const history = useHistory();
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
-
-  // Provided videos data
-  const providedVideos = {
-    videos: [
-      {
-        key: "Basics Of Bond Formation.mp4",
-        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Basics%20Of%20Bond%20Formation.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=c54264b7f0cf5c03f8e439950b22638a736ee215c97b89869e2c65f67487cfcd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-      },
-      {
-        key: "Capacitor.mp4",
-        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Capacitor.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=ecc692c80b4a311be1a7cd010dc446664dd90b9a4ce9dd6256993b7f05d77830&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-      },
-      {
-        key: "Divya Bio.mp4",
-        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Divya%20Bio.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=08e51b390f6d14031e3692ace9e8b2b0b0901ecd3e6d9840f463781e215d5745&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-      },
-      {
-        key: "PTS Introduction Quantum Mechanical Model.mp4",
-        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS%20Introduction%20Quantum%20Mechanical%20Model.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=df3eb3beedd83ca76c6238906b709e87c392652010da759c2f635da14de4a99f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-      },
-      {
-        key: "PTS _ HUP.mp4",
-        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS%20_%20HUP.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=3e0dc96ee08b3f71f1a4cdac3dadf4f2b59ad2f92500ac92dce51660d4ca63c9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-      },
-      {
-        key: "SN Reactions PTS.mp4",
-        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/SN%20Reactions%20PTS.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=91690bc82cae225a83b643a3b59de6a4817cc54f51a37a557212b0f212074c95&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-      },
-      {
-        key: "Solutions 3.mp4",
-        url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Solutions%203.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=5d411f617fe578f396ba4ecf3f2524f8a3bcffc1d2b3899b6ed5d531dde17d1d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-      }
-    ]
-  };
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+    async function fetchVideos() {
+      try {
+        setLoading(true);
+        const res = await fetch("http://localhost:4000/videos");
+        if (!res.ok) throw new Error("Network response was not ok");
+        const data: VideosResponse = await res.json();
+        setVideos(data.videos);
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchVideos();
+  }, []);
+
+  useEffect(() => {
+    const checkDevice = () => {
+      const width = window.innerWidth;
+      setIsMobile(width <= 768);
+      setIsTablet(width > 768 && width <= 1024);
     };
 
-    checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
     
     return () => {
-      window.removeEventListener('resize', checkIfMobile);
+      window.removeEventListener('resize', checkDevice);
     };
   }, []);
 
   const images = [
+     {
+      id: 4,
+      src: physics,
+      alt: "Physics",
+      subject: "Physics",
+      time: "6:00AM",
+      language: "English",
+      topic: "Quantum Mechanics",
+      date: "Dec 22, 2024",
+      genres: ["Science", "Quantum", "Theory"],
+      description:
+        "Fundamental theory in physics describing nature at small scales. We'll discuss wave-particle duality, quantum states, and real-world applications.",
+      videoUrl: videos[3]?.url || "",
+    },
     {
       id: 1,
       src: biology,
@@ -108,7 +122,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
       genres: ["Science", "Life", "Molecular"],
       description:
         "Exploring the fundamental unit of life - the cell. In this session, we will dive into cell structure, organelles, and their functions, along with an overview of cell communication and division.",
-      videoUrl: providedVideos.videos[2]?.url || "",
+      videoUrl: videos[2]?.url || "",
     },
     {
       id: 2,
@@ -122,7 +136,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
       genres: ["Science", "Animal", "Behavior"],
       description:
         "Understanding patterns and reasons behind animal actions. We'll explore instinctive behaviors, learned responses, and how environment shapes animal life.",
-      videoUrl: providedVideos.videos[1]?.url || "",
+      videoUrl: videos[1]?.url || "",
     },
     {
       id: 3,
@@ -136,21 +150,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
       genres: ["Science", "Molecular", "Reactions"],
       description:
         "Study of carbon-containing compounds and their reactions. This class covers hydrocarbons, functional groups, and reaction mechanisms.",
-      videoUrl: providedVideos.videos[0]?.url || "",
-    },
-    {
-      id: 4,
-      src: physics,
-      alt: "Physics",
-      subject: "Physics",
-      time: "6:00AM",
-      language: "English",
-      topic: "Quantum Mechanics",
-      date: "Dec 22, 2024",
-      genres: ["Science", "Quantum", "Theory"],
-      description:
-        "Fundamental theory in physics describing nature at small scales. We'll discuss wave-particle duality, quantum states, and real-world applications.",
-      videoUrl: providedVideos.videos[3]?.url || "",
+      videoUrl: videos[0]?.url || "",
     },
     {
       id: 5,
@@ -164,7 +164,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
       genres: ["Mathematics", "Analysis", "Applications"],
       description:
         "Mathematical study of continuous change. Learn limits, derivatives, integrals, and their applications in science and engineering.",
-      videoUrl: providedVideos.videos[4]?.url || "",
+      videoUrl: videos[4]?.url || "",
     },
   ];
 
@@ -188,6 +188,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
       videoRef.current.muted = isMuted;
     }
   }, [isMuted, showVideo]);
+  
   useEffect(() => {
     if (!isMobile) {
       if (videoTimer) clearTimeout(videoTimer);
@@ -287,10 +288,39 @@ const LiveClass: React.FC<LiveClassProps> = ({
     });
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <div className={`flex items-center justify-center h-screen ${isDarkMode ? "bg-[#091E37]" : "bg-gray-100"}`}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className={`mt-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}>Loading videos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className={`flex items-center justify-center h-screen ${isDarkMode ? "bg-[#091E37]" : "bg-gray-100"}`}>
+        <div className="text-center">
+          <p className={`text-red-500 mb-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}>Error: {error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (isMobile) {
     return (
-      <div className={`relative w-full overflow-hidden bottom-0 ${isDarkMode ? "bg-[#091E37]" : "bg-gray-100"}`}>
-        <div className="h-full flex flex-col">
+      <div className={`relative w-full h-full overflow-hidden ${isDarkMode ? "bg-[#091E37]" : "bg-gray-100"}`}>
+        <div className="h-full flex flex-col pb-20"> 
           <div 
             className="relative w-full rounded-xl overflow-hidden mx-auto"
             onTouchStart={handleTouchStart}
@@ -300,7 +330,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
             <img
               src={currentImage.src}
               alt={currentImage.alt}
-              className="w-full h-72 object-contain bg-black"
+              className="w-full h-60 object-contain bg-black"
             />
             <div className="absolute top-4 right-4 bg-red-600 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
               <span className="text-red-400">●</span> LIVE
@@ -336,54 +366,172 @@ const LiveClass: React.FC<LiveClassProps> = ({
               <h2 className={`text-xl font-bold mb-2 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
                 {currentImage.topic}
               </h2>
-              <div className="flex items-center gap-4 mb-2">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
                 <div className={`flex items-center gap-1 text-sm ${isDarkMode ? "text-white" : "text-gray-700"}`}>
-                  <FaCalendarAlt className="text-white" />
-                  <span className={`ml-1 ${isDarkMode ? "text-white" : "text-gray-700"}`}>
+                  <FaCalendarAlt className={isDarkMode ? "text-white" : "text-gray-700"} />
+                  <span className="ml-1">
                     {currentImage.date}
                   </span>
                 </div>
                 <div className={isDarkMode ? "text-white" : "text-gray-700"}>●</div>
                 <div className={`flex items-center gap-1 text-sm ${isDarkMode ? "text-white" : "text-gray-700"}`}>
-                  <FaClock className="text-white" />
+                  <FaClock className={isDarkMode ? "text-white" : "text-gray-700"} />
                   <span className="ml-1">{currentImage.time}</span>
                 </div>
-              </div>
-              <div className={`flex items-center gap-1 text-sm mb-4 ${isDarkMode ? "text-white" : "text-gray-700"}`}>
-                <FaGlobe className="text-white" />
-                <span className="ml-1">{currentImage.language}</span>
+                <div className={isDarkMode ? "text-white" : "text-gray-700"}>●</div>
+                <div className={`flex items-center gap-1 text-sm ${isDarkMode ? "text-white" : "text-gray-700"}`}>
+                  <FaGlobe className={isDarkMode ? "text-white" : "text-gray-700"} />
+                  <span className="ml-1">{currentImage.language}</span>
+                </div>
               </div>
               <p className={`text-sm mb-4 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
                 {currentImage.description}
               </p>
             </div>
-            <div className="flex overflow-x-auto pb-2 space-x-2 mb-4">
-              {images.map((subj) => {
-                const isSelected = selectedSubjectId === subj.id;
-                return (
-                  <button
-                    key={subj.id}
-                    onClick={() => onSubjectSelect(subj.id)}
-                    className={`px-3 py-1.5 text-xs rounded-full font-medium whitespace-nowrap transition-colors ${
-                      isSelected 
-                        ? isDarkMode 
-                          ? "bg-white text-black" 
-                          : "bg-[#091E37] text-white"
-                        : isDarkMode 
-                          ? "text-white bg-white/20" 
-                          : "text-gray-900 bg-gray-200"
-                    }`}
-                  >
-                    {subj.subject}
-                  </button>
-                );
-              })}
+            
+            {/* Subject selection - made more prominent */}
+            <div className="mb-6">
+              <h3 className={`text-lg font-semibold mb-3 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                Select Subject:
+              </h3>
+              <div className="flex overflow-x-auto pb-2 space-x-2">
+                {images.map((subj) => {
+                  const isSelected = selectedSubjectId === subj.id;
+                  return (
+                    <button
+                      key={subj.id}
+                      onClick={() => onSubjectSelect(subj.id)}
+                      className={`px-4 py-2 text-sm rounded-full font-medium whitespace-nowrap transition-colors flex-shrink-0 ${
+                        isSelected 
+                          ? isDarkMode 
+                            ? "bg-white text-black" 
+                            : "bg-[#091E37] text-white"
+                          : isDarkMode 
+                            ? "text-white bg-white/20" 
+                            : "text-gray-900 bg-gray-200"
+                      }`}
+                    >
+                      {subj.subject}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
       </div>
     );
   }
+  
+  if (isTablet) {
+    return (
+      <div className="flex flex-col w-full h-full relative overflow-hidden">
+        <div
+          className="relative w-full h-1/2 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: showVideo ? "none" : `url(${currentImage.src})` }}
+        >
+          {showVideo && (
+            <video
+              ref={videoRef}
+              key={currentImage.videoUrl}
+              src={currentImage.videoUrl}
+              autoPlay
+              loop
+              muted={isMuted}
+              className="w-full h-full object-cover"
+              onError={() => setShowVideo(false)}
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/30"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent w-1/2"></div>
+        
+          {showVideo && (
+            <button
+              onClick={toggleMute}
+              className="absolute top-4 right-4 z-30 p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg"
+            >
+              {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+            </button>
+          )}
+        </div>
+
+        <div className="flex-1 p-6 overflow-y-auto bg-gradient-to-b from-black/80 to-black">
+          <div className="flex gap-2 mb-4">
+            {currentImage.genres.map((genre, index) => (
+              <React.Fragment key={genre}>
+                <span className="text-white text-sm font-medium">{genre}</span>
+                {index < currentImage.genres.length - 1 && (
+                  <span className="text-red-500 text-sm">●</span>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+          <h1 className="text-4xl font-bold text-white mb-4">{currentImage.topic}</h1>
+          <div className="flex flex-wrap items-center gap-4 mb-6">
+            <div className="flex items-center gap-1 text-white">
+              <FaCalendarAlt />
+              <span className="ml-1">{currentImage.date}</span>
+            </div>
+            <div className="text-white">●</div>
+            <div className="text-white flex items-center gap-1">
+              <FaClock className="mr-1" />
+              {currentImage.time}
+            </div>
+            <div className="text-white">●</div>
+            <div className="flex items-center gap-1 text-white">
+              <FaGlobe className="mr-1" />
+              {currentImage.language}
+            </div>
+          </div>
+          <p className="text-white text-base max-w-2xl mb-8 leading-relaxed">
+            {currentImage.description}
+          </p>
+          
+          <div className="flex flex-wrap gap-4 mb-8">
+            {images.map((subj) => {
+              const isSelected = selectedSubjectId === subj.id;
+              return (
+                <button
+                  key={subj.id}
+                  onClick={() => onSubjectSelect(subj.id)}
+                  className={`px-4 py-2 text-sm rounded-full font-medium transition-all duration-300 ${
+                    isSelected ? "bg-white text-black shadow-lg" : "text-white hover:bg-white/20"
+                  }`}
+                >
+                  {subj.subject}
+                </button>
+              );
+            })}
+          </div>
+          
+          <button
+            onClick={() => handleJoinClass(currentImage)}
+            className="bg-[#123a66] hover:bg-[#123a66] text-white py-3 px-6 rounded-lg flex items-center text-base font-semibold transition-all duration-300 hover:scale-105"
+          >
+            <FaPlay className="mr-3" /> Join Class
+          </button>
+        </div>
+
+        {/* Navigation controls for tablet */}
+        <div className="absolute left-6 top-1/2 transform -translate-y-1/2 z-20">
+          <button
+            onClick={moveUp}
+            className="p-3 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg active:scale-95 mb-4"
+          >
+            <FaChevronUp className="text-xl" />
+          </button>
+          <button
+            onClick={moveDown}
+            className="p-3 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg active:scale-95"
+          >
+            <FaChevronDown className="text-xl" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="flex w-full relative overflow-hidden h-[88vh] top-2 ">
       <div
@@ -504,24 +652,22 @@ const LiveClass: React.FC<LiveClassProps> = ({
             <FaClock className="mr-1" />
             {currentImage.time}
           </div>
-        </div>
-        {/* Language section */}
-        <div className="flex items-center gap-1 text-white mb-6 animate-fade-in">
-          <FaGlobe className="mr-1" />
-          {currentImage.language}
+          <div className="text-white">●</div>
+          <div className="flex items-center gap-1 text-white">
+            <FaGlobe className="mr-1" />
+            {currentImage.language}
+          </div>
         </div>
         <p className="text-white text-lg max-w-2xl mb-8 leading-relaxed animate-fade-in">
           {currentImage.description}
         </p>
         <button
           onClick={() => handleJoinClass(currentImage)}
-          className="bg-[#665bfe] hover:bg-[#665bfe] text-white py-4 px-8 rounded-lg flex items-center text-lg font-semibold transition-all duration-300 hover:scale-105 animate-fade-in"
+          className="bg-[#123a66] hover:bg-[#123a66] text-white py-4 px-8 rounded-lg flex items-center text-lg font-semibold transition-all duration-300 hover:scale-105 animate-fade-in"
         >
           <FaPlay className="mr-3" /> Join Class
         </button>
       </div>
-
-      {/* Bottom controls */}
       <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 z-20">
         <div className="flex items-center gap-6 bg-black/40 backdrop-blur-sm rounded-full px-8 py-4">
           <div className="flex gap-3">

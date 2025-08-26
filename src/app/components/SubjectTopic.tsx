@@ -23,6 +23,10 @@ interface Video {
   url: string;
 }
 
+interface VideosResponse {
+  videos: Video[];
+}
+
 const SubjectTopic: React.FC<SubjectTopicProps> = ({
   selectedSubjectId,
   isDarkMode,
@@ -45,46 +49,47 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
   const [visibleChapters, setVisibleChapters] = useState<number>(2); 
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [videos, setVideos] = useState<Video[]>([]);
-  const [, setVideoLoading] = useState<boolean>(true);
-  // const [, setVideoError] = useState<string | null>(null);
+  const [videoLoading, setVideoLoading] = useState<boolean>(true);
+  const [videoError, setVideoError] = useState<string | null>(null);
   const [scrollPositions, setScrollPositions] = useState<{[key: string]: number}>({});
 
+  // Fetch videos from API
   useEffect(() => {
-    const videoData = {
-      videos: [
-        {
-          key: "Basics Of Bond Formation.mp4",
-          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Basics%20Of%20Bond%20Formation.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=c54264b7f0cf5c03f8e439950b22638a736ee215c97b89869e2c65f67487cfcd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-        },
-        {
-          key: "Capacitor.mp4",
-          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Capacitor.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=ecc692c80b4a311be1a7cd010dc446664dd90b9a4ce9dd6256993b7f05d77830&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-        },
-        {
-          key: "Divya Bio.mp4",
-          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Divya%20Bio.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=08e51b390f6d14031e3692ace9e8b2b0b0901ecd3e6d9840f463781e215d5745&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-        },
-        {
-          key: "PTS Introduction Quantum Mechanical Model.mp4",
-          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS%20Introduction%20Quantum%20Mechanical%20Model.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=df3eb3beedd83ca76c6238906b709e87c392652010da759c2f635da14de4a99f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-        },
-        {
-          key: "PTS _ HUP.mp4",
-          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS%20_%20HUP.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=3e0dc96ee08b3f71f1a4cdac3dadf4f2b59ad2f92500ac92dce51660d4ca63c9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-        },
-        {
-          key: "SN Reactions PTS.mp4",
-          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/SN%20Reactions%20PTS.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=91690bc82cae225a83b643a3b59de6a4817cc54f51a37a557212b0f212074c95&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-        },
-        {
-          key: "Solutions 3.mp4",
-          url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Solutions%203.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAQZ6ITDD7TSJQSJ5O%2F20250825%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250825T155537Z&X-Amz-Expires=3600&X-Amz-Signature=5d411f617fe578f396ba4ecf3f2524f8a3bcffc1d2b3899b6ed5d531dde17d1d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-        }
-      ]
-    };
-    
-    setVideos(videoData.videos);
-    setVideoLoading(false);
+    async function fetchVideos() {
+      try {
+        setVideoLoading(true);
+        const res = await fetch("http://localhost:4000/videos");
+        if (!res.ok) throw new Error("Network response was not ok");
+        const data: VideosResponse = await res.json();
+        setVideos(data.videos);
+      } catch (err: any) {
+        console.error(err);
+        setVideoError(err.message || "Something went wrong");
+        
+        // Fallback to sample videos if API fails
+        const videoData = {
+          videos: [
+            {
+              key: "Basics Of Bond Formation.mp4",
+              url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Basics%20Of%20Bond%20Formation.mp4"
+            },
+            {
+              key: "Capacitor.mp4",
+              url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Capacitor.mp4"
+            },
+            {
+              key: "Divya Bio.mp4",
+              url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Divya%20Bio.mp4"
+            }
+          ]
+        };
+        setVideos(videoData.videos);
+      } finally {
+        setVideoLoading(false);
+      }
+    }
+
+    fetchVideos();
   }, []);
 
   const getRandomVideoUrl = useCallback(() => {
@@ -107,7 +112,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
   const videoRefs = useRef<{[key: string]: HTMLVideoElement | null}>({});
   const autoScrollIntervals = useRef<(number | null)[]>([]);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-  const [, setHoveredRow] = useState<number | null>(null);
+  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [showMenu, setShowMenu] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [hoveredContainerSide, setHoveredContainerSide] = useState<{
@@ -118,7 +123,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     index: number;
     side: "left" | "right" | null;
   }>({ index: -1, side: null });
-  const [, setPlayingVideos] = useState<{[key: string]: boolean}>({});
+  const [playingVideos, setPlayingVideos] = useState<{[key: string]: boolean}>({});
   const [videoProgress, setVideoProgress] = useState<{[key: string]: number}>({});
   const [videoTimes, setVideoTimes] = useState<{[key: string]: {current: string, total: string}}>({});
 
@@ -204,7 +209,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       if (newPosition >= maxScrollLeft) {
         newPosition = newPosition - (container.scrollWidth / 3);
         
-       
         container.scrollLeft = newPosition;
         setScrollPositions(prev => ({
           ...prev,
@@ -221,7 +225,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
           [`${index}`]: newPosition
         }));
       }
-    }, 3000); 
+    }, 3000);
   };
 
   const stopAutoScroll = (index: number) => {
@@ -302,6 +306,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       },
     });
   };
+  
   const handleCardHover = (uniqueId: string, chapterIndex: number) => {
     setHoveredCard(uniqueId);
     setHoveredRow(chapterIndex);
@@ -322,6 +327,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       [uniqueId]: false
     }));
   };
+  
   const handleTimeUpdate = (uniqueId: string, e: React.SyntheticEvent<HTMLVideoElement>) => {
     const video = e.target as HTMLVideoElement;
     const progress = (video.currentTime / video.duration) * 100;
@@ -339,6 +345,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       }
     }));
   };
+  
   const handleLoadedMetadata = (uniqueId: string, e: React.SyntheticEvent<HTMLVideoElement>) => {
     const video = e.target as HTMLVideoElement;
     setVideoTimes(prev => ({
@@ -349,6 +356,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       }
     }));
   };
+  
   const handleProgressClick = (uniqueId: string, e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     const video = videoRefs.current[uniqueId];
@@ -408,11 +416,18 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
 
   return (
     <div
-      className={`px-2 relative bottom-20 md:bottom-0 ${
+      className={`px-2 md:mt-10 relative bottom-20 md:bottom-0 ${
         isDarkMode ? "bg-[#091E37] text-white" : "bg-white text-black"
       }`}
     >
       <h2 className="text-3xl mb-6">Recorded Video</h2>
+
+      {videoError && (
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+          <p className="font-bold">Warning</p>
+          <p>{videoError}. Using sample videos instead.</p>
+        </div>
+      )}
 
       <div className="mb-12">
         <h2 className="text-2xl mb-6">{subject.name}</h2>
@@ -497,7 +512,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                       onClick={() => handlePlay(chapter, topic)}
                     >
                       <div className="relative h-52 w-full rounded-lg shadow-md overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-left">
-                        {isHovered && videoUrl ? (
+                        {isHovered && videoUrl && !videoLoading ? (
                           <>
                             <video
                               ref={el => {
@@ -544,6 +559,12 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                             <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                               {videoTime.total}
                             </div>
+                            
+                            {videoLoading && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                                <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                              </div>
+                            )}
                           </>
                         )}
                       </div>
@@ -613,9 +634,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                             6 days ago .  6k Views
                           </span>
                         </div>
-                        
-                         
-                    
                       </div>
                     </div>
                   );

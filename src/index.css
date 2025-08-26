@@ -89,3 +89,11 @@ html, body {
 * {
   box-sizing: border-box;
 }
+@layer base {
+  body {
+    @apply font-custom;
+  }
+}
+body {
+  font-family: "Segoe UI", Roboto, sans-serif;
+}
