@@ -14,18 +14,18 @@ const ContactPage: React.FC<ContactPageProps> = ({ isDarkMode = false }) => {
   const iconColor = isDarkMode ? "text-indigo-400" : "text-indigo-600";
 
   return (
-    <div className={`min-h-screen ${bgColor} p-8 flex flex-col items-center `}>
+    <div className={`min-h-screen ${bgColor} p-4 flex flex-col items-center`}>
       {/* Title */}
-      <h1 className={`text-2xl font-bold ${textColor} mt-40 mb-2`}>Contact Us</h1>
+      <h1 className={`font-bold ${textColor} mt-8 mb-2`}>Contact Us</h1>
       <p className={`${textSecondaryColor} mb-8 max-w-xl text-center`}>
         Get in touch with How & Why Cognition R&D Private Limited. We're here to help you.
       </p>
 
       {/* Grid Layout */}
-      <div className="grid lg:grid-cols-2 gap-8 mt-4 w-full max-w-6xl">
+      <div className="grid lg:grid-cols-2 gap-6 mt-4 w-full max-w-6xl">
         
         {/* Google Map */}
-        <div className="w-full h-[400px] rounded-xl overflow-hidden shadow">
+        <div className="w-full h-96 rounded-xl overflow-hidden shadow">
           <iframe
             title="company-location"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3682.7932745074324!2d75.82701!3d22.724383!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fdc5f65a79a9%3A0xdda3c1b69a4e2e6c!2s178%2C%20Aerodrum%20Rd%2C%20Shakti%20Nagar%2C%20Parihar%20Market%2C%20Sadhna%20Nagar%2C%20Indore%2C%20Madhya%20Pradesh%20452006!5e0!3m2!1sen!2sin!4v1692789000000!5m2!1sen!2sin"

@@ -416,11 +416,11 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
 
   return (
     <div
-      className={`px-2 md:mt-10 relative bottom-20 md:bottom-0 ${
-        isDarkMode ? "bg-[#091E37] text-white" : "bg-white text-black"
+      className={`px-2 py-20 relative bottom-20 md:bottom-0 ${
+        isDarkMode ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)] text-white" : "bg-white text-black"
       }`}
     >
-      <h2 className="text-3xl mb-6">Recorded Video</h2>
+      <h2 className="text-3xl mb-6">Recorded Lectures</h2>
 
       {videoError && (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
@@ -629,7 +629,10 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                             )}
                           </div>
                         </div>
-                        <div className="flex justify-between mt-2">
+                        <div className=" justify-between mt-2">
+                          <h1 className="text-sm opacity-70">
+                            pts
+                          </h1>
                           <span className="text-sm opacity-70">
                             6 days ago .  6k Views
                           </span>

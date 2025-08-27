@@ -41,7 +41,7 @@ const AppFront: React.FC = () => {
   return (
     <div
       className={`min-h-screen flex flex-col ${
-        isDarkMode ? "bg-[#091E37]" : "bg-white"
+        isDarkMode ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)]" : "bg-white"
       } transition-colors duration-300`}
     >
       <Header
@@ -51,13 +51,13 @@ const AppFront: React.FC = () => {
         setSidebarOpen={setSidebarOpen}
       />
 
-      <div className="flex flex-1 pt-16"> 
+      <div className="flex flex-1 pt-10"> 
        
         {sidebarOpen && (
           <aside
             className={`w-80 shrink-0 border-r border-gray-300 dark:border-gray-700 ${
               isDarkMode
-                ? "bg-gray-900 text-gray-200"
+                ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)] text-gray-200"
                 : "bg-gray-100 text-gray-800"
             } transition-all duration-300`}
           >
@@ -66,7 +66,7 @@ const AppFront: React.FC = () => {
 
         <main
           className={`flex-1 overflow-x-hidden ${
-            sidebarOpen ? "md:ml-0" : "md:ml-16"
+            sidebarOpen ? "md:ml-0" : "md:ml-14"
           } text-gray-900 dark:text-white`}
         >
           <Switch>

@@ -18,24 +18,23 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className={`text-4xl font-bold mb-2 ${darkModeClass("text-gray-900", "text-white")}`}>
+          <h1 className={`text-xl font-bold mb-2 ${darkModeClass("text-gray-900", "text-white")}`}>
             Privacy Policy
           </h1>
-          <p className={`text-lg ${darkModeClass("text-gray-600", "text-gray-400")}`}>
+          <p className={`text- ${darkModeClass("text-gray-600", "text-gray-400")}`}>
             Last updated: {new Date().toLocaleDateString()}
           </p>
         </div>
 
-        {/* Introduction */}
         <div className="mb-10">
-          <p className={`mb-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+          <p className={`mb-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
             This Privacy Policy (the <span className="font-bold">"Policy"</span>) governs the manner in which the Platform collects, uses, maintains and
             discloses information of its users. The Policy also describes the practices that We referring to HAWC R&D
             PRIAVTE LIMITED apply to such user information, user's privacy rights and choices regarding their
             information. To clarify, this Policy applies to all users of the Platform (referred to as "Learners", "You",
             "Your").
           </p>
-          <p className={`text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+          <p className={`text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
             By accessing and using the Platform, providing Your Personal Information, or by otherwise signalling Your
             agreement when the option is presented to You, You consent to the collection, use, and disclosure of
             information described in this Policy and Terms of Use and we disclaim all the liabilities arising therefrom. If
@@ -52,7 +51,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
 
         {/* Quick Navigation */}
         <div className={`mb-12 p-6 rounded-xl ${darkModeClass("bg-blue-50", "bg-blue-900")}`}>
-          <h3 className={`text-xl font-semibold mb-4 ${darkModeClass("text-indigo-800", "text-indigo-200")}`}>
+          <h3 className={`text-balance font-semibold mb-4 ${darkModeClass("text-indigo-800", "text-indigo-200")}`}>
             Quick Navigation
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -60,7 +59,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
               <a
                 key={item}
                 href={`#section-${item}`}
-                className={`text-left px-3 py-2 rounded-lg transition-colors duration-200 ${
+                className={`text-left px-3 py-2 rounded-sm transition-colors duration-200 ${
                   darkModeClass("text-blue-700 hover:text-blue-900", "text-blue-300 hover:text-blue-100")
                 } hover:underline`}
               >
@@ -84,10 +83,10 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
         <div className="space-y-12">
           {/* Section 1 */}
           <div id="section-1" className="pt-2">
-            <h2 className={`text-2xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
+            <h2 className={`text-xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
               1. Personal Information
             </h2>
-            <div className={`space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+            <div className={`space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
               <p>
                 <span className="font-bold">"Personal Information"</span> shall mean the information which identifies a Learner i.e., first and last name,
                 identification number, email address, age, gender, location, photograph and/or phone number provided at
@@ -113,10 +112,10 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
 
           {/* Section 2 */}
           <div id="section-2" className="pt-4">
-            <h2 className={`text-2xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
+            <h2 className={`text-xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
               2. Information We Collect
             </h2>
-            <div className={`space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+            <div className={`space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
               <p>We may collect both personal and non-personal identifiable information from You in a variety of ways,
                 including, but not limited to, when You visit our Platform, register on the Platform, and in connection with
                 other activities, services, features or resources we make available on our Platform. However, please note
@@ -128,19 +127,19 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
                 <li>We do not store Personal Information on our servers unless required for the on-going operation of our Platform.</li>
               </ul>
               
-              <h3 className={`font-semibold mt-6 text-xl ${darkModeClass("text-gray-800", "text-gray-200")}`}>a. Personal Identifiable Information:</h3>
+              <h3 className={`font-semibold mt-6 text- ${darkModeClass("text-gray-800", "text-gray-200")}`}>a. Personal Identifiable Information:</h3>
               <p>We may collect personal-identifiable information such as Your name and emails address to enable Your access to the Platform and services/products offered therein.
                 We will collect personal-identifiable information from You only if such information is voluntarily submitted
                 by You to us. You can always refuse to provide such personal identification information; however, it may
                 prevent You from accessing services or products provided on the Platform or from engaging in certain
                 activities on the Platform.</p>
               
-              <h3 className={`font-semibold mt-6 text-xl ${darkModeClass("text-gray-800", "text-gray-200")}`}>b. Non-Personal Identifiable Information:</h3>
+              <h3 className={`font-semibold mt-6 text- ${darkModeClass("text-gray-800", "text-gray-200")}`}>b. Non-Personal Identifiable Information:</h3>
               <p>When You interact with our Platform, we may collect non-personal-identifiable information such as the browser name, language preference, referring site, and the
                 date and time of each user request, operating system and the Internet service providers utilized and
                 other similar information.</p>
               
-              <h3 className={`font-semibold mt-6 text-xl ${darkModeClass("text-gray-800", "text-gray-200")}`}>c. Cookies:</h3>
+              <h3 className={`font-semibold mt-6 text- ${darkModeClass("text-gray-800", "text-gray-200")}`}>c. Cookies:</h3>
               <p>To enhance User experience, our Platform may use 'cookies'. A cookie is a string of
                 information that a website stores on a visitor's computer, and that the visitor's browser provides to the
                 website each time the visitor returns for record-keeping purposes. You may choose to set Your web
@@ -151,20 +150,20 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
 
           {/* Section 3 */}
           <div id="section-3" className="pt-4">
-            <h2 className={`text-2xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
+            <h2 className={`text-xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
               3. How We Use and Share The Information Collected
             </h2>
-            <div className={`space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+            <div className={`space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
               <p>We may collect and use Your Personal Information for the following purposes:</p>
-              
-              <h3 className={`font-semibold mt-6 text-xl ${darkModeClass("text-gray-800", "text-gray-200")}`}>a. To provide access to our Platform and/or the services/products offered therein:</h3>
+
+              <h3 className={`font-semibold mt-6 text-sm ${darkModeClass("text-gray-800", "text-gray-200")}`}>a. To provide access to our Platform and/or the services/products offered therein:</h3>
               <p>We use the Your information as collected by us to allow You to access the Platform and the services/products
                 offered therein, including without limitation to provide customer service, fulfil purchases through the
                 Platform, verify User information and to resolve any glitches with our Platform. The legal basis for this
                 processing is consent or, where applicable, our legitimate interests in the proper administration of our
                 Platform, and/or the performance of a contract between You and us.</p>
               
-              <h3 className={`font-semibold mt-6 text-xl ${darkModeClass("text-gray-800", "text-gray-200")}`}>b. To improve our Platform and maintain safety:</h3>
+              <h3 className={`font-semibold mt-6 text-sm ${darkModeClass("text-gray-800", "text-gray-200")}`}>b. To improve our Platform and maintain safety:</h3>
               <p>We use Your information to improve and customize the Platform and services/products offered by us. Further, we also use Your information to prevent,
                 detect, investigate, and take measures against criminal activity, fraud, misuse of or damage to our
                 Platform or network, and other threats and violations to a third party's or our rights and property, or the
@@ -172,7 +171,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
                 legitimate interests in the proper administration of our Platform, and/or the performance of a contract
                 between You and us.</p>
               
-              <h3 className={`font-semibold mt-6 text-xl ${darkModeClass("text-gray-800", "text-gray-200")}`}>c. To communicate with You or market our services/products:</h3>
+              <h3 className={`font-semibold mt-6 text-sm ${darkModeClass("text-gray-800", "text-gray-200")}`}>c. To communicate with You or market our services/products:</h3>
               <p>We may use the email address submitted by You to communicate with You about Your orders on our Platform, our offers, new products,
                 services or even receive Your feedback on the Platform or any services/products offered therein. It may
                 also be used to respond to Your inquiries, questions, and/or other requests. If at any time You would like
@@ -192,10 +191,10 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
 
           {/* Section 4 */}
           <div id="section-4" className="pt-4">
-            <h2 className={`text-2xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
+            <h2 className={`text-xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
               4. Your Choices
             </h2>
-            <div className={`space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+            <div className={`space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
               <h3 className={`font-semibold text-xl ${darkModeClass("text-gray-800", "text-gray-200")}`}>a. Limit the information You provide:</h3>
               <p>You always have an option to choose the information You provide to us, including the option to update or delete Your information. However, please note that lack
                 of certain information may not allow You access to the Platform or any of its features, in part or in full.
@@ -215,10 +214,10 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
 
           {/* Section 5 */}
           <div id="section-5" className="pt-4">
-            <h2 className={`text-2xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
+            <h2 className={`text-xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
               5. Your Rights
             </h2>
-            <div className={`space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+            <div className={`space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
               <p>In general, all Learners have the rights specified herein this section. However, depending on where you
                 are situated, you may have certain specific rights in respect of your Personal Information accorded by the
                 laws of the country you are situated in. To understand Your rights, please refer to the Country Specific
@@ -247,10 +246,10 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
 
           {/* Section 6 */}
           <div id="section-6" className="pt-4">
-            <h2 className={`text-2xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
+            <h2 className={`text-xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
               6. Protection of Your Information
             </h2>
-            <div className={`space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+            <div className={`space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
               <p>We take all measures reasonably necessary to protect against the unauthorized access, use, alteration or destruction of Personal Information or such other data on the Platform. Our disclosure of any such information is limited to —</p>
               
               <ol className={`list-decimal pl-6 space-y-2 mt-4 ${darkModeClass("text-gray-700", "text-gray-300")}`}>
@@ -270,20 +269,20 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
 
           {/* Section 7 */}
           <div id="section-7" className="pt-4">
-            <h2 className={`text-2xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
+            <h2 className={`text-xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
               7. Third Party Websites
             </h2>
-            <div className={`space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+            <div className={`space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
               <p>You may find links to the websites and services of our partners, suppliers, advertisers, sponsors, licensors and other third parties. The content or links that appear on these sites are not controlled by us in any manner and we are not responsible for the practices employed by such websites. Further, these websites/links thereto, including their content, may be constantly changing and the may have their own terms of use and privacy policies. Browsing and interaction on any other website, including websites which have a link to our Site, is subject to that terms and policies published on such websites.</p>
             </div>
           </div>
 
           {/* Section 8 */}
           <div id="section-8" className="pt-4">
-            <h2 className={`text-2xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
+            <h2 className={`text-xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
               8. Cross-Border Data Transfer
             </h2>
-            <div className={`space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+            <div className={`space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
               <p>Your information including any Personal Information is stored, processed, and transferred in and to the Amazon Web Service (AWS) servers and databases located in India. We may also store, process, and transfer information in and to servers in other countries depending on the location of our affiliates and service providers.</p>
               
               <p>Please note that these countries may have differing (and potentially less stringent) privacy laws and that Personal Information can become subject to the laws and disclosure requirements of such countries, including disclosure to governmental bodies, regulatory agencies, and private persons, as a result of applicable governmental or regulatory inquiry, court order or other similar process.</p>
@@ -294,10 +293,10 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
 
           {/* Section 9 */}
           <div id="section-9" className="pt-4">
-            <h2 className={`text-2xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
+            <h2 className={`text-xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
               9. Duration for which Your Information is Stored
             </h2>
-            <div className={`space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+            <div className={`space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
               <p>We will retain Your information for as long as it is required for us to retain for the purposes stated hereinabove, including for the purpose of complying with legal obligation or business compliances.</p>
               
               <p>Further, please note that we may not be able to delete all communications or photos, files, or other documents publicly made available by you on the Platform (for example: comments, feedback, etc.), however, we shall anonymize your Personal Information in such a way that you can no longer be identified as an individual in association with such information made available by you on the Platform. We will never disclose aggregated or de-identified information in a manner that could identify you as an individual.</p>
@@ -308,20 +307,20 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
 
           {/* Section 10 */}
           <div id="section-10" className="pt-4">
-            <h2 className={`text-2xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
+            <h2 className={`text-xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
               10. Modification to Privacy Policy
             </h2>
-            <div className={`space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+            <div className={`space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
               <p>We may modify, revise or change our Policy from time to time; when we do, we will revise the 'updated date' at the beginning of this page. We encourage You to check our Platform frequently to see the recent changes. Unless stated otherwise, our current Policy applies to all information that we have about You.</p>
             </div>
           </div>
 
           {/* Section 11 */}
           <div id="section-11" className="pt-4">
-            <h2 className={`text-2xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
+            <h2 className={`text-xl font-bold mb-5 ${darkModeClass("text-indigo-800", "text-indigo-400")}`}>
               11. Grievances
             </h2>
-            <div className={`space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+            <div className={`space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
               <p>If you have any questions about this Policy, wish to exercise your rights, concerns about privacy or grievances, please write to us with a thorough description via email to <a href="mailto:hawe.rnd@gmail.com" className={`${darkModeClass("text-blue-600", "text-blue-400")} hover:underline font-medium`}>hawe.rnd@gmail.com</a>.</p>
             </div>
           </div>
@@ -337,7 +336,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
               <h3 className={`text-xl font-bold mb-4 ${darkModeClass("text-indigo-700", "text-indigo-300")}`}>
                 1. Terms Applicable if You are an Indian Resident
               </h3>
-              <div className={`pb-4 space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+              <div className={`pb-4 space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
                 <p className="font-semibold">Your Rights:</p>
                 <p>If you are located in India, you may have the following rights under the Personal Data Protection Bill (PDPB) when it becomes a legislation. All requests can be made by using the option provided to you within the Platform upon your login. You may also write to us as stated in the "Grievances" section above, and we will address you concerns to the extent required by law.</p>
                 
@@ -363,7 +362,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
               <h3 className={`text-xl font-bold mb-4 ${darkModeClass("text-indigo-700", "text-indigo-300")}`}>
                 2. Terms Applicable if You are a Resident of United Kingdom (UK), a European Union (EU) Country or European Economic Area (EEA)
               </h3>
-              <div className={`pb-4 space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+              <div className={`pb-4 space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
                 <p className="font-semibold">Your Rights:</p>
                 <p>If you are located in the United Kingdom (UK) or European Union (EU) or European Economic Area (EEA), you have the following rights under the UK and EU General Data Protection Regulation (GDPR) respectively. All requests should be sent to the address noted in the "Grievances" section above, and we will fulfil requests to the extent required by applicable law.</p>
                 
@@ -400,7 +399,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isDarkMode }) => {
               <h3 className={`text-xl font-bold mb-4 ${darkModeClass("text-indigo-700", "text-indigo-300")}`}>
                 3. Terms Applicable if You are a California State Resident
               </h3>
-              <div className={`pb-4 space-y-4 text-lg ${darkModeClass("text-gray-700", "text-gray-300")}`}>
+              <div className={`pb-4 space-y-4 text-sm ${darkModeClass("text-gray-700", "text-gray-300")}`}>
                 <p>If you are a California state resident, then you have the following rights to the extent, and in the manner, set out in the CCPA:</p>
                 
                 <ol className={`list-decimal pl-6 mt-4 space-y-2 ${darkModeClass("text-gray-700", "text-gray-300")}`}>

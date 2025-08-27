@@ -70,11 +70,11 @@ const TermsOfUse: React.FC = () => {
   return (
     <div className="min-h-screen py-8 px-4 bg-white dark:bg-[#091E37] transition-colors duration-300 font-custom">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3 text-gray-900 dark:text-white">Terms of Use</h1>
-        <p className="text-gray-700 dark:text-gray-300 text-lg mb-8">Last updated: {new Date().toLocaleDateString()}</p>
+        <h1 className="text-1xl md:text-4xl font-bold mb-3 text-gray-900 dark:text-white">Terms of Use</h1>
+        <p className="text-gray-700 dark:text-gray-300 text-sm mb-8">Last updated: {new Date().toLocaleDateString()}</p>
 
         <div className="mb-8 text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 p-5 rounded-xl shadow-md">
-          <p className="mb-4 text-base">
+          <p className="mb-4 text-sm">
             These Terms of Use set out the terms and conditions for use of this Platform and any content, Public Forums, or services offered on or through the Website and/or through any mobile application.
           </p>
           <p className="text-base">
@@ -101,7 +101,7 @@ const TermsOfUse: React.FC = () => {
           {filteredSections.length > 0 ? (
             filteredSections.map((section, index) => (
               <div key={index} id={`section-${index}`} className="pt-6 pb-6 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
-                <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                <h2 className="text-sm font-bold mb-4 text-gray-900 dark:text-white">
                   {index + 1}. {section.title}
                 </h2>
                 <div className="text-gray-800 dark:text-gray-200 space-y-4 text-base leading-relaxed">

@@ -100,7 +100,7 @@ const Profile: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-[#091E37]">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)]">
         <div className="text-xl text-gray-600 dark:text-gray-300">User not found. Please log in.</div>
       </div>
     );

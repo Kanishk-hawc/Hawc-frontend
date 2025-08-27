@@ -303,7 +303,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
   // Show error state
   if (error) {
     return (
-      <div className={`flex items-center justify-center h-screen ${isDarkMode ? "bg-[#091E37]" : "bg-gray-100"}`}>
+      <div className={`flex items-center justify-center h-screen ${isDarkMode ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)]" : "bg-gray-100"}`}>
         <div className="text-center">
           <p className={`text-red-500 mb-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}>Error: {error}</p>
           <button 
@@ -389,7 +389,6 @@ const LiveClass: React.FC<LiveClassProps> = ({
               </p>
             </div>
             
-            {/* Subject selection - made more prominent */}
             <div className="mb-6">
               <h3 className={`text-lg font-semibold mb-3 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
                 Select Subject:
@@ -467,24 +466,24 @@ const LiveClass: React.FC<LiveClassProps> = ({
               </React.Fragment>
             ))}
           </div>
-          <h1 className="text-4xl font-bold text-white mb-4">{currentImage.topic}</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">{currentImage.topic}</h1>
           <div className="flex flex-wrap items-center gap-4 mb-6">
             <div className="flex items-center gap-1 text-white">
-              <FaCalendarAlt />
-              <span className="ml-1">{currentImage.date}</span>
+              <FaCalendarAlt className="text-xs" />
+              <span className="ml-1 text-sm">{currentImage.date}</span>
             </div>
             <div className="text-white">●</div>
             <div className="text-white flex items-center gap-1">
-              <FaClock className="mr-1" />
-              {currentImage.time}
+              <FaClock className="text-xs mr-1" />
+              <span className="text-sm">{currentImage.time}</span>
             </div>
             <div className="text-white">●</div>
             <div className="flex items-center gap-1 text-white">
-              <FaGlobe className="mr-1" />
-              {currentImage.language}
+              <FaGlobe className="text-xs mr-1" />
+              <span className="text-sm">{currentImage.language}</span>
             </div>
           </div>
-          <p className="text-white text-base max-w-2xl mb-8 leading-relaxed">
+          <p className="text-white text-sm max-w-2xl mb-8 leading-relaxed">
             {currentImage.description}
           </p>
           
@@ -495,7 +494,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
                 <button
                   key={subj.id}
                   onClick={() => onSubjectSelect(subj.id)}
-                  className={`px-4 py-2 text-sm rounded-full font-medium transition-all duration-300 ${
+                  className={`px-4 py-2 text-xs rounded-full font-medium transition-all duration-300 ${
                     isSelected ? "bg-white text-black shadow-lg" : "text-white hover:bg-white/20"
                   }`}
                 >
@@ -507,9 +506,9 @@ const LiveClass: React.FC<LiveClassProps> = ({
           
           <button
             onClick={() => handleJoinClass(currentImage)}
-            className="bg-[#123a66] hover:bg-[#123a66] text-white py-3 px-6 rounded-lg flex items-center text-base font-semibold transition-all duration-300 hover:scale-105"
-          >
-            <FaPlay className="mr-3" /> Join Class
+            className="bg-[#123a66] hover:bg-[#123a66] text-white py-3 px-6 rounded-lg flex items-center text-sm font-semibold transition-all duration-300 hover:scale-105"
+            >
+            <FaPlay className="mr-3 text-xs" /> Join Class
           </button>
         </div>
 
@@ -517,15 +516,15 @@ const LiveClass: React.FC<LiveClassProps> = ({
         <div className="absolute left-6 top-1/2 transform -translate-y-1/2 z-20">
           <button
             onClick={moveUp}
-            className="p-3 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg active:scale-95 mb-4"
+            className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg active:scale-95 mb-4"
           >
-            <FaChevronUp className="text-xl" />
+            <FaChevronUp className="text-sm" />
           </button>
           <button
             onClick={moveDown}
-            className="p-3 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg active:scale-95"
+            className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg active:scale-95"
           >
-            <FaChevronDown className="text-xl" />
+            <FaChevronDown className="text-sm" />
           </button>
         </div>
       </div>
@@ -559,27 +558,24 @@ const LiveClass: React.FC<LiveClassProps> = ({
             onClick={toggleMute}
             className="absolute top-4 right-4 z-30 p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg"
           >
-            {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+            {isMuted ? <FaVolumeMute className="text-sm" /> : <FaVolumeUp className="text-sm" />}
           </button>
         )}
       </div>
-      <div className="absolute top-12 z-20 ml-52">
-        <button
-          onClick={moveUp}
-          className="nav-up-btn p-3 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg active:scale-95"
-        >
-          <FaChevronUp className="text-xl" />
-        </button>
-      </div>
-      <div className="absolute bottom-12 ml-52 z-20">
-        <button
-          onClick={moveDown}
-          className="nav-down-btn p-3 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg active:scale-95"
-        >
-          <FaChevronDown className="text-xl" />
-        </button>
-      </div>
-      <div className="relative z-10 flex flex-col justify-center items-start pl-16 w-96 gap-6">
+      
+      {/* Updated navigation arrows as div elements positioned around the image cards */}
+      <div className="relative z-10 flex flex-col justify-center items-center pl-16 w-80 gap-2">
+        {/* Up arrow above the cards */}
+        <div className="flex justify-center mb-2">
+          <div 
+            onClick={moveUp}
+            className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg active:scale-95 cursor-pointer"
+          >
+            <FaChevronUp className="text-sm" />
+          </div>
+        </div>
+        
+        {/* Image cards */}
         {getDisplayImages().map((img, index) => {
           let animationClass =
             index === 0
@@ -601,16 +597,16 @@ const LiveClass: React.FC<LiveClassProps> = ({
                 handleClick((centerIndex - 1 + index + images.length) % images.length)
               }
             >
-              <div className="relative w-80 h-48 rounded-xl overflow-hidden shadow-xl bg-black/10 backdrop-blur-sm border border-white/20">
+              <div className="relative w-64 h-40 rounded-xl overflow-hidden shadow-xl bg-black/10 backdrop-blur-sm border border-white/20">
                 <img
                   src={img.src}
                   alt={img.alt}
                   className="w-full h-full object-cover transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                <div className="absolute bottom-4 left-4 text-white">
-                  <h3 className="font-bold text-lg mb-1 drop-shadow-lg">{img.subject}</h3>
-                  <p className="text-sm opacity-95 flex items-center gap-1 drop-shadow-md">
+                <div className="absolute bottom-3 left-3 text-white">
+                  <h3 className="font-bold text-sm mb-1 drop-shadow-lg">{img.subject}</h3>
+                  <p className="text-xs opacity-95 flex items-center gap-1 drop-shadow-md">
                     <FaCalendarAlt className="text-xs" />
                     {img.date}
                   </p>
@@ -626,7 +622,18 @@ const LiveClass: React.FC<LiveClassProps> = ({
             </div>
           );
         })}
+        
+        {/* Down arrow below the cards */}
+        <div className="flex justify-center mt-2">
+          <div 
+            onClick={moveDown}
+            className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg active:scale-95 cursor-pointer"
+          >
+            <FaChevronDown className="text-sm" />
+          </div>
+        </div>
       </div>
+      
       <div
         className="flex-1 flex flex-col justify-center items-start pl-20 pr-8 relative z-10"
         style={{ opacity: contentOpacity, transition: "opacity 300ms ease-in-out" }}
@@ -634,42 +641,42 @@ const LiveClass: React.FC<LiveClassProps> = ({
         <div className="flex gap-2 mb-4 animate-fade-in">
           {currentImage.genres.map((genre, index) => (
             <React.Fragment key={genre}>
-              <span className="text-white text-sm font-medium">{genre}</span>
+              <span className="text-white text-xs font-medium">{genre}</span>
               {index < currentImage.genres.length - 1 && (
-                <span className="text-red-500 text-sm">●</span>
+                <span className="text-red-500 text-xs">●</span>
               )}
             </React.Fragment>
           ))}
         </div>
-        <h1 className="text-6xl font-bold text-white mb-4 animate-fade-in">{currentImage.topic}</h1>
+        <h1 className="text-4xl font-bold text-white mb-4 animate-fade-in">{currentImage.topic}</h1>
         <div className="flex items-center gap-4 mb-6 animate-fade-in">
           <div className="flex items-center gap-1 text-white">
-            <FaCalendarAlt />
-            <span className="ml-1">{currentImage.date}</span>
+            <FaCalendarAlt className="text-xs" />
+            <span className="ml-1 text-sm">{currentImage.date}</span>
           </div>
           <div className="text-white">●</div>
           <div className="text-white flex items-center gap-1">
-            <FaClock className="mr-1" />
-            {currentImage.time}
+            <FaClock className="text-xs mr-1" />
+            <span className="text-sm">{currentImage.time}</span>
           </div>
           <div className="text-white">●</div>
           <div className="flex items-center gap-1 text-white">
-            <FaGlobe className="mr-1" />
-            {currentImage.language}
+            <FaGlobe className="text-xs mr-1" />
+            <span className="text-sm">{currentImage.language}</span>
           </div>
         </div>
-        <p className="text-white text-lg max-w-2xl mb-8 leading-relaxed animate-fade-in">
+        <p className="text-white text-sm max-w-2xl mb-8 leading-relaxed animate-fade-in">
           {currentImage.description}
         </p>
         <button
           onClick={() => handleJoinClass(currentImage)}
-          className="bg-[#123a66] hover:bg-[#123a66] text-white py-4 px-8 rounded-lg flex items-center text-lg font-semibold transition-all duration-300 hover:scale-105 animate-fade-in"
+          className="bg-[#123a66] hover:bg-[#123a66] text-white py-3 px-6 rounded-lg flex items-center text-sm font-semibold transition-all duration-300 hover:scale-105 animate-fade-in"
         >
-          <FaPlay className="mr-3" /> Join Class
+          <FaPlay className="mr-3 text-xs" /> Join Class
         </button>
       </div>
       <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 z-20">
-        <div className="flex items-center gap-6 bg-black/40 backdrop-blur-sm rounded-full px-8 py-4">
+        <div className="flex items-center gap-6 bg-black/40 backdrop-blur-sm rounded-full px-6 py-3">
           <div className="flex gap-3">
             {images.map((subj) => {
               const isSelected = selectedSubjectId === subj.id;
@@ -677,7 +684,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
                 <button
                   key={subj.id}
                   onClick={() => onSubjectSelect(subj.id)}
-                  className={`px-5 py-2 text-sm rounded-full font-medium transition-all duration-300 ${
+                  className={`px-4 py-2 text-xs rounded-full font-medium transition-all duration-300 ${
                     isSelected ? "bg-white text-black shadow-lg" : "text-white hover:bg-white/20"
                   }`}
                 >
@@ -686,7 +693,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
               );
             })}
           </div>
-          <div className="border-l border-white/30 pl-6">
+          <div className="border-l border-white/30 pl-4">
             {searchActive ? (
               <input
                 type="text"
@@ -694,15 +701,15 @@ const LiveClass: React.FC<LiveClassProps> = ({
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search courses..."
                 autoFocus
-                className="px-4 py-2 text-sm rounded-full outline-none bg-white/20 text-white placeholder-white/70 backdrop-blur-sm"
+                className="px-3 py-1 text-xs rounded-full outline-none bg-white/20 text-white placeholder-white/70 backdrop-blur-sm w-32"
                 onBlur={() => setSearchActive(false)}
               />
             ) : (
               <button
                 onClick={() => setSearchActive(true)}
-                className="p-2 rounded-full text-white hover:bg-white/20 transition-all duration-300"
+                className="p-1 rounded-full text-white hover:bg-white/20 transition-all duration-300"
               >
-                <FaSearch />
+                <FaSearch className="text-xs" />
               </button>
             )}
           </div>
