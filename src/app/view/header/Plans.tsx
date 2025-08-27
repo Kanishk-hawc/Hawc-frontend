@@ -5,6 +5,8 @@ import { getPlans } from "../lib/pricing";
 import ChemistryIcon from "./icons/chemistry.png";
 import PhysicsIcon from "./icons/physics.png";
 import MathIcon from "./icons/math.png";
+import BiologyIcon from "./icons/biology.png";
+import ZoologyIcon from "./icons/zoology.png";
 
 export default function Plans() {
   const [planType, setPlanType] = useState<"stranded" | "premium">("stranded");
@@ -14,7 +16,8 @@ export default function Plans() {
   const [hoveredSubject, setHoveredSubject] = useState<string | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false); // Add state for dark mode detection
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedBoardGrade, setSelectedBoardGrade] = useState<string>("9th cbsc");
 
   useEffect(() => {
     // Check if dark mode is enabled
@@ -41,8 +44,15 @@ export default function Plans() {
   }, [planType]);
   
   useEffect(() => {
-    setSelectAll(selectedSubjects.length === 3);
-  }, [selectedSubjects]);
+    // Reset selected subjects when board/grade changes
+    setSelectedSubjects([]);
+    setSelectAll(false);
+  }, [selectedBoardGrade]);
+  
+  useEffect(() => {
+    const maxSubjects = selectedBoardGrade.includes("11th") || selectedBoardGrade.includes("12th") ? 5 : 3;
+    setSelectAll(selectedSubjects.length === maxSubjects);
+  }, [selectedSubjects, selectedBoardGrade]);
   
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   
@@ -80,10 +90,16 @@ export default function Plans() {
   };
 
   const toggleSelectAll = () => {
+    const maxSubjects = selectedBoardGrade.includes("11th") || selectedBoardGrade.includes("12th") ? 5 : 3;
+    
     if (selectAll) {
       setSelectedSubjects([]);
     } else {
-      setSelectedSubjects(["Chemistry", "Physics", "Maths"]);
+      if (selectedBoardGrade.includes("11th") || selectedBoardGrade.includes("12th")) {
+        setSelectedSubjects(["Chemistry", "Physics", "Maths", "Biology", "Zoology"]);
+      } else {
+        setSelectedSubjects(["Chemistry", "Physics", "Maths"]);
+      }
     }
     setSelectAll(!selectAll);
   };
@@ -104,20 +120,27 @@ export default function Plans() {
     const subjectCount = selectedSubjects.length;
     const planId = selectedPlan.id;
     const period = getPeriodForDisplay(planId);
+    const isHigherGrade = selectedBoardGrade.includes("11th") || selectedBoardGrade.includes("12th");
     
     if (planType === "stranded") {
       if (period === "day") {
         if (subjectCount === 1) return 199;
         if (subjectCount === 2) return 249;
-        return 399; 
+        if (subjectCount === 3) return 399;
+        if (subjectCount === 4) return 499;
+        return 599; 
       } else if (period === "month") {
         if (subjectCount === 1) return 3499;
         if (subjectCount === 2) return 4999;
-        return 7999; 
+        if (subjectCount === 3) return 7999;
+        if (subjectCount === 4) return 9999;
+        return 11999; 
       } else if (period === "year") {
         if (subjectCount === 1) return 34999;
         if (subjectCount === 2) return 49999;
-        return 79999; 
+        if (subjectCount === 3) return 79999;
+        if (subjectCount === 4) return 99999;
+        return 119999; 
       }
     } 
 
@@ -125,15 +148,21 @@ export default function Plans() {
       if (period === "day") {
         if (subjectCount === 1) return 499;
         if (subjectCount === 2) return 799;
-        return 999; 
+        if (subjectCount === 3) return 999;
+        if (subjectCount === 4) return 1299;
+        return 1499; 
       } else if (period === "month") {
         if (subjectCount === 1) return 9999;
         if (subjectCount === 2) return 16999;
-        return 19999; 
+        if (subjectCount === 3) return 19999;
+        if (subjectCount === 4) return 24999;
+        return 29999; 
       } else if (period === "year") {
         if (subjectCount === 1) return 89999;
         if (subjectCount === 2) return 149999;
-        return 210000; 
+        if (subjectCount === 3) return 210000;
+        if (subjectCount === 4) return 249999;
+        return 299999; 
       }
     }
     
@@ -182,6 +211,7 @@ export default function Plans() {
       subjects: selectedSubjects,
       subjectPrices: getSubjectPrices(),
       totalPrice: calculateTotalPrice(),
+      boardGrade: selectedBoardGrade,
     };
 
     sessionStorage.setItem("checkoutData", JSON.stringify(checkoutData));
@@ -196,11 +226,27 @@ export default function Plans() {
   const handlePlanSelection = (planId: string) => {
     setSelectedPlanId(planId);
     // Initially select all subjects when a plan is selected
-    setSelectedSubjects(["Chemistry", "Physics", "Maths"]);
+    if (selectedBoardGrade.includes("11th") || selectedBoardGrade.includes("12th")) {
+      setSelectedSubjects(["Chemistry", "Physics", "Maths", "Biology", "Zoology"]);
+    } else {
+      setSelectedSubjects(["Chemistry", "Physics", "Maths"]);
+    }
   };
 
+  // Board and grade options
+  const boardGradeOptions = [
+    "9th cbsc", "9th sslc", 
+    "10th cbsc", "10th sslc", 
+    "11th cbsc", "11th sslc", 
+    "12th cbsc", "12th sslc"
+  ];
+
+  // Check if higher grade (11th or 12th)
+  const isHigherGrade = selectedBoardGrade.includes("11th") || selectedBoardGrade.includes("12th");
+  const maxSubjects = isHigherGrade ? 5 : 3;
+
   return (
-    <div className={`flex flex-col md:px-4 lg:px-8 xl:px-20 min-h-screen relative ${
+    <div className={`flex flex-col md:px-4 sm:px-8 xl:px-20 min-h-screen relative ${
       isDarkMode 
         ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)]" 
         : "bg-white"
@@ -210,7 +256,7 @@ export default function Plans() {
           <button
             key={type}
             onClick={() => handlePlanTypeChange(type)}
-            className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+            className={`px-4 py-2 rounded-sm font-medium text-sm transition-colors ${
               planType === type
                 ? "bg-[#123a66] text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
@@ -222,12 +268,58 @@ export default function Plans() {
       </div>
 
       <div className="flex flex-1">
+        {/* Left Sidebar for Board/Grade Selection */}
+        <div className={`hidden md:block w-64 pr-6 transition-all duration-300 ${
+          showCheckout ? "blur-sm opacity-70" : ""
+        }`}>
+          <div className={`bg-[#9db2c7] border border-gray-300 rounded-md p-4 sticky top-4 mt-8 ${
+            isDarkMode ? "dark:bg-gray-800 dark:border-gray-700" : ""
+          }`}>
+            <h2 className={`text-base font-bold mb-3 ${
+              isDarkMode ? "text-white" : "text-gray-800"
+            }`}>
+              Class Category
+            </h2>
+            
+            <ul className="space-y-2">
+              {boardGradeOptions.map((option) => {
+                const displayText = option
+                  .replace('th', 'th ')
+                  .replace('cbsc', 'CBSE')
+                  .replace('sslc', 'SSLC')
+                  .toUpperCase();
+                
+                return (
+                  <li key={option}>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setSelectedBoardGrade(option);
+                      }}
+                      className={`block py-2 px-3 text-sm no-underline rounded-md transition-all duration-200 ${
+                        selectedBoardGrade === option
+                          ? "bg-[#0056d2] text-white font-bold"
+                          : isDarkMode 
+                            ? "text-gray-200 hover:bg-gray-700" 
+                            : "text-gray-800 hover:bg-gray-100"
+                      }`}
+                    >
+                      {displayText}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+
         <div
           className={`flex-1 transition-all duration-300 ${
             showCheckout ? "blur-sm opacity-70" : ""
           }`}
         >
-          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center md:mb-20 mx-auto max-w-screen-2xl">
+          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center md:mb-20 mx-auto max-w-5xl">
             {plans.map((p, i) => (
               <div key={p.id} className="w-full flex justify-center">
                 <PlanCard
@@ -250,15 +342,15 @@ export default function Plans() {
 
           {selectedPlanId && !showCheckout && (
             <div className="mx-auto mb-12 w-full max-w-4xl px-4">
-              <h2 className={`text-2xl font-bold text-center mb-6 ${
+              <h2 className={`text-xl font-bold text-center mb-6 ${
                 isDarkMode ? "text-white" : "text-gray-800"
               }`}>
-                Select Your Subjects ({selectedSubjects.length}/3 subjects)
+                Select Your Subjects ({selectedSubjects.length}/{maxSubjects} subjects)
               </h2>
 
-              <div className={`rounded-lg p-6 ${isDarkMode ? "bg-black" : "bg-gray-100"}`}>
+              <div className={`rounded-sm p-6 ${isDarkMode ? "bg-black" : "bg-gray-100"}`}>
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className={`text-lg font-semibold ${
+                  <h3 className={`text-sm font-semibold ${
                     isDarkMode ? "text-white" : "text-gray-800"
                   }`}>
                     Choose Your Subjects
@@ -282,7 +374,7 @@ export default function Plans() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                <div className={`grid ${isHigherGrade ? 'grid-cols-2 md:grid-cols-5' : 'grid-cols-1 md:grid-cols-3'} gap-4 max-w-${isHigherGrade ? '4xl' : 'xl'} mx-auto`}>
                   <SubjectCard
                     title="Chemistry"
                     icon={ChemistryIcon}
@@ -313,12 +405,38 @@ export default function Plans() {
                     onLeave={() => handleSubjectHover(null)}
                     isDarkMode={isDarkMode}
                   />
+                  
+                  {/* Show Biology and Zoology only for higher grades */}
+                  {isHigherGrade && (
+                    <>
+                      <SubjectCard
+                        title="Biology"
+                        icon={BiologyIcon}
+                        isSelected={selectedSubjects.includes("Biology")}
+                        onClick={() => toggleSubject("Biology")}
+                        isHovered={hoveredSubject === "Biology"}
+                        onHover={() => handleSubjectHover("Biology")}
+                        onLeave={() => handleSubjectHover(null)}
+                        isDarkMode={isDarkMode}
+                      />
+                      <SubjectCard
+                        title="Zoology"
+                        icon={ZoologyIcon}
+                        isSelected={selectedSubjects.includes("Zoology")}
+                        onClick={() => toggleSubject("Zoology")}
+                        isHovered={hoveredSubject === "Zoology"}
+                        onHover={() => handleSubjectHover("Zoology")}
+                        onLeave={() => handleSubjectHover(null)}
+                        isDarkMode={isDarkMode}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
 
               {selectedSubjects.length > 0 && selectedPlan && (
                 <div className="mt-6 text-center">
-                  <div className={`text-lg font-semibold ${
+                  <div className={`text-sm font-semibold ${
                     isDarkMode ? "text-white" : "text-gray-800"
                   }`}>
                     Total Price: {selectedPlan.currency} {calculateTotalPrice()}
@@ -334,7 +452,9 @@ export default function Plans() {
                   }`}>
                     {selectedSubjects.length === 1 && "Single subject pricing"}
                     {selectedSubjects.length === 2 && "Dual subjects pricing"}
-                    {selectedSubjects.length === 3 && "All subjects pricing"}
+                    {selectedSubjects.length === 3 && "Three subjects pricing"}
+                    {selectedSubjects.length === 4 && "Four subjects pricing"}
+                    {selectedSubjects.length === 5 && "All subjects pricing"}
                   </div>
                 </div>
               )}
@@ -343,7 +463,7 @@ export default function Plans() {
                 <button
                   onClick={handleCheckout}
                   disabled={selectedSubjects.length === 0}
-                  className={`px-8 py-3 rounded-lg font-bold text-lg transition-colors ${
+                  className={`px-8 py-3 rounded-sm font-bold text-sm transition-colors ${
                     selectedSubjects.length === 0
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-[#123a66] hover:bg-[#123a66] text-white"
@@ -367,7 +487,7 @@ export default function Plans() {
               onClick={handleCloseCheckout}
             ></div>
 
-            <div className="relative w-full md:w-2/3 lg:w-1/2 xl:w-2/5 h-full bg-white dark:bg-black overflow-hidden">
+            <div className="relative w-full md:w-2/3 sm:w-1/2 xl:w-2/5 h-full bg-white dark:bg-black overflow-hidden">
               <div className="h-full flex flex-col">
                 <button
                   onClick={handleCloseCheckout}
@@ -397,6 +517,7 @@ export default function Plans() {
                     subjects: selectedSubjects,
                     subjectPrices: getSubjectPrices(),
                     totalPrice: calculateTotalPrice(),
+                    boardGrade: selectedBoardGrade,
                   }}
                   isDarkMode={isDarkMode}
                 />
@@ -409,27 +530,47 @@ export default function Plans() {
   );
 
   function CheckoutPanel({ checkoutData, isDarkMode }: { checkoutData: any; isDarkMode: boolean }) {
-    const { plan, subjects, subjectPrices, totalPrice } = checkoutData;
+    const { plan, subjects, subjectPrices, totalPrice, boardGrade } = checkoutData;
 
     return (
       <div className={`flex flex-col h-full p-6 overflow-hidden ${
         isDarkMode ? "bg-black" : "bg-white"
       }`}>
-        <h1 className={`text-2xl md:text-3xl font-bold text-center mb-4 md:mb-8 ${
+        <h1 className={`text-xl md:text-3xl font-bold text-center mb-4 md:mb-8 ${
           isDarkMode ? "text-white" : "text-gray-800"
         }`}>
           Checkout
         </h1>
 
-        <h2 className={`text-lg md:text-xl font-semibold mb-4 md:mb-6 ${
+        <h2 className={`text-sm md:text-xl font-semibold mb-4 md:mb-6 ${
           isDarkMode ? "text-white" : "text-gray-800"
         }`}>Order Summary</h2>
 
         <div className="mb-4 md:mb-6">
-          <h3 className={`text-base md:text-lg font-medium mb-2 md:mb-3 ${
+          <h3 className={`text-base md:text-sm font-medium mb-2 md:mb-3 ${
+            isDarkMode ? "text-white" : "text-gray-800"
+          }`}>Board & Grade</h3>
+          <div className={`rounded-sm p-3 md:p-4 ${
+            isDarkMode ? "bg-gray-800" : "bg-gray-100"
+          }`}>
+            <div className="flex justify-between items-center">
+              <span className={isDarkMode ? "text-white" : "text-gray-800"}>
+                {boardGrade.replace('th', 'th ').replace('cbsc', 'CBSE').replace('sslc', 'SSLC')}
+              </span>
+            </div>
+            <div className={`text-xs md:text-sm mt-1 ${
+              isDarkMode ? "text-gray-300" : "text-gray-600"
+            }`}>
+              Curriculum and content tailored to your selection
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-4 md:mb-6">
+          <h3 className={`text-base md:text-sm font-medium mb-2 md:mb-3 ${
             isDarkMode ? "text-white" : "text-gray-800"
           }`}>Plan</h3>
-          <div className={`rounded-lg p-3 md:p-4 ${
+          <div className={`rounded-sm p-3 md:p-4 ${
             isDarkMode ? "bg-gray-800" : "bg-gray-100"
           }`}>
             <div className="flex justify-between items-center">
@@ -452,14 +593,14 @@ export default function Plans() {
         </div>
 
         <div className="mb-4 md:mb-6">
-          <h3 className={`text-base md:text-lg font-medium mb-2 md:mb-3 ${
+          <h3 className={`text-base md:text-sm font-medium mb-2 md:mb-3 ${
             isDarkMode ? "text-white" : "text-gray-800"
           }`}>Subjects</h3>
           <div className="space-y-2">
             {subjects.map((subject: string, index: number) => (
               <div
                 key={index}
-                className={`flex justify-between items-center rounded-lg p-2 md:p-3 ${
+                className={`flex justify-between items-center rounded-sm p-2 md:p-3 ${
                   isDarkMode ? "bg-gray-800" : "bg-gray-100"
                 }`}
               >
@@ -478,10 +619,10 @@ export default function Plans() {
           isDarkMode ? "border-gray-600" : "border-gray-300"
         }`}>
           <div className="flex justify-between items-center">
-            <span className={`text-base md:text-lg font-semibold ${
+            <span className={`text-base md:text-sm font-semibold ${
               isDarkMode ? "text-white" : "text-gray-800"
             }`}>Total</span>
-            <span className={`text-base md:text-lg font-bold ${
+            <span className={`text-base md:text-sm font-bold ${
               isDarkMode ? "text-white" : "text-gray-800"
             }`}>
               {plan.currency} {totalPrice}
@@ -489,7 +630,7 @@ export default function Plans() {
           </div>
         </div>
 
-        <button className="w-full bg-[#665bfe] hover:bg-[#5a50e5] text-white font-bold py-2 md:py-3 px-4 rounded-lg mt-4 md:mt-6 transition-colors">
+        <button className="w-full bg-[#665bfe] hover:bg-[#5a50e5] text-white font-bold py-2 md:py-3 px-4 rounded-sm mt-4 md:mt-6 transition-colors">
           Complete Purchase
         </button>
       </div>
@@ -517,10 +658,10 @@ export default function Plans() {
   }) {
     return (
       <div
-        className={`relative rounded-lg p-4 border-2 shadow-sm transition-all duration-300 cursor-pointer h-32 flex flex-col items-center justify-center ${
+        className={`relative rounded-sm p-4 border-2 shadow-sm transition-all duration-300 cursor-pointer h-32 flex flex-col items-center justify-center bg-[#9db2c7] ${
           isDarkMode 
-            ? "bg-gray-800 border-gray-700" 
-            : "bg-white border-gray-200"
+            ? "border-gray-700" 
+            : "border-gray-200"
         }`}
         onClick={onClick}
         onMouseEnter={onHover}
@@ -550,7 +691,7 @@ export default function Plans() {
             className="w-full h-full object-contain"
           />
         </div>
-        <h3 className={`text-lg font-semibold text-center ${
+        <h3 className={`text-sm font-semibold text-center ${
           isDarkMode ? "text-white" : "text-gray-800"
         }`}>
           {title}

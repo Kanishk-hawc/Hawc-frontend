@@ -29,7 +29,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
         } relative top-0 md:right-0 right-10 md:bottom-0 mb-20  `}
       >
         <div className="w-full px-4 py-8 ">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-16 text-left mt-20">
+          <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-cols-5 gap-8 mb-16 text-left mt-20">
             <div>
               <div className="flex items-center mb-2">
                 {/* Added the logo here */}
@@ -39,7 +39,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   className="h-8 w-8 mr-2" 
                 />
                 <h3
-                  className={`text-3xl font-bold mb-1 ${
+                  className={`text-1xl font-bold mb-1 ${
                     isDarkMode ? "text-[#123a66]" : "text-black"
                   }`}
                 >
@@ -61,7 +61,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 Helpline number
               </p>
               <p
-                className={`text-xl font-bold ${
+                className={`text-sm font-bold ${
                   isDarkMode ? "text-white" : "text-black"
                 }`}
               >
@@ -70,7 +70,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
             </div>
             <div>
               <h3
-                className={`text-2xl font-bold mb-4 ${
+                className={`text-xl font-bold mb-4 ${
                   isDarkMode ? "text-white" : "text-black"
                 }`}
               >
@@ -81,7 +81,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   (movie) => (
                     <li
                       key={movie}
-                      className={`text-lg hover:text-[#123a66] cursor-pointer transition-colors ${
+                      className={`text-sm hover:text-[#123a66] cursor-pointer transition-colors ${
                         isDarkMode ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
@@ -93,7 +93,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
             </div>
             <div>
               <h3
-                className={`text-2xl font-bold mb-4 ${
+                className={`text-xl font-bold mb-4 ${
                   isDarkMode ? "text-white" : "text-black"
                 }`}
               >
@@ -108,7 +108,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 ].map((link) => (
                   <li
                     key={link.name}
-                    className={`text-lg ${
+                    className={`text-sm ${
                       isDarkMode ? "text-gray-300" : "text-gray-700"
                     }`}
                   >
@@ -124,7 +124,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
             </div>
             <div>
               <h3
-                className={`text-2xl font-bold mb-4 ${
+                className={`text-xl font-bold mb-4 ${
                   isDarkMode ? "text-white" : "text-black"
                 }`}
               >
@@ -140,7 +140,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   (item) => (
                     <li
                       key={item.name}
-                      className={`text-lg ${
+                      className={`text-sm ${
                         isDarkMode ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
@@ -157,7 +157,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
             </div>
             <div>
               <h3
-                className={`text-2xl font-bold mb-4 ${
+                className={`text-xl font-bold mb-4 ${
                   isDarkMode ? "text-white" : "text-black"
                 }`}
               >
@@ -166,7 +166,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
               <div className="flex space-x-4">
                 <a
                   href="https://www.facebook.com/Hawc.offici"
-                  className={`text-2xl transition-colors ${
+                  className={`text-xl transition-colors ${
                     isDarkMode
                       ? "text-gray-300 hover:text-blue-500"
                       : "text-gray-700 hover:text-blue-600"
@@ -176,7 +176,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 </a>
                 <a
                   href="https://x.com/HownWhyClasses"
-                  className={`text-2xl transition-colors ${
+                  className={`text-xl transition-colors ${
                     isDarkMode
                       ? "text-gray-300 hover:text-blue-300"
                       : "text-gray-700 hover:text-blue-400"
@@ -186,7 +186,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 </a>
                 <a
                   href=""
-                  className={`text-2xl transition-colors ${
+                  className={`text-xl transition-colors ${
                     isDarkMode
                       ? "text-gray-300 hover:text-pink-500"
                       : "text-gray-700 hover:text-pink-600"
@@ -196,7 +196,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 </a>
                 <a
                   href="https://www.linkedin.com/company/howandwhyclasses/about/"
-                  className={`text-2xl transition-colors ${
+                  className={`text-xl transition-colors ${
                     isDarkMode
                       ? "text-gray-300 hover:text-blue-600"
                       : "text-gray-700 hover:text-blue-700"
@@ -206,7 +206,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 </a>
                 <a
                   href="https://www.youtube.com/@HowAndWhyClasses"
-                  className={`text-2xl transition-colors ${
+                  className={`text-xl transition-colors ${
                     isDarkMode
                       ? "text-gray-300 hover:text-[#123a66]"
                       : "text-gray-700 hover:text-[#123a66]"
@@ -222,11 +222,11 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
           <div
             className={`pt-6 border-t ${
               isDarkMode ? "border-gray-700" : "border-gray-300"
-            } flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4`}
+            } flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4`}
           >
             <div className="flex-1">
               <p
-                className={`text-base leading-relaxed max-w-2xl ${
+                className={`text-xs leading-relaxed max-w-xl ${
                   isDarkMode ? "text-gray-300" : "text-gray-700"
                 }`}
               >
@@ -237,9 +237,9 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 prohibited.
               </p>
             </div>
-            <div className="flex flex-col items-start lg:items-end">
+            <div className="flex flex-col items-start sm:items-end">
               <h3
-                className={`text-xl font-bold mb-3 ${
+                className={`text-sm font-bold mb-3 ${
                   isDarkMode ? "text-white" : "text-black"
                 }`}
               >
@@ -247,13 +247,13 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
               </h3>
               <div className="flex gap-3">
                 <button
-                  className={`flex items-center px-3 py-2 border rounded-lg text-base font-medium transition-colors ${
+                  className={`flex items-center px-3 py-2 border rounded-sm text-sm font-medium transition-colors ${
                     isDarkMode
                       ? "bg-gray-900 hover:bg-gray-800 border-gray-600 text-white"
                       : "bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700"
                   }`}
                 >
-                  <FaGooglePlay className="mr-2 text-lg" />
+                  <FaGooglePlay className="mr-2 text-xs" />
                   <div className="text-left">
                     <div
                       className={`text-xs opacity-75 ${
@@ -272,13 +272,13 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   </div>
                 </button>
                 <button
-                  className={`flex items-center px-3 py-2 border rounded-lg text-base font-medium transition-colors ${
+                  className={`flex items-center px-3 py-2 border rounded-sm text-base font-medium transition-colors ${
                     isDarkMode
                       ? "bg-gray-900 hover:bg-gray-800 border-gray-600 text-white"
                       : "bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700"
                   }`}
                 >
-                  <FaApple className="mr-2 text-lg" />
+                  <FaApple className="mr-2 text-xs" />
                   <div className="text-left">
                     <div
                       className={`text-xs opacity-75 ${
