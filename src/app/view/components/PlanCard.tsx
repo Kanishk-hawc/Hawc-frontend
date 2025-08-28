@@ -320,8 +320,6 @@
 
 
 
-
-
 // PlanCard.tsx
 import { useState } from "react";
 
@@ -338,7 +336,21 @@ type Props = {
   isSelected?: boolean;
   onCardClick?: () => void;
   isMobile?: boolean;
+  selectedClass?: string;
+  onClassChange?: (classCategory: string) => void;
+  autoSelectOnClassChange?: boolean;
 };
+
+const classCategories = [
+  "9th CBSE",
+  "9th SSLC",
+  "10th CBSE",
+  "10th SSLC",
+  "11th NEET",
+  "11th JEE",
+  "12th NEET",
+  "12th JEE"
+];
 
 export default function PlanCard({
   name,
@@ -353,7 +365,25 @@ export default function PlanCard({
   isSelected = false,
   onCardClick,
   isMobile = false,
+  selectedClass = "",
+  onClassChange,
+  autoSelectOnClassChange = false,
 }: Props) {
+  const [localSelectedClass, setLocalSelectedClass] = useState(selectedClass);
+
+  const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setLocalSelectedClass(value);
+    if (onClassChange) {
+      onClassChange(value);
+    }
+    
+    // Auto-select the card when a class is chosen if enabled
+    if (value && autoSelectOnClassChange && onCardClick) {
+      onCardClick();
+    }
+  };
+
   const getPlanQuote = (planType: string) => {
     switch (planType) {
       case "Premium":
@@ -378,9 +408,8 @@ export default function PlanCard({
           text: "text-white",
           badge: "bg-purple-500 text-white",
           hover: "hover:border-[#123a66] hover:shadow-black",
-          active:
-            "active:scale-95 active:border-[#123a66] active:shadow-black",
           button: "bg-[#123a66] text-white hover:bg-[#123a66]",
+          dropdown: "bg-gray-800 text-white border-gray-700"
         };
       case "Essential":
         return {
@@ -389,9 +418,8 @@ export default function PlanCard({
           text: "text-white",
           badge: "bg-blue-500 text-white",
           hover: "hover:border-[#123a66] hover:shadow-black",
-          active:
-            "active:scale-95 active:border-[#123a66] active:shadow-black",
           button: "bg-[#123a66] text-white hover:bg-[#123a66]",
+          dropdown: "bg-gray-800 text-white border-gray-700"
         };
       case "Experience":
         return {
@@ -400,9 +428,8 @@ export default function PlanCard({
           text: "text-white",
           badge: "bg-green-500 text-white",
           hover: "hover:border-[#123a66] hover:shadow-black",
-          active:
-            "active:scale-95 active:border-[#123a66] active:shadow-black",
           button: "bg-[#123a66] text-white hover:bg-[#123a66]",
+          dropdown: "bg-gray-800 text-white border-gray-700"
         };
       default:
         return {
@@ -411,9 +438,8 @@ export default function PlanCard({
           text: "text-white",
           badge: "bg-gray-500 text-white",
           hover: "hover:border-[#123a66] hover:shadow-black",
-          active:
-            "active:scale-95 active:border-[#123a66] active:shadow-black",
           button: "bg-[#123a66] text-white hover:bg-[#123a66]",
+          dropdown: "bg-gray-800 text-white border-gray-700"
         };
     }
   };
@@ -436,13 +462,13 @@ export default function PlanCard({
   return (
     <div
       className={`relative flex flex-col p-6 rounded-[20px] transition-all 
-        w-full max-w-[320px] mx-auto cursor-pointer min-h-[480px]
+        w-full max-w-[320px] mx-auto cursor-pointer min-h-[520px]
         transform hover:scale-105 duration-300
         ${selectedStyles}
         ${
           displayAsPopular
             ? "border-black bg-black shadow-lg"
-            : `${colorScheme.hover} ${colorScheme.active} hover:shadow-[20px] dark:hover:shadow-[20px]`
+            : `${colorScheme.hover} hover:shadow-[20px] dark:hover:shadow-[20px]`
         }`}
       onClick={onCardClick}
     >
@@ -490,6 +516,26 @@ export default function PlanCard({
       <p className="text-[9px] text-gray-300 italic mb-3 text-left mt-4">
         {getPlanQuote(type)}
       </p>
+
+      {/* Class Category Dropdown */}
+      <div className="mb-4">
+        <label className="text-[10px] text-gray-300 block mb-1">
+          Class Category
+        </label>
+        <select
+          value={localSelectedClass}
+          onChange={handleClassChange}
+          className={`w-full p-2 rounded-md text-[12px] ${colorScheme.dropdown}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <option value="">Select a class</option>
+          {classCategories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div className="w-full h-px bg-gray-700 mb-4"></div>
 
