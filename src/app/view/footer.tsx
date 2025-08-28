@@ -19,11 +19,11 @@ type FooterProps = {
 const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
   return (
     <>
-      <div className={`w-full h-px ${isDarkMode ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)]" : "bg-gray-300"} ${sidebarOpen ? "ml-80" : "ml-16"}`}></div>
+      <div className={`w-full h-px ${isDarkMode ? "bg-transparent" : "bg-gray-300"} ${sidebarOpen ? "ml-80" : "ml-16"}`}></div>
       
       <footer
         className={`${
-          isDarkMode ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)] text-gray-300" : "bg-white text-gray-700"
+          isDarkMode ? "bg-transparent text-gray-300" : "bg-white text-gray-700"
         } transition-colors duration-300  ${
           sidebarOpen ? "ml-80" : "ml-14"
         } relative top-0 md:right-0 right-10 md:bottom-0 mb-20  `}

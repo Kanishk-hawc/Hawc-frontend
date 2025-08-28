@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaEdit, FaUserCircle, FaPhone, FaEnvelope, FaSchool, FaMapMarkerAlt, FaUser,  } from "react-icons/fa";
+import { FaEdit, FaUserCircle, FaPhone, FaEnvelope, FaSchool, FaMapMarkerAlt, FaUser, FaSignOutAlt } from "react-icons/fa";
 
 const Profile: React.FC = () => {
   const { username } = useParams<{ username: string }>();
+  const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -52,6 +53,15 @@ const Profile: React.FC = () => {
 
     fetchUserData();
   }, [username]);
+
+  const handleSignOut = () => {
+    // Clear user data from localStorage
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    
+    // Redirect to login page
+    navigate("/login");
+  };
 
   const handleUpdate = async () => {
     if (!user || !user.id) {
@@ -112,12 +122,20 @@ const Profile: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Profile</h1>
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-          >
-            <FaEdit className="text-gray-600 dark:text-gray-300" />
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+            >
+              <FaSignOutAlt /> Sign Out
+            </button>
+            <button
+              onClick={() => setIsEditing(!isEditing)}
+              className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            >
+              <FaEdit className="text-gray-600 dark:text-gray-300" />
+            </button>
+          </div>
         </div>
 
         {message && (

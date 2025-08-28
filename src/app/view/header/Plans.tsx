@@ -899,7 +899,7 @@ export default function Plans() {
   return (
     <div className={`flex flex-col md:px-4 sm:px-8 xl:px-20 min-h-screen relative ${
       isDarkMode 
-        ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)]" 
+        ? "bg-transparent" 
         : "bg-white"
     }`}>
       <div className="flex justify-center items-center mt-4 mb-16 space-x-4">
