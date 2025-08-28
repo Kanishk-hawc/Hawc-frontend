@@ -26,7 +26,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
           isDarkMode ? "bg-transparent text-gray-300" : "bg-white text-gray-700"
         } transition-colors duration-300  ${
           sidebarOpen ? "ml-80" : "ml-14"
-        } relative top-0 md:right-0 right-10 md:bottom-0 mb-20  `}
+        } w-full bottom-0`}
       >
         <div className="w-full px-4 py-8 ">
           <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-cols-5 gap-8 mb-16 text-left mt-20">
