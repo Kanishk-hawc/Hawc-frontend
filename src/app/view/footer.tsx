@@ -19,20 +19,20 @@ type FooterProps = {
 const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
   return (
     <>
-      <div className={`w-full h-px ${isDarkMode ? "bg-transparent" : "bg-gray-300"} ${sidebarOpen ? "ml-80" : "ml-16"}`}></div>
+      {/* Top separator line */}
+      <div className={`w-full h-px ${isDarkMode ? "bg-gray-700" : "bg-gray-300"} ${sidebarOpen ? "ml-80" : "ml-16"}`}></div>
       
       <footer
         className={`${
           isDarkMode ? "bg-transparent text-gray-300" : "bg-white text-gray-700"
-        } transition-colors duration-300  ${
+        } transition-colors duration-300 ${
           sidebarOpen ? "ml-80" : "ml-14"
-        } w-full bottom-0`}
+        } w-full bottom-0 py-6`}  // Reduced padding
       >
-        <div className="w-full px-4 py-8 ">
-          <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-cols-5 gap-8 mb-16 text-left mt-20">
+        <div className="w-full px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8 text-left"> 
             <div>
               <div className="flex items-center mb-2">
-                {/* Added the logo here */}
                 <img 
                   src={HawcLogo} 
                   alt="HAWC Logo" 
@@ -40,7 +40,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 />
                 <h3
                   className={`text-1xl font-bold mb-1 ${
-                    isDarkMode ? "text-[#123a66]" : "text-black"
+                    isDarkMode ? "text-[#65c7f7]" : "text-black"
                   }`}
                 >
                   How and Why
@@ -81,7 +81,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   (movie) => (
                     <li
                       key={movie}
-                      className={`text-sm hover:text-[#123a66] cursor-pointer transition-colors ${
+                      className={`text-sm hover:text-[#65c7f7] cursor-pointer transition-colors ${
                         isDarkMode ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
@@ -114,7 +114,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   >
                     <Link 
                       to={link.path}
-                      className="hover:text-[#123a66] transition-colors inline-block"
+                      className="hover:text-[#65c7f7] transition-colors inline-block"
                     >
                       {link.name}
                     </Link>
@@ -146,7 +146,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                     >
                       <Link 
                         to={item.path}
-                        className="hover:text-[#123a66] transition-colors inline-block"
+                        className="hover:text-[#65c7f7] transition-colors inline-block"
                       >
                         {item.name}
                       </Link>
@@ -208,8 +208,8 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                   href="https://www.youtube.com/@HowAndWhyClasses"
                   className={`text-xl transition-colors ${
                     isDarkMode
-                      ? "text-gray-300 hover:text-[#123a66]"
-                      : "text-gray-700 hover:text-[#123a66]"
+                      ? "text-gray-300 hover:text-[#65c7f7]"
+                      : "text-gray-700 hover:text-[#65c7f7]"
                     }`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -219,25 +219,27 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
               </div>
             </div>
           </div>
+          
+          {/* Footer line separator */}
+          <div className={`w-full h-px my-6 ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}></div>
+          
           <div
-            className={`pt-6 border-t ${
-              isDarkMode ? "border-gray-700" : "border-gray-300"
-            } flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4`}
+            className={`flex flex-col md:flex-row justify-between items-start gap-6`}
           >
-            <div className="flex-1">
+             <div className="flex-1 md:text-right">
               <p
                 className={`text-xs leading-relaxed max-w-xl ${
                   isDarkMode ? "text-gray-300" : "text-gray-700"
                 }`}
               >
-                © 2025 <span className="text-[#123a66] font-bold">How and Why</span> All
+                © 2025 <span className="text-[#65c7f7] font-bold">How and Why</span> All
                 Rights Reserved. All videos and shows on this platform are
                 trademarks of, and all related images and content are the
                 property of, HAWC Inc. Duplication and copy of this is strictly
                 prohibited.
               </p>
             </div>
-            <div className="flex flex-col items-start sm:items-end">
+            <div className="flex flex-col md:relative md:right-20">
               <h3
                 className={`text-sm font-bold mb-3 ${
                   isDarkMode ? "text-white" : "text-black"
@@ -246,17 +248,20 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 Download HAWC app
               </h3>
               <div className="flex gap-3">
-                <button
-                  className={`flex items-center px-3 py-2 border rounded-sm text-sm font-medium transition-colors ${
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.howandwhyclasses.learners"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex items-center px-3 py-1.5 border rounded-sm text-xs font-medium transition-colors ${
                     isDarkMode
                       ? "bg-gray-900 hover:bg-gray-800 border-gray-600 text-white"
                       : "bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700"
                   }`}
                 >
-                  <FaGooglePlay className="mr-2 text-xs" />
+                  <FaGooglePlay className="mr-1 text-xs" />
                   <div className="text-left">
                     <div
-                      className={`text-xs opacity-75 ${
+                      className={`text-[10px] opacity-75 ${
                         isDarkMode ? "text-gray-300" : "text-gray-600"
                       }`}
                     >
@@ -270,18 +275,21 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                       Google Play
                     </div>
                   </div>
-                </button>
-                <button
-                  className={`flex items-center px-3 py-2 border rounded-sm text-base font-medium transition-colors ${
+                </a>
+                <a
+                  href="https://apps.apple.com/in/app/hawc/id6739617482"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex items-center px-3 py-1.5 border rounded-sm text-xs font-medium transition-colors ${
                     isDarkMode
                       ? "bg-gray-900 hover:bg-gray-800 border-gray-600 text-white"
                       : "bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700"
                   }`}
                 >
-                  <FaApple className="mr-2 text-xs" />
+                  <FaApple className="mr-1 text-xs" />
                   <div className="text-left">
                     <div
-                      className={`text-xs opacity-75 ${
+                      className={`text-[10px] opacity-75 ${
                         isDarkMode ? "text-gray-300" : "text-gray-600"
                       }`}
                     >
@@ -295,9 +303,11 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                       App Store
                     </div>
                   </div>
-                </button>
+                </a>
               </div>
             </div>
+            
+          
           </div>
         </div>
       </footer>

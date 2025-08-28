@@ -54,9 +54,9 @@
 //           bg: 'bg-black',
 //           text: 'text-white',
 //           badge: 'bg-purple-500 text-white',
-//           hover: 'hover:border-[#123a66] hover:shadow-black',
-//           active: 'active:scale-95 active:border-[#123a66] active:shadow-black',
-//           button: 'bg-[#123a66] text-white hover:bg-[#123a66]'
+//           hover: 'hover:border-[#65c7f7] hover:shadow-black',
+//           active: 'active:scale-95 active:border-[#65c7f7] active:shadow-black',
+//           button: 'bg-[#65c7f7] text-white hover:bg-[#65c7f7]'
 //         };
 //       case 'Essential':
 //         return {
@@ -64,9 +64,9 @@
 //           bg: 'bg-black',
 //           text: 'text-white',
 //           badge: 'bg-blue-500 text-white',
-//           hover: 'hover:border-[#123a66] hover:shadow-black',
-//           active: 'active:scale-95 active:border-[#123a66] active:shadow-black',
-//           button: 'bg-[#123a66] text-white hover:bg-[#123a66]'
+//           hover: 'hover:border-[#65c7f7] hover:shadow-black',
+//           active: 'active:scale-95 active:border-[#65c7f7] active:shadow-black',
+//           button: 'bg-[#65c7f7] text-white hover:bg-[#65c7f7]'
 //         };
 //       case 'Experience':
 //         return {
@@ -74,9 +74,9 @@
 //           bg: 'bg-black',
 //           text: 'text-white',
 //           badge: 'bg-green-500 text-white',
-//           hover: 'hover:border-[#123a66] hover:shadow-black',
-//           active: 'active:scale-95 active:border-[#123a66] active:shadow-black',
-//           button: 'bg-[#123a66] text-white hover:bg-[#123a66]'
+//           hover: 'hover:border-[#65c7f7] hover:shadow-black',
+//           active: 'active:scale-95 active:border-[#65c7f7] active:shadow-black',
+//           button: 'bg-[#65c7f7] text-white hover:bg-[#65c7f7]'
 //         };
 //       default:
 //         return {
@@ -84,9 +84,9 @@
 //           bg: 'bg-black',
 //           text: 'text-white',
 //           badge: 'bg-gray-500 text-white',
-//           hover: 'hover:border-[#123a66] hover:shadow-black',
-//           active: 'active:scale-95 active:border-[#123a66] active:shadow-black',
-//           button: 'bg-[#123a66] text-white hover:bg-[#123a66]'
+//           hover: 'hover:border-[#65c7f7] hover:shadow-black',
+//           active: 'active:scale-95 active:border-[#65c7f7] active:shadow-black',
+//           button: 'bg-[#65c7f7] text-white hover:bg-[#65c7f7]'
 //         };
 //     }
 //   };
@@ -101,7 +101,7 @@
 //   const showRecommendedBadge = period === 'month' && !isDayPass && !isFreePlan;
 
 //   const selectedStyles = isSelected 
-//     ? `scale-105 border-2 shadow-[20px] border-[#123a66] ${colorScheme.bg}` 
+//     ? `scale-105 border-2 shadow-[20px] border-[#65c7f7] ${colorScheme.bg}` 
 //     : `border border-black ${colorScheme.bg}`;
 
 //   if (!isMobile) {
@@ -191,7 +191,7 @@
 //       className={`relative flex flex-col p-5 rounded-[20px] transition-all 
 //         w-full cursor-pointer mb-3 min-h-[70px]
 //         ${isSelected 
-//           ? `border-2 border-[#123a66] ${colorScheme.bg}` 
+//           ? `border-2 border-[#65c7f7] ${colorScheme.bg}` 
 //           : `border border-black ${colorScheme.bg}`
 //         }`}
 //       onClick={onCardClick}
@@ -199,12 +199,12 @@
 //       <div className="absolute left-4 top-12 flex items-center justify-center">
 //         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
 //           ${isSelected 
-//             ? 'border-[#123a66]' 
+//             ? 'border-[#65c7f7]' 
 //             : 'border-gray-300 dark:border-gray-600'
 //           }`}
 //         >
 //           {isSelected && (
-//             <div className="w-4 h-4 rounded-full bg-[#123a66]"></div>
+//             <div className="w-4 h-4 rounded-full bg-[#65c7f7]"></div>
 //           )}
 //         </div>
 //       </div>
@@ -319,8 +319,7 @@
 
 
 
-
-// PlanCard.tsx
+// PlanCard.tsx for side bar
 import { useState } from "react";
 
 type Props = {
@@ -336,21 +335,10 @@ type Props = {
   isSelected?: boolean;
   onCardClick?: () => void;
   isMobile?: boolean;
-  selectedClass?: string;
-  onClassChange?: (classCategory: string) => void;
-  autoSelectOnClassChange?: boolean;
+  showClassCategory?: boolean;
+  selectedClassCategory?: string;
+  onClassCategoryChange?: (category: string) => void;
 };
-
-const classCategories = [
-  "9th CBSE",
-  "9th SSLC",
-  "10th CBSE",
-  "10th SSLC",
-  "11th NEET",
-  "11th JEE",
-  "12th NEET",
-  "12th JEE"
-];
 
 export default function PlanCard({
   name,
@@ -365,24 +353,22 @@ export default function PlanCard({
   isSelected = false,
   onCardClick,
   isMobile = false,
-  selectedClass = "",
-  onClassChange,
-  autoSelectOnClassChange = false,
+  showClassCategory = false,
+  selectedClassCategory = "",
+  onClassCategoryChange = () => {},
 }: Props) {
-  const [localSelectedClass, setLocalSelectedClass] = useState(selectedClass);
-
-  const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    setLocalSelectedClass(value);
-    if (onClassChange) {
-      onClassChange(value);
-    }
-    
-    // Auto-select the card when a class is chosen if enabled
-    if (value && autoSelectOnClassChange && onCardClick) {
-      onCardClick();
-    }
-  };
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
+  const classCategories = [
+    "9th CBSE",
+    "9th SSLC",
+    "10th CBSE",
+    "10th SSLC",
+    "11th NEET",
+    "11th JEE",
+    "12th NEET",
+    "12th JEE"
+  ];
 
   const getPlanQuote = (planType: string) => {
     switch (planType) {
@@ -407,9 +393,11 @@ export default function PlanCard({
           bg: "bg-black",
           text: "text-white",
           badge: "bg-purple-500 text-white",
-          hover: "hover:border-[#123a66] hover:shadow-black",
-          button: "bg-[#123a66] text-white hover:bg-[#123a66]",
-          dropdown: "bg-gray-800 text-white border-gray-700"
+          hover: "hover:border-[#65c7f7] hover:shadow-black",
+          active:
+            "active:scale-95 active:border-[#65c7f7] active:shadow-black",
+          button: "bg-[#65c7f7] text-white hover:bg-[#65c7f7]",
+          dropdown: "bg-gray-800 text-white"
         };
       case "Essential":
         return {
@@ -417,9 +405,11 @@ export default function PlanCard({
           bg: "bg-black",
           text: "text-white",
           badge: "bg-blue-500 text-white",
-          hover: "hover:border-[#123a66] hover:shadow-black",
-          button: "bg-[#123a66] text-white hover:bg-[#123a66]",
-          dropdown: "bg-gray-800 text-white border-gray-700"
+          hover: "hover:border-[#65c7f7] hover:shadow-black",
+          active:
+            "active:scale-95 active:border-[#65c7f7] active:shadow-black",
+          button: "bg-[#65c7f7] text-white hover:bg-[#65c7f7]",
+          dropdown: "bg-gray-800 text-white"
         };
       case "Experience":
         return {
@@ -427,9 +417,11 @@ export default function PlanCard({
           bg: "bg-black",
           text: "text-white",
           badge: "bg-green-500 text-white",
-          hover: "hover:border-[#123a66] hover:shadow-black",
-          button: "bg-[#123a66] text-white hover:bg-[#123a66]",
-          dropdown: "bg-gray-800 text-white border-gray-700"
+          hover: "hover:border-[#65c7f7] hover:shadow-black",
+          active:
+            "active:scale-95 active:border-[#65c7f7] active:shadow-black",
+          button: "bg-[#65c7f7] text-white hover:bg-[#65c7f7]",
+          dropdown: "bg-gray-800 text-white"
         };
       default:
         return {
@@ -437,9 +429,11 @@ export default function PlanCard({
           bg: "bg-black",
           text: "text-white",
           badge: "bg-gray-500 text-white",
-          hover: "hover:border-[#123a66] hover:shadow-black",
-          button: "bg-[#123a66] text-white hover:bg-[#123a66]",
-          dropdown: "bg-gray-800 text-white border-gray-700"
+          hover: "hover:border-[#65c7f7] hover:shadow-black",
+          active:
+            "active:scale-95 active:border-[#65c7f7] active:shadow-black",
+          button: "bg-[#65c7f7] text-white hover:bg-[#65c7f7]",
+          dropdown: "bg-gray-800 text-white"
         };
     }
   };
@@ -462,13 +456,13 @@ export default function PlanCard({
   return (
     <div
       className={`relative flex flex-col p-6 rounded-[20px] transition-all 
-        w-full max-w-[320px] mx-auto cursor-pointer min-h-[520px]
+        w-full max-w-[320px] mx-auto cursor-pointer min-h-[480px]
         transform hover:scale-105 duration-300
         ${selectedStyles}
         ${
           displayAsPopular
             ? "border-black bg-black shadow-lg"
-            : `${colorScheme.hover} hover:shadow-[20px] dark:hover:shadow-[20px]`
+            : `${colorScheme.hover} ${colorScheme.active} hover:shadow-[20px] dark:hover:shadow-[20px]`
         }`}
       onClick={onCardClick}
     >
@@ -518,24 +512,49 @@ export default function PlanCard({
       </p>
 
       {/* Class Category Dropdown */}
-      <div className="mb-4">
-        <label className="text-[10px] text-gray-300 block mb-1">
-          Class Category
-        </label>
-        <select
-          value={localSelectedClass}
-          onChange={handleClassChange}
-          className={`w-full p-2 rounded-md text-[12px] ${colorScheme.dropdown}`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <option value="">Select a class</option>
-          {classCategories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-      </div>
+      {showClassCategory && (
+        <div className="mb-4 relative">
+          <div 
+            className={`w-full py-2 px-3 rounded-lg text-[10px] ${colorScheme.dropdown} border border-gray-700 flex justify-between items-center cursor-pointer`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsDropdownOpen(!isDropdownOpen);
+            }}
+          >
+            <span>{selectedClassCategory || "Select Class Category"}</span>
+            <svg 
+              className={`w-4 h-4 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+          
+          {isDropdownOpen && (
+            <div 
+              className={`absolute top-full left-0 right-0 mt-1 rounded-lg overflow-hidden z-10 shadow-lg ${colorScheme.dropdown} border border-gray-700`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {classCategories.map((category) => (
+                <div
+                  key={category}
+                  className={`px-3 py-2 text-[10px] cursor-pointer hover:bg-gray-700 ${
+                    selectedClassCategory === category ? "bg-gray-700" : ""
+                  }`}
+                  onClick={() => {
+                    onClassCategoryChange(category);
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  {category}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="w-full h-px bg-gray-700 mb-4"></div>
 

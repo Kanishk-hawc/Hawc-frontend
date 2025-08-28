@@ -7,11 +7,39 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
-import biologyImage from "../assets/images/biology.jpg";
-import chemistryImage from "../assets/images/chemistry.jpg";
-import mathsImage from "../assets/images/maths.jpg";
-import physicsImage from "../assets/images/physics.jpg";
-import zoologyImage from "../assets/images/zoology.jpg";
+
+// Import all the images
+import image1 from "../assets/chemistry/01.png";
+import image2 from "../assets/chemistry/02.png";
+import image3 from "../assets/chemistry/03.png";
+import image4 from "../assets/chemistry/04.png";
+import image5 from "../assets/chemistry/05.png";
+import image6 from "../assets/chemistry/06.png";
+import image7 from "../assets/chemistry/07.png";
+import image8 from "../assets/chemistry/08.png";
+import image9 from "../assets/chemistry/10.png";
+import image10 from "../assets/chemistry/08@2x.png";
+import image11 from "../assets/chemistry/09.png";
+import image12 from "../assets/chemistry/09@2x.png";
+import image13 from "../assets/chemistry/10@2x.png";
+import image14 from "../assets/chemistry/11@2x.png";
+import image15 from "../assets/chemistry/12@2x.png";
+import image16 from "../assets/chemistry/13@2x.png";
+import image17 from "../assets/chemistry/13.png";
+import image18 from "../assets/chemistry/14.png";
+import image19 from "../assets/chemistry/15.png";
+import image20 from "../assets/chemistry/Lecture 04.png";
+import image21 from "../assets/chemistry/13@2x.png";
+import image22 from "../assets/chemistry/14@2x.png";
+import image23 from "../assets/chemistry/15@2x.png";
+import image24 from "../assets/chemistry/16@2x.png";
+import image25 from "../assets/chemistry/17@2x.png";
+import image26 from "../assets/chemistry/18@2x.png";
+import image27 from "../assets/chemistry/19@2x.png";
+import image28 from "../assets/chemistry/20@2x.png";
+import image29 from "../assets/chemistry/25@2x.png";
+import image30 from "../assets/chemistry/Lecture 05.png";
+import image31 from "../assets/chemistry/Lecture 04.png";
 
 interface SubjectTopicProps {
   selectedSubjectId: number | null;
@@ -26,6 +54,13 @@ interface Video {
 interface VideosResponse {
   videos: Video[];
 }
+
+// Create an array of all available images
+const allImages = [
+  image1, image2, image3, image4, image5, image6, image7, image8, image9, image10,
+  image11, image12, image13, image14, image15, image16, image17, image18, image19, image20,
+  image21, image22, image23, image24, image25, image26, image27, image28, image29, image30, image31
+];
 
 const SubjectTopic: React.FC<SubjectTopicProps> = ({
   selectedSubjectId,
@@ -52,6 +87,62 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
   const [videoLoading, setVideoLoading] = useState<boolean>(true);
   const [videoError, setVideoError] = useState<string | null>(null);
   const [scrollPositions, setScrollPositions] = useState<{[key: string]: number}>({});
+  const [topicImages, setTopicImages] = useState<{[key: string]: string}>({});
+  const [topicVideos, setTopicVideos] = useState<{[key: string]: string}>({});
+
+  // Function to get a stable image for each topic
+  const getStableImage = useCallback((chapterIndex: number, topicIndex: number) => {
+    const key = `${chapterIndex}-${topicIndex}`;
+    
+    // If we already have an image for this topic, return it
+    if (topicImages[key]) {
+      return topicImages[key];
+    }
+    
+    // Otherwise, generate a stable image based on the topic index
+    const imageIndex = (chapterIndex * 100 + topicIndex) % allImages.length;
+    return allImages[imageIndex];
+  }, [topicImages]);
+
+  // Function to get a stable video for each topic
+  const getStableVideo = useCallback((chapterIndex: number, topicIndex: number) => {
+    const key = `${chapterIndex}-${topicIndex}`;
+    
+    // If we already have a video for this topic, return it
+    if (topicVideos[key]) {
+      return topicVideos[key];
+    }
+    
+    // Otherwise, generate a stable video based on the topic index
+    if (videos.length === 0) return "";
+    const videoIndex = (chapterIndex * 100 + topicIndex) % videos.length;
+    return videos[videoIndex].url;
+  }, [topicVideos, videos]);
+
+  // Pre-assign images and videos to all topics on initial render
+  useEffect(() => {
+    const newTopicImages: {[key: string]: string} = {};
+    const newTopicVideos: {[key: string]: string} = {};
+    
+    subject.chapters.forEach((chapter, chapterIndex) => {
+      chapter.topics.forEach((_, topicIndex) => {
+        const key = `${chapterIndex}-${topicIndex}`;
+        
+        // Assign stable image
+        const imageIndex = (chapterIndex * 100 + topicIndex) % allImages.length;
+        newTopicImages[key] = allImages[imageIndex];
+        
+        // Assign stable video
+        if (videos.length > 0) {
+          const videoIndex = (chapterIndex * 100 + topicIndex) % videos.length;
+          newTopicVideos[key] = videos[videoIndex].url;
+        }
+      });
+    });
+    
+    setTopicImages(newTopicImages);
+    setTopicVideos(newTopicVideos);
+  }, [subject, videos]);
 
   // Fetch videos from API
   useEffect(() => {
@@ -92,12 +183,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     fetchVideos();
   }, []);
 
-  const getRandomVideoUrl = useCallback(() => {
-    if (videos.length === 0) return "";
-    const randomIndex = Math.floor(Math.random() * videos.length);
-    return videos[randomIndex].url;
-  }, [videos]);
-
   useEffect(() => {
     setVisibleChapters(2);
     setLoadingMore(false);
@@ -133,16 +218,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     window.addEventListener("resize", checkIfMobile);
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
-
-  const getSubjectImage = (subjectName: string) => {
-    const lowerCaseName = subjectName.toLowerCase();
-    if (lowerCaseName.includes("biology")) return biologyImage;
-    if (lowerCaseName.includes("chemistry")) return chemistryImage;
-    if (lowerCaseName.includes("math")) return mathsImage;
-    if (lowerCaseName.includes("physics")) return physicsImage;
-    if (lowerCaseName.includes("zoology")) return zoologyImage;
-    return biologyImage; 
-  };
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -416,11 +491,11 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
 
   return (
     <div
-      className={`px-2 py-20 relative bottom-20 md:bottom-0 ${
-        isDarkMode ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)] text-white" : "bg-white text-black"
+      className={`px-2 py-10 relative bottom-20 md:bottom-0 ${
+        isDarkMode ? "bg-transparent text-white" : "bg-white text-black"
       }`}
     >
-      <h2 className="text-3xl mb-6">Recorded Lectures</h2>
+      <h2 className="text-3xl font-semibold mb-6">{subject.name} Recorded Lectures</h2>
 
       {videoError && (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
@@ -458,7 +533,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                       className={`pointer-events-auto p-2 transition-all duration-200 ${
                         (hoveredContainerSide.index === chapterIndex && hoveredContainerSide.side === "left") || 
                         (hoveredArrow.index === chapterIndex && hoveredArrow.side === "left")
-                          ? "opacity-100 scale-110 bg-black/20 rounded-full"
+                          ? "opacity-100 scale-110 bg-black/10 rounded-full h-full flex items-center"
                           : "opacity-0"
                       }`}
                     >
@@ -474,7 +549,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                       className={`pointer-events-auto p-2 transition-all duration-200 ${
                         (hoveredContainerSide.index === chapterIndex && hoveredContainerSide.side === "right") || 
                         (hoveredArrow.index === chapterIndex && hoveredArrow.side === "right")
-                          ? "opacity-100 scale-110 bg-black/20 rounded-full"
+                          ? "opacity-100 scale-110 bg-black/10 rounded-full h-full flex items-center"
                           : "opacity-0"
                       }`}
                     >
@@ -498,20 +573,20 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                   const uniqueId = `${chapterIndex}-${topicIndex}`;
                   const isHovered = hoveredCard === uniqueId;
                   const isMenuOpen = showMenu === uniqueId;
-                  const subjectImage = getSubjectImage(subject.name);
+                  const topicImage = getStableImage(chapterIndex, topicIndex % chapter.topics.length);
+                  const videoUrl = getStableVideo(chapterIndex, topicIndex % chapter.topics.length);
                   const progress = videoProgress[uniqueId] || 0;
-                  const videoUrl = getRandomVideoUrl();
                   const videoTime = videoTimes[uniqueId] || {current: "0:00", total: "0:00"};
 
                   return (
                     <div
                       key={uniqueId}
-                      className="card-item flex-shrink-0 w-80 relative transition-transform duration-300 hover:scale-105"
+                      className="card-item flex-shrink-0 w-64 relative transition-transform duration-300 hover:scale-105"
                       onMouseEnter={() => handleCardHover(uniqueId, chapterIndex)}
                       onMouseLeave={() => handleCardLeave(uniqueId, chapterIndex)}
                       onClick={() => handlePlay(chapter, topic)}
                     >
-                      <div className="relative h-52 w-full rounded-lg shadow-md overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-left">
+                      <div className="relative h-40 w-full rounded-lg shadow-md overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-left">
                         {isHovered && videoUrl && !videoLoading ? (
                           <>
                             <video
@@ -550,8 +625,8 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                         ) : (
                           <>
                             <img 
-                              src={subjectImage} 
-                              alt={subject.name}
+                              src={topicImage} 
+                              alt={topic.name}
                               className="absolute inset-0 w-full h-full object-cover"
                             />
                             <div className="absolute inset-0 bg-black/20"></div>

@@ -118,7 +118,7 @@ const Header: React.FC<HeaderProps> = ({
     <>
       <header
         className={`${
-          isDarkMode ? "bg-transparent" : "bg-white"
+          isDarkMode ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)]" : "bg-white"
         } transition-colors duration-300 p-2 flex items-center justify-between fixed top-0 left-0 right-0 z-40`}
       >
         <div className="flex items-center">
@@ -370,21 +370,24 @@ const Header: React.FC<HeaderProps> = ({
         >
           <div className="flex flex-col justify-between h-full">
             <div className="space-y-4">
-              <div className="relative group">
-                <button
-                  onClick={handleSidebarProfileClick}
-                  className={`flex flex-col items-center p-1.5 rounded-lg w-full ${
-                    isDarkMode
-                      ? `text-gray-300 hover:bg-gray-700 ${isActivePath(`/profile/${userName}`) ? "bg-gray-700" : ""}`
-                      : `text-gray-600 hover:bg-gray-200 ${isActivePath(`/profile/${userName}`) ? "bg-gray-200" : ""}`
-                  }`}
-                >
-                  <FaUserCircle size={20} className={userName ? "text-blue-500" : ""} />
-                </button>
-             <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  {userName ? userName : "Login"}
+              {/* Only show profile icon if user is logged in */}
+              {userName && (
+                <div className="relative group">
+                  <button
+                    onClick={handleSidebarProfileClick}
+                    className={`flex flex-col items-center p-1.5 rounded-lg w-full ${
+                      isDarkMode
+                        ? `text-gray-300 hover:bg-gray-700 ${isActivePath(`/profile/${userName}`) ? "bg-gray-700" : ""}`
+                        : `text-gray-600 hover:bg-gray-200 ${isActivePath(`/profile/${userName}`) ? "bg-gray-200" : ""}`
+                    }`}
+                  >
+                    <FaUserCircle size={20} className="text-blue-500" />
+                  </button>
+                  <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                    {userName}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <SidebarIcon
                 icon={<FaQuestionCircle size={16} />}
@@ -473,8 +476,28 @@ const Header: React.FC<HeaderProps> = ({
             isDarkMode ? "border-gray-700" : "border-gray-200"
           } hidden md:flex`}
         >
-          <div className={`p-3 mb-1 ${isDarkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
-            {!userName ? (
+          {/* Only show profile section if user is logged in */}
+          {userName ? (
+            <div className={`p-3 mb-1 ${isDarkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
+              <div 
+                className="flex items-center cursor-pointer"
+                onClick={() => history.push(`/profile/${userName}`)}
+              >
+                <div className="mr-2">
+                  <FaUserCircle size={28} className="text-blue-500" />
+                </div>
+                <div className="flex flex-col">
+                  <span className={`font-medium ${isDarkMode ? "text-white" : "text-gray-800"} text-sm`}>
+                    {userName}
+                  </span>
+                  <span className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+                    {userEmail}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className={`p-3 mb-1 ${isDarkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
               <div className="flex items-center">
                 <div className="mr-2">
                   <FaUserCircle size={28} className={isDarkMode ? "text-gray-400" : "text-gray-600"} />
@@ -497,25 +520,8 @@ const Header: React.FC<HeaderProps> = ({
                   </span>
                 </div>
               </div>
-            ) : (
-              <div 
-                className="flex items-center cursor-pointer"
-                onClick={() => history.push(`/profile/${userName}`)}
-              >
-                <div className="mr-2">
-                  <FaUserCircle size={28} className="text-blue-500" />
-                </div>
-                <div className="flex flex-col">
-                  <span className={`font-medium ${isDarkMode ? "text-white" : "text-gray-800"} text-sm`}>
-                    {userName}
-                  </span>
-                  <span className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
-                    {userEmail}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
 
           <div className="flex-1 overflow-y-auto py-1">
             <SidebarItem

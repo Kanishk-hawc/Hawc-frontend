@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import SignupPanel from "./signup";
+import SignupPanel from "./signup"; 
 
 type LoginPanelProps = {
   isOpen: boolean;
@@ -10,54 +10,44 @@ type LoginPanelProps = {
   onLoginSuccess: (user: any) => void;
 };
 
-const LoginPanel: React.FC<LoginPanelProps> = ({
-  isOpen,
-  onClose,
-  onLoginSuccess,
-}) => {
+const LoginPanel: React.FC<LoginPanelProps> = ({ isOpen, onClose, onLoginSuccess }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showSignup, setShowSignup] = useState(false);
+  const [showSignup, setShowSignup] = useState(false); 
 
   const handleLogin = async () => {
     setLoading(true);
     setError("");
 
     try {
-      const response = await axios.post("http://lms.hawc.in/api/login", {
+      const response = await axios.post("http://localhost:5000/login", {
         email,
         password,
       });
 
-      // ✅ LMS API response format assumption
-      const userData = response.data?.data;
+      const { message, user } = response.data;
 
-      if (userData) {
-        // store locally
-        localStorage.setItem("userData", JSON.stringify(userData));
-
-        // callback to parent
-        onLoginSuccess(userData);
-
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+        onLoginSuccess(user);
         onClose();
       } else {
-        setError(response.data?.message || "Login failed. Try again.");
+        setError(message || "Login failed");
       }
     } catch (err: any) {
-      setError(
-        err.response?.data?.message ||
-          "Login failed. Please check your credentials."
-      );
+      setError(err.response?.data?.message || "Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCloseSignup = () => setShowSignup(false);
+  const handleCloseSignup = () => {
+    setShowSignup(false);
+  };
 
-  const handleSignupSuccess = (user: any) => {
+  const handleSignupSuccess = (user:any) => {
     setShowSignup(false);
     onLoginSuccess(user);
     onClose();
@@ -65,7 +55,6 @@ const LoginPanel: React.FC<LoginPanelProps> = ({
 
   return (
     <>
-      {/* Slide-in Login Drawer */}
       <div
         className={`fixed top-0 right-0 h-full w-80 md:w-[400px] lg:w-[500px] bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 z-50 ${
           isOpen ? "translate-x-0" : "translate-x-full"
@@ -88,9 +77,9 @@ const LoginPanel: React.FC<LoginPanelProps> = ({
 
           <p className="text-xs text-gray-700 dark:text-gray-300 text-left w-full">
             Are you new here?{" "}
-            <span
+            <span 
               className="text-blue-600 underline cursor-pointer"
-              onClick={() => setShowSignup(true)}
+              onClick={() => setShowSignup(true)} 
             >
               Sign Up
             </span>
@@ -141,19 +130,15 @@ const LoginPanel: React.FC<LoginPanelProps> = ({
               Privacy Policy
             </Link>{" "}
             &{" "}
-            <Link
-              to="/refund-policy"
-              className="underline cursor-pointer text-blue-600"
-            >
+            <Link to="/refund-policy" className="underline cursor-pointer text-blue-600">
               Refund Policy
             </Link>
           </p>
         </div>
       </div>
 
-      {/* SignUp Panel */}
-      <SignupPanel
-        isOpen={showSignup}
+      <SignupPanel 
+        isOpen={showSignup} 
         onClose={handleCloseSignup}
         onSignupSuccess={handleSignupSuccess}
       />

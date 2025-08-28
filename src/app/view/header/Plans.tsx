@@ -578,7 +578,9 @@
 
 
 
-//plan.tsx with side bar
+
+
+//plan.tsx without sidebar
 import { useState, useEffect } from "react";
 import PlanCard from "../components/PlanCard";
 import { getPlans } from "../lib/pricing";
@@ -587,8 +589,11 @@ import PhysicsIcon from "./icons/physics.png";
 import MathIcon from "./icons/math.png";
 import BiologyIcon from "./icons/biology.png";
 import ZoologyIcon from "./icons/zoology.png";
+import LoginPanel from "../login";
 
 export default function Plans() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const [planType, setPlanType] = useState<"stranded" | "premium">("stranded");
   const [plans, setPlans] = useState(getPlans("IN", "stranded"));
   const [isMobile, setIsMobile] = useState(false);
@@ -597,10 +602,14 @@ export default function Plans() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [selectedBoardGrade, setSelectedBoardGrade] = useState<string | null>(null);
+  const [selectedBoardGrade, setSelectedBoardGrade] = useState<string | null>("9th-cbse");
   const [activeTab, setActiveTab] = useState("9th-cbse");
 
   useEffect(() => {
+    // Check if user is logged in
+    const user = localStorage.getItem("user");
+    setIsLoggedIn(!!user);
+    
     // Check if dark mode is enabled
     const isDark = document.documentElement.classList.contains('dark');
     setIsDarkMode(isDark);
@@ -661,6 +670,11 @@ export default function Plans() {
       window.removeEventListener("resize", checkMobile);
     };
   }, []);
+
+  const handleLoginSuccess = (user: any) => {
+    setIsLoggedIn(true);
+    setShowLogin(false);
+  };
 
   const handlePlanTypeChange = (type: "stranded" | "premium") => {
     setPlanType(type);
@@ -736,7 +750,6 @@ export default function Plans() {
     const subjectCount = selectedSubjects.length;
     const planId = selectedPlan.id;
     const period = getPeriodForDisplay(planId);
-    const isHigherGrade = selectedBoardGrade.includes("11th") || selectedBoardGrade.includes("12th");
     
     if (planType === "stranded") {
       if (period === "day") {
@@ -860,23 +873,6 @@ export default function Plans() {
     setShowCheckout(false);
   };
 
-  // Board and grade options - Updated to match the vertical tabs
-  const boardGradeOptions = [
-    { id: "9th-cbse", label: "9th CBSE", value: "9th cbse" },
-    { id: "9th-sslc", label: "9th SSLC", value: "9th sslc" },
-    { id: "10th-cbse", label: "10th CBSE", value: "10th cbse" },
-    { id: "10th-sslc", label: "10th SSLC", value: "10th sslc" },
-    { id: "11th-cbse", label: "11th CBSE", value: "11th cbse" },
-    { id: "11th-sslc", label: "11th SSLC", value: "11th sslc" },
-    { id: "12th-cbse", label: "12th CBSE", value: "12th cbse" },
-    { id: "12th-sslc", label: "12th SSLC", value: "12th sslc" }
-  ];
-
-  const handleTabClick = (tabId: string, value: string) => {
-    setActiveTab(tabId);
-    setSelectedBoardGrade(value);
-  };
-
   // Check if higher grade (11th or 12th)
   const isHigherGrade = selectedBoardGrade ? (selectedBoardGrade.includes("11th") || selectedBoardGrade.includes("12th")) : false;
   const isJee = selectedBoardGrade ? selectedBoardGrade.includes("jee") : false;
@@ -909,7 +905,7 @@ export default function Plans() {
             onClick={() => handlePlanTypeChange(type)}
             className={`px-4 py-2 rounded-sm font-medium text-sm transition-colors ${
               planType === type
-                ? "bg-[#123a66] text-white"
+                ? "bg-[#65c7f7] text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
             }`}
           >
@@ -919,194 +915,171 @@ export default function Plans() {
       </div>
 
       <div className="flex flex-1">
-        {/* Left Sidebar for Board/Grade Selection - Using vertical tabs design */}
-        <div className={`hidden md:block w-64 pr-4 transition-all duration-300 ${
-          showCheckout ? "blur-sm opacity-70" : ""
-        }`}>
-          <div className={`bg-white border border-gray-300 rounded-lg p-4 sticky top-4 shadow-md mt-10 ${
-            isDarkMode ? "dark:bg-black dark:border-gray-700" : ""
-          }`}>
-            <h2 className={`text-lg font-bold mb-3 text-center ${
-              isDarkMode ? "text-white" : "text-gray-800"
-            }`}>
-              <i className="fa-solid fa-graduation-cap mr-2 text-sm"></i>
-              Class Category
-            </h2>
-            
-            <ul className="space-y-0">
-              {boardGradeOptions.map((option) => (
-                <li key={option.id} className="border-t border-b border-gray-200 first:border-t-0 last:border-b-0">
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleTabClick(option.id, option.value);
-                    }}
-                    className={`flex items-center gap-3 py-3 px-4 no-underline transition-all duration-200 text-sm font-medium ${
-                      activeTab === option.id
-                        ? "text-[#5a4fff] font-semibold bg-[#f9f9ff] relative"
-                        : "text-gray-700 hover:bg-gray-50"
-                    } ${isDarkMode ? "dark:text-gray-300 dark:hover:bg-gray-800" : ""}`}
-                    style={activeTab === option.id ? { 
-                      borderLeft: "4px solid #5a4fff",
-                      paddingLeft: "12px"
-                    } : {}}
-                  >
-                    <i className="fa-solid fa-book text-xs"></i>
-                    {option.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
         <div
           className={`flex-1 transition-all duration-300 ${
-            showCheckout ? "blur-sm opacity-70" : ""
+            showCheckout ? "blur-sm opacity-70" : !isLoggedIn ? "blur-sm opacity-70" : ""
           }`}
         >
-          {!selectedBoardGrade && (
-            <div className="text-center py-12">
-              <div className={`text-xl font-bold mb-4 ${isDarkMode ? "text-white" : "text-gray-800"}`}>
-                Select Your Class & Curriculum
+          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center md:mb-20 mx-auto max-w-5xl">
+            {plans.map((p, i) => (
+              <div key={p.id} className="w-full flex justify-center">
+                <PlanCard
+                  name={p.name}
+                  price={`${p.currency} ${p.price}`}
+                  originalPrice={p.originalPrice}
+                  discountText={p.discountText}
+                  period={getPeriodForDisplay(p.id)}
+                  perks={p.perks}
+                  popular={i === 2}
+                  onSelect={() => handlePlanSelection(p.id)}
+                  onCardClick={() => handlePlanSelection(p.id)}
+                  isSelected={selectedPlanId === p.id}
+                  type={getPlanType(p.name)}
+                  isMobile={isMobile}
+                  isEnabled={isLoggedIn}
+                />
               </div>
-              <div className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
-                Please choose your class and curriculum from the sidebar to view available plans
+            ))}
+          </div>
+
+          {selectedPlanId && !showCheckout && (
+            <div className="mx-auto mb-12 w-full max-w-4xl px-4">
+              <h2 className={`text-xl font-bold text-center mb-6 ${
+                isDarkMode ? "text-white" : "text-gray-800"
+              }`}>
+                Select Your Subjects ({selectedSubjects.length}/{maxSubjects} subjects)
+              </h2>
+
+              <div className={`rounded-sm p-6 ${isDarkMode ? "bg-black" : "bg-gray-100"}`}>
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className={`text-sm font-semibold ${
+                    isDarkMode ? "text-white" : "text-gray-800"
+                  }`}>
+                    Choose Your Subjects
+                  </h3>
+                  {availableSubjects.length > 1 && (
+                    <div 
+                      className="flex items-center cursor-pointer"
+                      onClick={toggleSelectAll}
+                    >
+                      <span className={`text-sm mr-2 ${
+                        isDarkMode ? "text-white" : "text-gray-800"
+                      }`}>Select All</span>
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        selectAll ? 'bg-[#665bfe] border-[#665bfe]' : isDarkMode ? 'border-white' : 'border-gray-600'
+                      }`}>
+                        {selectAll && (
+                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className={`grid ${availableSubjects.length > 3 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 md:grid-cols-3'} gap-4 max-w-${availableSubjects.length > 3 ? '4xl' : 'xl'} mx-auto`}>
+                  {availableSubjects.map((subject) => (
+                    <SubjectCard
+                      key={subject}
+                      title={subject}
+                      icon={
+                        subject === "Chemistry" ? ChemistryIcon :
+                        subject === "Physics" ? PhysicsIcon :
+                        subject === "Maths" ? MathIcon :
+                        subject === "Biology" ? BiologyIcon :
+                        ZoologyIcon
+                      }
+                      isSelected={selectedSubjects.includes(subject)}
+                      onClick={() => toggleSubject(subject)}
+                      isHovered={hoveredSubject === subject}
+                      onHover={() => handleSubjectHover(subject)}
+                      onLeave={() => handleSubjectHover(null)}
+                      isDarkMode={isDarkMode}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           )}
 
-          {selectedBoardGrade && (
-            <>
-              <div className="p-4 grid grid-cols-1 sm:grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center md:mb-20 mx-auto max-w-5xl">
-                {plans.map((p, i) => (
-                  <div key={p.id} className="w-full flex justify-center">
-                    <PlanCard
-                      name={p.name}
-                      price={`${p.currency} ${p.price}`}
-                      originalPrice={p.originalPrice}
-                      discountText={p.discountText}
-                      period={getPeriodForDisplay(p.id)}
-                      perks={p.perks}
-                      popular={i === 2}
-                      onSelect={() => handlePlanSelection(p.id)}
-                      onCardClick={() => handlePlanSelection(p.id)}
-                      isSelected={selectedPlanId === p.id}
-                      type={getPlanType(p.name)}
-                      isMobile={isMobile}
-                      isEnabled={true}
-                    />
-                  </div>
-                ))}
+          {selectedPlanId && selectedSubjects.length > 0 && selectedPlan && (
+            <div className="mt-6 text-center">
+              <div className={`text-sm font-semibold ${
+                isDarkMode ? "text-white" : "text-gray-800"
+              }`}>
+                Total Price: {selectedPlan.currency} {calculateTotalPrice()}
               </div>
-
-              {selectedPlanId && !showCheckout && (
-                <div className="mx-auto mb-12 w-full max-w-4xl px-4">
-                  <h2 className={`text-xl font-bold text-center mb-6 ${
-                    isDarkMode ? "text-white" : "text-gray-800"
-                  }`}>
-                    Select Your Subjects ({selectedSubjects.length}/{maxSubjects} subjects)
-                  </h2>
-
-                  <div className={`rounded-sm p-6 ${isDarkMode ? "bg-black" : "bg-gray-100"}`}>
-                    <div className="flex justify-between items-center mb-6">
-                      <h3 className={`text-sm font-semibold ${
-                        isDarkMode ? "text-white" : "text-gray-800"
-                      }`}>
-                        Choose Your Subjects
-                      </h3>
-                      {availableSubjects.length > 1 && (
-                        <div 
-                          className="flex items-center cursor-pointer"
-                          onClick={toggleSelectAll}
-                        >
-                          <span className={`text-sm mr-2 ${
-                            isDarkMode ? "text-white" : "text-gray-800"
-                          }`}>Select All</span>
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                            selectAll ? 'bg-[#665bfe] border-[#665bfe]' : isDarkMode ? 'border-white' : 'border-gray-600'
-                          }`}>
-                            {selectAll && (
-                              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                              </svg>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className={`grid ${availableSubjects.length > 3 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 md:grid-cols-3'} gap-4 max-w-${availableSubjects.length > 3 ? '4xl' : 'xl'} mx-auto`}>
-                      {availableSubjects.map((subject) => (
-                        <SubjectCard
-                          key={subject}
-                          title={subject}
-                          icon={
-                            subject === "Chemistry" ? ChemistryIcon :
-                            subject === "Physics" ? PhysicsIcon :
-                            subject === "Maths" ? MathIcon :
-                            subject === "Biology" ? BiologyIcon :
-                            ZoologyIcon
-                          }
-                          isSelected={selectedSubjects.includes(subject)}
-                          onClick={() => toggleSubject(subject)}
-                          isHovered={hoveredSubject === subject}
-                          onHover={() => handleSubjectHover(subject)}
-                          onLeave={() => handleSubjectHover(null)}
-                          isDarkMode={isDarkMode}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {selectedPlanId && selectedSubjects.length > 0 && selectedPlan && (
-                <div className="mt-6 text-center">
-                  <div className={`text-sm font-semibold ${
-                    isDarkMode ? "text-white" : "text-gray-800"
-                  }`}>
-                    Total Price: {selectedPlan.currency} {calculateTotalPrice()}
-                  </div>
-                  <div className={`text-sm mt-1 ${
-                    isDarkMode ? "text-gray-300" : "text-gray-600"
-                  }`}>
-                    {selectedPlan.name} × {selectedSubjects.length} subject
-                    {selectedSubjects.length > 1 ? "s" : ""}
-                  </div>
-                  <div className={`text-xs mt-1 ${
-                    isDarkMode ? "text-gray-400" : "text-gray-500"
-                  }`}>
-                    {selectedSubjects.length === 1 && "Single subject pricing"}
-                    {selectedSubjects.length === 2 && "Dual subjects pricing"}
-                    {selectedSubjects.length === 3 && "Three subjects pricing"}
-                    {selectedSubjects.length === 4 && "Four subjects pricing"}
-                    {selectedSubjects.length === 5 && "All subjects pricing"}
-                  </div>
-                  
-                  <div className="mt-8 text-center mb-10">
-                    <button
-                      onClick={handleCheckout}
-                      disabled={selectedSubjects.length === 0}
-                      className={`px-8 py-3 rounded-sm font-bold text-sm transition-colors ${
-                        selectedSubjects.length === 0
-                          ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-[#123a66] hover:bg-[#123a66] text-white"
-                      }`}
-                    >
-                      {selectedSubjects.length > 0 && selectedPlan
-                        ? `Continue to Checkout (${
-                            selectedPlan.currency
-                          } ${calculateTotalPrice()})`
-                        : "Continue to Checkout"}
-                    </button>
-                  </div>
-                </div>
-              )}
-            </>
+              <div className={`text-sm mt-1 ${
+                isDarkMode ? "text-gray-300" : "text-gray-600"
+              }`}>
+                {selectedPlan.name} × {selectedSubjects.length} subject
+                {selectedSubjects.length > 1 ? "s" : ""}
+              </div>
+              <div className={`text-xs mt-1 ${
+                isDarkMode ? "text-gray-400" : "text-gray-500"
+              }`}>
+                {selectedSubjects.length === 1 && "Single subject pricing"}
+                {selectedSubjects.length === 2 && "Dual subjects pricing"}
+                {selectedSubjects.length === 3 && "Three subjects pricing"}
+                {selectedSubjects.length === 4 && "Four subjects pricing"}
+                {selectedSubjects.length === 5 && "All subjects pricing"}
+              </div>
+              
+              <div className="mt-8 text-center mb-10">
+                <button
+                  onClick={handleCheckout}
+                  disabled={selectedSubjects.length === 0}
+                  className={`px-8 py-3 rounded-sm font-bold text-sm transition-colors ${
+                    selectedSubjects.length === 0
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-[#65c7f7] hover:bg-[#65c7f7] text-white"
+                  }`}
+                >
+                  {selectedSubjects.length > 0 && selectedPlan
+                    ? `Continue to Checkout (${
+                        selectedPlan.currency
+                      } ${calculateTotalPrice()})`
+                    : "Continue to Checkout"}
+                </button>
+              </div>
+            </div>
           )}
         </div>
+
+        {!isLoggedIn && (
+          <div className="fixed inset-0 z-40 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+            <div className="relative z-50 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl max-w-md w-full mx-4">
+              <h2 className={`text-2xl font-bold mb-6 text-center ${
+                isDarkMode ? "text-white" : "text-gray-800"
+              }`}>
+                Please login to select plans
+              </h2>
+              <div className="text-center">
+                <button
+                  onClick={() => setShowLogin(true)}
+                  className="px-6 py-3 bg-[#65c7f7] text-white font-medium rounded-sm hover:bg-[#5ab5e0] transition-colors"
+                >
+                  Login
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showLogin && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setShowLogin(false)}></div>
+            <div className="relative z-50">
+              <LoginPanel
+                isOpen={showLogin}
+                onClose={() => setShowLogin(false)}
+                onLoginSuccess={handleLoginSuccess}
+              />
+            </div>
+          </div>
+        )}
 
         {showCheckout && (
           <div className="fixed inset-0 z-50 flex justify-end">
@@ -1183,7 +1156,7 @@ export default function Plans() {
           }`}>
             <div className="flex justify-between items-center">
               <span className={isDarkMode ? "text-white" : "text-gray-800"}>
-                {boardGrade.replace('th', 'th ').replace('cbse', 'CBSE').replace('sslc', 'SSLC').replace('jee', 'JEE').replace('neet', 'NEET')}
+                {boardGrade?.replace('th', 'th ').replace('cbse', 'CBSE').replace('sslc', 'SSLC').replace('jee', 'JEE').replace('neet', 'NEET')}
               </span>
             </div>
             <div className={`text-xs md:text-sm mt-1 ${
