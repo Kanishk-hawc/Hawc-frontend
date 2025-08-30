@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 
 type Props = {
   id: string;
@@ -319,15 +319,18 @@ export default function PlanCard({
             ))}
           </ul>
 
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelect();
-            }}
-            className={`w-full py-2 px-4 rounded-lg font-bold text-[14px] transition-colors ${colorScheme.button}`}
-          >
-            Get Started
-          </button>
+          {/* Only show Get Started button on desktop */}
+          {!isMobile && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect();
+              }}
+              className={`w-full py-2 px-4 rounded-lg font-bold text-[14px] transition-colors ${colorScheme.button}`}
+            >
+              Get Started
+            </button>
+          )}
         </>
       )}
     </div>

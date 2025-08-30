@@ -15,7 +15,8 @@ import {
   FaTimes,
   FaUserCircle,
   FaCog,
-  FaCrown
+  FaCrown,
+  FaBell   
 } from "react-icons/fa";
 import { useHistory, Link, useLocation } from "react-router-dom";
 import LoginPanel from "./login";
@@ -181,6 +182,20 @@ const Header: React.FC<HeaderProps> = ({
 
         <div className="hidden md:flex items-center gap-2 ml-auto text-gray-800 dark:text-gray-200">
           <LanguageSwitcher isDarkMode={isDarkMode} />
+          
+<button
+  onClick={() => history.push("/notifications")}
+  className={`relative pb-1 ${
+    isActivePath("/notifications")
+      ? `${
+          isDarkMode ? "text-[#62c2f1]" : "text-[#62c2f1]"
+        } font-medium after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-[#62c2f1]`
+      : "hover:text-[#62c2f1] transition-colors"
+  }`}
+>
+  <FaBell className="animate-bounce" />
+</button>
+
 
           <button
             onClick={toggleTheme}

@@ -20,20 +20,15 @@ export default function Plans() {
   const [hoveredSubject, setHoveredSubject] = useState<string | null>(null);
   const [selectAll, setSelectAll] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [selectedBoardGrade, setSelectedBoardGrade] = useState<string | null>("9th-cbse");
-  const [activeTab, setActiveTab] = useState("9th-cbse");
+  const [selectedBoardGrade, ] = useState<string | null>("9th-cbse");
+  // const [activeTab, setActiveTab] = useState("9th-cbse");
   const [expandedCardId, setExpandedCardId] = useState("");
 
   useEffect(() => {
-    // Check if user is logged in
     const user = localStorage.getItem("user");
     setIsLoggedIn(!!user);
-    
-    // Check if dark mode is enabled
     const isDark = document.documentElement.classList.contains('dark');
     setIsDarkMode(isDark);
-    
-    // Listen for dark mode changes
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'class') {
@@ -53,7 +48,6 @@ export default function Plans() {
   }, [planType]);
   
   useEffect(() => {
-    // Reset selected subjects when board/grade changes
     if (selectedBoardGrade) {
       setSelectedSubjects([]);
       setSelectAll(false);
@@ -64,11 +58,11 @@ export default function Plans() {
   useEffect(() => {
     if (selectedBoardGrade) {
       const isJee = selectedBoardGrade.includes("jee");
-      const isNeet = selectedBoardGrade.includes("neet");
+      // const isNeet = selectedBoardGrade.includes("neet");
       
-      let maxSubjects = 3; // Default for 9th/10th
+      let maxSubjects = 3; 
       if (selectedBoardGrade.includes("11th") || selectedBoardGrade.includes("12th")) {
-        maxSubjects = isJee ? 3 : 4; // JEE has 3 subjects, NEET has 4 (including Biology)
+        maxSubjects = isJee ? 3 : 4; 
       }
       
       setSelectAll(selectedSubjects.length === maxSubjects);
@@ -90,7 +84,7 @@ export default function Plans() {
     };
   }, []);
 
-  const handleLoginSuccess = (user: any) => {
+  const handleLoginSuccess = () => {
     const updatedUser = localStorage.getItem("user");
     // setIsLoggedIn(true);
     // setShowLogin(false);
@@ -115,7 +109,7 @@ export default function Plans() {
       setSelectedSubjects(selectedSubjects.filter((s) => s !== subject));
     } else {
       const isJee = selectedBoardGrade?.includes("jee");
-      const isNeet = selectedBoardGrade?.includes("neet");
+      // const isNeet = selectedBoardGrade?.includes("neet");
       
       let maxSubjects = 3; 
       if (selectedBoardGrade && (selectedBoardGrade.includes("11th") || selectedBoardGrade.includes("12th"))) {
@@ -488,8 +482,7 @@ export default function Plans() {
           </div>
         )}
       </div>
-      
-      {/* Footer would be here - it will remain functional */}
+    
     </div>
   );
 
@@ -498,7 +491,7 @@ export default function Plans() {
     icon,
     isSelected = false,
     onClick,
-    isHovered = false,
+    // isHovered = false,
     onHover,
     onLeave,
     isDarkMode,

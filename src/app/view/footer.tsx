@@ -26,7 +26,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
           isDarkMode ? "bg-transparent text-gray-300" : "bg-white text-gray-700"
         } transition-colors duration-300 ${
           sidebarOpen ? "ml-80" : "ml-14"
-        } w-full md:bottom-0 py-6`}  // Reduced padding
+        } w-full md:bottom-0 py-6`}  
       >
         <div className="w-full px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8 text-left"> 
@@ -101,7 +101,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
               <ul className="space-y-3">
                 {[
                   { name: "Contact Us", path: "/contact" },
-                  { name: "Pricing Plan", path: "#" },
+                  { name: "Pricing Plan", path: "/plan" },
                   { name: "Blog", path: "#" },
                   { name: "FAQ", path: "#" }
                 ].map((link) => (

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback, useContext } from "react";
+import React, { useRef, useState, useEffect, useCallback,  } from "react";
 import { subjectsData } from "./data/subject";
 import {
   FaChevronLeft,
@@ -49,15 +49,21 @@ interface Video {
   url: string;
 }
 
-interface VideosResponse {
-  videos: Video[];
-}
-
-// Create an array of all available images
 const allImages = [
   image1, image2, image3, image4, image5, image6, image7, image8, image9, image10,
   image11, image12, image13, image14, image15, image16, image17, image18, image19, image20,
   image21, image22, image23, image24, image25, image26, image27, image28, image29, image30, image31
+];
+
+// Use the provided video URLs directly
+const providedVideos = [
+  { key: "PTS+Introduction+Quantum+Mechanical+Model.mp4", url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS+Introduction+Quantum+Mechanical+Model.mp4" },
+  { key: "Capacitor.mp4", url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Capacitor.mp4" },
+  { key: "Divya+Bio.mp4", url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Divya+Bio.mp4" },
+  { key: "PTS+_+HUP.mp4", url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS+_+HUP.mp4" },
+  { key: "Basics+Of+Bond+Formation.mp4", url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Basics+Of+Bond+Formation.mp4" },
+  { key: "SN+Reactions+PTS.mp4", url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/SN+Reactions+PTS.mp4" },
+  { key: "Solutions+3.mp4", url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Solutions+3.mp4" }
 ];
 
 const SubjectTopic: React.FC<SubjectTopicProps> = ({
@@ -67,17 +73,17 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
   const history = useHistory();
   const subject = subjectsData.find((subj) => subj.id === selectedSubjectId);
 
-  // Move all hooks to the top - before any conditional returns
+  
   const [visibleChapters, setVisibleChapters] = useState<number>(2); 
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [videoLoading, setVideoLoading] = useState<boolean>(true);
-  const [videoError, setVideoError] = useState<string | null>(null);
+  const [videos, ] = useState<Video[]>(providedVideos); 
+  const [videoLoading, ] = useState<boolean>(false); 
+  const [videoError, ] = useState<string | null>(null);
   const [scrollPositions, setScrollPositions] = useState<{[key: string]: number}>({});
   const [topicImages, setTopicImages] = useState<{[key: string]: string}>({});
   const [topicVideos, setTopicVideos] = useState<{[key: string]: string}>({});
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+  const [, setHoveredRow] = useState<number | null>(null);
   const [showMenu, setShowMenu] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [hoveredContainerSide, setHoveredContainerSide] = useState<{
@@ -88,14 +94,14 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     index: number;
     side: "left" | "right" | null;
   }>({ index: -1, side: null });
-  const [playingVideos, setPlayingVideos] = useState<{[key: string]: boolean}>({});
+  const [, setPlayingVideos] = useState<{[key: string]: boolean}>({});
   const [videoProgress, setVideoProgress] = useState<{[key: string]: number}>({});
   const [videoTimes, setVideoTimes] = useState<{[key: string]: {current: string, total: string}}>({});
 
   const scrollRefs = useRef<(HTMLDivElement | null)[]>([]);
   const videoRefs = useRef<{[key: string]: HTMLVideoElement | null}>({});
   const autoScrollIntervals = useRef<(number | null)[]>([]);
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  // const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const formatTime = (seconds: number) => {
@@ -146,7 +152,9 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       let newPosition = currentPosition + scrollAmount;
       
       if (newPosition >= maxScrollLeft) {
-        newPosition = newPosition - (container.scrollWidth / 3);
+        // Stop at the end instead of looping back
+        newPosition = maxScrollLeft;
+        stopAutoScroll(index);
         
         container.scrollLeft = newPosition;
         setScrollPositions(prev => ({
@@ -155,7 +163,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
         }));
       } else {
         container.scrollTo({
-          left: newPosition,
+          // left: newPosition,
           behavior: 'smooth'
         });
         
@@ -189,19 +197,21 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     if (direction === "right") {
       newPosition = currentPosition + scrollAmount;
       
+      // Don't loop back, stop at the end
       if (newPosition >= maxScrollLeft) {
-        newPosition = newPosition - (container.scrollWidth / 3);
+        newPosition = maxScrollLeft;
       }
     } else {
       newPosition = currentPosition - scrollAmount;
       
+      // Don't loop back, stop at the beginning
       if (newPosition <= 0) {
-        newPosition = newPosition + (container.scrollWidth / 3);
+        newPosition = 0;
       }
     }
 
     container.scrollTo({
-      left: newPosition,
+      // left: newPosition,
       behavior: 'smooth'
     });
 
@@ -270,6 +280,9 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
   const handlePlay = useCallback((chapter: any, topic: any) => {
     const chapterNumberMatch = chapter.chapterId.toString().match(/\d+/);
     const chapterNumber = chapterNumberMatch ? chapterNumberMatch[0] : "1";
+    const chapterIndex = subject?.chapters.findIndex(c => c.chapterId === chapter.chapterId) || 0;
+    const topicIndex = chapter.topics.findIndex((t: any) => t.name === topic.name);
+    const videoUrl = getStableVideo(chapterIndex, topicIndex);
 
     history.push({
       pathname: `/course/${chapter.chapterName.replace(/\s+/g, "-")}/chapter-${chapterNumber}`,
@@ -279,9 +292,10 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
         courseId: chapter.chapterId,
         topicName: topic.name,
         duration: topic.duration,
+        videoUrl: videoUrl, 
       },
     });
-  }, [history]);
+  }, [history, subject, getStableVideo]);
   
   const handleCardHover = useCallback((uniqueId: string, chapterIndex: number) => {
     setHoveredCard(uniqueId);
@@ -376,6 +390,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     setTopicVideos(newTopicVideos);
   }, [subject, videos]);
 
+  /*
   useEffect(() => {
     async function fetchVideos() {
       try {
@@ -411,6 +426,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
 
     fetchVideos();
   }, []);
+  */
 
   useEffect(() => {
     if (!subject) return;

@@ -9,17 +9,21 @@ import {
   FaClosedCaptioning,
   FaExpand,
 } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
 
 interface VideoPlayerProps {
   url?: string;
 }
+interface LocationState {
+  videoUrl: string;
+}
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({
-  url = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-}) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hlsRef = useRef<Hls.default | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const location = useLocation<LocationState>();
+  const videoUrl = location.state?.videoUrl;
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [levels, setLevels] = useState<Hls.Level[]>([]);
@@ -57,40 +61,56 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     };
   }, [isPlaying]);
 
-  // Initialize HLS player
+  // Initialize video player
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || !videoUrl) return;
 
     video.controls = false;
 
-    if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = url;
-      video.addEventListener("play", () => setIsPlaying(true));
-      video.addEventListener("pause", () => setIsPlaying(false));
-      video.play().catch(() => {});
-    } else {
-      const hls = new Hls.default();
-      hls.attachMedia(video);
-      hls.loadSource(url);
+    // Check if it's an HLS stream or regular MP4
+    if (videoUrl.endsWith('.m3u8')) {
+      // Handle HLS stream
+      if (Hls.default.isSupported()) {
+        const hls = new Hls.default();
+        hls.attachMedia(video);
+        hls.loadSource(videoUrl);
 
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        setLevels(hls.levels);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          setLevels(hls.levels);
+          video.play().catch(() => {});
+          setIsPlaying(true);
+        });
+
+        hls.on(Hls.Events.LEVEL_SWITCHED, (_, data) => {
+          setCurrentLevel(data.level);
+        });
+
+        hlsRef.current = hls;
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        // Safari native HLS support
+        video.src = videoUrl;
+        video.addEventListener("loadedmetadata", () => {
+          video.play().catch(() => {});
+          setIsPlaying(true);
+        });
+      }
+    } else {
+      // Handle MP4 and other formats
+      video.src = videoUrl;
+      video.addEventListener("loadedmetadata", () => {
         video.play().catch(() => {});
         setIsPlaying(true);
       });
-
-      hls.on(Hls.Events.LEVEL_SWITCHED, (_, data) => {
-        setCurrentLevel(data.level);
-      });
-
-      hlsRef.current = hls;
     }
+
+    video.addEventListener("play", () => setIsPlaying(true));
+    video.addEventListener("pause", () => setIsPlaying(false));
 
     return () => {
       hlsRef.current?.destroy();
     };
-  }, [url]);
+  }, [videoUrl]);
 
   // --- Controls Functions ---
   const togglePlay = () => {
@@ -231,42 +251,44 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 <FaClosedCaptioning />
               </button>
 
-              {/* Quality selector */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowQualityOptions((prev) => !prev)}
-                  className="text-white px-2 md:px-3 py-1 border border-white rounded text-sm md:text-base flex items-center gap-1"
-                >
-                  {currentLevel === -1
-                    ? "AUTO"
-                    : `${levels[currentLevel]?.height}p`}
-                  <FaCog />
-                </button>
+              {/* Quality selector - Only show for HLS streams */}
+              {videoUrl && videoUrl.endsWith('.m3u8') && levels.length > 0 && (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowQualityOptions((prev) => !prev)}
+                    className="text-white px-2 md:px-3 py-1 border border-white rounded text-sm md:text-base flex items-center gap-1"
+                  >
+                    {currentLevel === -1
+                      ? "AUTO"
+                      : `${levels[currentLevel]?.height}p`}
+                    <FaCog />
+                  </button>
 
-                {showQualityOptions && (
-                  <div className="absolute bottom-10 right-0 bg-gray-900 rounded-md py-1 w-20 md:w-24 border border-gray-700">
-                    <button
-                      onClick={() => changeQuality(-1)}
-                      className={`w-full px-3 py-1 text-white hover:bg-gray-700 text-xs md:text-sm ${
-                        currentLevel === -1 ? "bg-blue-600" : ""
-                      }`}
-                    >
-                      AUTO
-                    </button>
-                    {levels.map((level, idx) => (
+                  {showQualityOptions && (
+                    <div className="absolute bottom-10 right-0 bg-gray-900 rounded-md py-1 w-20 md:w-24 border border-gray-700">
                       <button
-                        key={idx}
-                        onClick={() => changeQuality(idx)}
+                        onClick={() => changeQuality(-1)}
                         className={`w-full px-3 py-1 text-white hover:bg-gray-700 text-xs md:text-sm ${
-                          currentLevel === idx ? "bg-blue-600" : ""
+                          currentLevel === -1 ? "bg-blue-600" : ""
                         }`}
                       >
-                        {level.height}p
+                        AUTO
                       </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+                      {levels.map((level, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => changeQuality(idx)}
+                          className={`w-full px-3 py-1 text-white hover:bg-gray-700 text-xs md:text-sm ${
+                            currentLevel === idx ? "bg-blue-600" : ""
+                          }`}
+                        >
+                          {level.height}p
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Fullscreen */}
               <button

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FaTimes } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaTimes, FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import SignupPanel from "./signup"; 
@@ -19,8 +19,53 @@ const LoginPanel: React.FC<LoginPanelProps> = ({ isOpen, onClose, onLoginSuccess
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showSignup, setShowSignup] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailWarning, setEmailWarning] = useState("");
+
+  // Disable body scroll when panel is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    // Cleanup function to reset overflow when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  // Handle Enter key press for login
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && isOpen && email && password) {
+        handleLogin();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keypress', handleKeyPress);
+    }
+
+    return () => {
+      document.removeEventListener('keypress', handleKeyPress);
+    };
+  }, [isOpen, email, password]);
+
+  const validateEmail = () => {
+    if (email && !email.includes('@')) {
+      setEmailWarning("Please enter a valid email address");
+      return false;
+    } else {
+      setEmailWarning("");
+      return true;
+    }
+  };
 
   const handleLogin = async () => {
+    if (!validateEmail()) return;
+    
     setLoading(true);
     setError("");
 
@@ -64,8 +109,17 @@ const LoginPanel: React.FC<LoginPanelProps> = ({ isOpen, onClose, onLoginSuccess
     onClose();
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <>
+      {/* Overlay to prevent closing when clicking outside */}
+      {isOpen && (
+        <div className="fixed inset-0 z-40" onClick={(e) => e.stopPropagation()} />
+      )}
+      
       <div
         className={`fixed top-0 right-0 h-full w-80 md:w-[400px] lg:w-[500px] bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 z-50 ${
           isOpen ? "translate-x-0" : "translate-x-full"
@@ -86,7 +140,7 @@ const LoginPanel: React.FC<LoginPanelProps> = ({ isOpen, onClose, onLoginSuccess
         <div className="flex flex-col items-center justify-start flex-1 p-4 gap-3 -mt-4">
           {error && <p className="text-red-500 text-xs">{error}</p>}
 
-          <p className="text-xs text-gray-700 dark:text-gray-300 text-left w-full">
+          <p className="text-xs text-gray-700 dark:text-gray-300 text-left w-full ml-6 md:ml-20">
             Are you new here?{" "}
             <span 
               className="text-blue-600 underline cursor-pointer"
@@ -99,34 +153,54 @@ const LoginPanel: React.FC<LoginPanelProps> = ({ isOpen, onClose, onLoginSuccess
           <label className="text-gray-700 dark:text-gray-300 text-xs self-start ml-6 md:ml-20">
             Email
           </label>
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-64 sm:w-72 md:w-80 p-2 text-sm rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
-          />
+          <div className="relative w-64 sm:w-72 md:w-80">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (e.target.value && !e.target.value.includes('@')) {
+                  setEmailWarning("Please enter a valid email address");
+                } else {
+                  setEmailWarning("");
+                }
+              }}
+              onBlur={validateEmail}
+              className="w-full p-2 text-sm rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
+            />
+          </div>
+          {emailWarning && <p className="text-red-500 text-xs self-start ml-6 md:ml-20">{emailWarning}</p>}
 
-          <label className="text-gray-700 dark:text-gray-300 text-xs self-start ml-6 md:ml-20">
+          <label className="text-gray-700 dark:text-gray-300 text-xs self-start ml-6 md:ml-20 mt-2">
             Password
           </label>
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-64 sm:w-72 md:w-80 p-2 text-sm rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
-          />
+          <div className="relative w-64 sm:w-72 md:w-80">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 text-sm rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white pr-10"
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 dark:text-gray-400"
+            >
+              {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+            </button>
+          </div>
 
-          <p className="text-xs text-blue-600 underline cursor-pointer self-start ml-12">
+          <p className="text-xs text-blue-600 underline cursor-pointer self-start ml-6 md:ml-20">
             Forget Password?
           </p>
 
           <button
             onClick={handleLogin}
-            disabled={loading}
+            disabled={loading || !email || !password || !!emailWarning}
             style={{ backgroundColor: "#595959" }}
-            className="w-64 sm:w-72 md:w-80 text-white py-2 text-sm rounded mt-4 hover:opacity-90 transition-opacity duration-200"
+            className="w-64 sm:w-72 md:w-80 text-white py-2 text-sm rounded mt-4 hover:opacity-90 transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Logging in..." : "Continue"}
           </button>

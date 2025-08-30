@@ -37,6 +37,7 @@ interface ClassInfo {
   language: string;
 }
 
+/*
 interface Video {
   key: string;
   url: string;
@@ -45,6 +46,7 @@ interface Video {
 interface VideosResponse {
   videos: Video[];
 }
+*/
 
 const LiveClass: React.FC<LiveClassProps> = ({
   isDarkMode,
@@ -58,9 +60,12 @@ const LiveClass: React.FC<LiveClassProps> = ({
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  // const [videos, setVideos] = useState<Video[]>([]);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState<string | null>(null);
+  
+  /*
   useEffect(() => {
     async function fetchVideos() {
       try {
@@ -79,6 +84,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
 
     fetchVideos();
   }, []);
+  */
 
   useEffect(() => {
     const checkDevice = () => {
@@ -94,6 +100,15 @@ const LiveClass: React.FC<LiveClassProps> = ({
       window.removeEventListener('resize', checkDevice);
     };
   }, []);
+  const videoUrls = [
+    "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS+Introduction+Quantum+Mechanical+Model.mp4",
+    "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Capacitor.mp4",
+    "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Divya+Bio.mp4",
+    "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/PTS+_+HUP.mp4",
+    "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Basics+Of+Bond+Formation.mp4",
+    "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/SN+Reactions+PTS.mp4",
+    "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Solutions+3.mp4"
+  ];
 
   const images = [
      {
@@ -108,7 +123,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
       genres: ["Science", "Quantum", "Theory"],
       description:
         "Fundamental theory in physics describing nature at small scales. We'll discuss wave-particle duality, quantum states, and real-world applications.",
-      videoUrl: videos[3]?.url || "",
+      videoUrl: videoUrls[0], 
     },
     {
       id: 1,
@@ -122,7 +137,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
       genres: ["Science", "Life", "Molecular"],
       description:
         "Exploring the fundamental unit of life - the cell. In this session, we will dive into cell structure, organelles, and their functions, along with an overview of cell communication and division.",
-      videoUrl: videos[2]?.url || "",
+      videoUrl: videoUrls[2], 
     },
     {
       id: 2,
@@ -136,7 +151,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
       genres: ["Science", "Animal", "Behavior"],
       description:
         "Understanding patterns and reasons behind animal actions. We'll explore instinctive behaviors, learned responses, and how environment shapes animal life.",
-      videoUrl: videos[1]?.url || "",
+      videoUrl: videoUrls[1], 
     },
     {
       id: 3,
@@ -150,7 +165,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
       genres: ["Science", "Molecular", "Reactions"],
       description:
         "Study of carbon-containing compounds and their reactions. This class covers hydrocarbons, functional groups, and reaction mechanisms.",
-      videoUrl: videos[0]?.url || "",
+      videoUrl: videoUrls[5], 
     },
     {
       id: 5,
@@ -164,7 +179,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
       genres: ["Mathematics", "Analysis", "Applications"],
       description:
         "Mathematical study of continuous change. Learn limits, derivatives, integrals, and their applications in science and engineering.",
-      videoUrl: videos[4]?.url || "",
+      videoUrl: videoUrls[4], 
     },
   ];
 
@@ -288,6 +303,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
     });
   };
 
+  /*
   if (loading) {
     return (
       <div className={`flex items-center justify-center h-screen ${isDarkMode ? "bg-[#091E37]" : "bg-gray-100"}`}>
@@ -314,6 +330,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
       </div>
     );
   }
+  */
 
 if (isMobile) {
   return (
@@ -392,7 +409,7 @@ if (isMobile) {
             <h3 className={`text-lg font-semibold mb-3 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
               Select Subject:
             </h3>
-            <div className="flex overflow-x-auto pb-2 space-x-2 scrollbar-hide"> {/* Added scrollbar-hide class */}
+            <div className="flex overflow-x-auto pb-2 space-x-2 scrollbar-hide">
               {images.map((subj) => {
                 const isSelected = selectedSubjectId === subj.id;
                 return (

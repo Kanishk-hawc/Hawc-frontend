@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import { subjectsData } from "../components/data/subject";
 import { FaChevronLeft, FaChevronRight, FaPlay } from "react-icons/fa";
 
-// Import the images
 import biologyImage from "../assets/images/biology.jpg";
 import chemistryImage from "../assets/images/chemistry.jpg";
 import mathsImage from "../assets/images/maths.jpg";
@@ -69,9 +68,9 @@ const Recommendation: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
     const container = scrollRefs.current[index];
     if (!container) return;
 
-    const cardWidth = window.innerWidth < 768 ? 180 : 256; // Smaller cards on mobile
-    const gap = window.innerWidth < 768 ? 16 : 24; // Smaller gap on mobile
-    const scrollAmount = (cardWidth + gap) * (window.innerWidth < 768 ? 1 : 3); // Scroll fewer cards on mobile
+    const cardWidth = window.innerWidth < 768 ? 180 : 256; 
+    const gap = window.innerWidth < 768 ? 16 : 24; 
+    const scrollAmount = (cardWidth + gap) * (window.innerWidth < 768 ? 1 : 3); 
     const maxScrollLeft = container.scrollWidth - container.clientWidth;
 
     if (direction === "right") {
@@ -97,7 +96,6 @@ const Recommendation: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
         <div key={section.title}>
           <h2 className="text-xl md:text-3xl font-bold mb-4 md:mb-6">{section.title}</h2>
           <div className="relative">
-            {/* Arrows - hidden on mobile */}
             <button
               onClick={() => scrollCards(sectionIndex, "left")}
               className="hidden md:block absolute left-0 top-1/2 transform -translate-y-1/2 z-20 p-2 rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors"
@@ -140,7 +138,6 @@ const Recommendation: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
                         backgroundPosition: 'center'
                       }}
                     >
-                      {/* Dark overlay for better text visibility */}
                       <div className="absolute inset-0 bg-black bg-opacity-30"></div>
                       
                       {isHovered && (
@@ -164,10 +161,10 @@ const Recommendation: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
                       {!isHovered && (
                         <div className="flex flex-col items-center p-2 z-10">
                           <h4 className="font-semibold text-sm md:text-base text-white text-center line-clamp-2">
-                            {/* {topic.name} */}
+                      
                           </h4>
                           <p className="text-xs mt-1 text-gray-200">
-                            {/* {topic.subject} */}
+                        
                           </p>
                         </div>
                       )}

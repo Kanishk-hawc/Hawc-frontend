@@ -10,6 +10,7 @@ interface CourseState {
   courseId: string | number;
   topicName: string;
   duration: string;
+  videoUrl: string;
   chapterNumber?: number;
   date?: string;
   rating?: number;
@@ -49,13 +50,13 @@ const CourseClass: React.FC<CourseClassProps> = ({ isDarkMode }) => {
   }, []);
 
   useEffect(() => {
-    if (showImage) return;
+    if (showImage || !state?.videoUrl) return;
     const video = videoRef.current;
     if (!video) return;
 
-    video.src = "https://videos.pexels.com/video-files/1456996/1456996-hd_1920_1080_30fps.mp4";
+    video.src = state.videoUrl;
     video.play().catch(() => {});
-  }, [showImage]);
+  }, [showImage, state?.videoUrl]);
 
   const navigateToVideoPlayer = () => {
     history.push("/play", { ...state });
@@ -100,7 +101,7 @@ const CourseClass: React.FC<CourseClassProps> = ({ isDarkMode }) => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen mt-3 flex flex-col">
       {!isMobile && (
         <div className="relative w-full" style={{ height: "85vh" }}>
           {showImage && (
@@ -192,10 +193,9 @@ const CourseClass: React.FC<CourseClassProps> = ({ isDarkMode }) => {
         </div>
       )}
 
-      {/* Mobile View */}
       {isMobile && (
         <div className="flex flex-col">
-          {/* Media Section (reduced height) */}
+         
           <div 
             className=" w-full h-48 bg-black flex items-center justify-center"
             onClick={navigateToVideoPlayer}
