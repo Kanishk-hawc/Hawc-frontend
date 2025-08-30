@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback, useContext } from "react";
 import { subjectsData } from "./data/subject";
 import {
   FaChevronLeft,
@@ -7,8 +7,6 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
-
-// Import all the images
 import image1 from "../assets/chemistry/01.png";
 import image2 from "../assets/chemistry/02.png";
 import image3 from "../assets/chemistry/03.png";
@@ -69,18 +67,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
   const history = useHistory();
   const subject = subjectsData.find((subj) => subj.id === selectedSubjectId);
 
-  if (!subject) {
-    return (
-      <div
-        className={`p-6 flex justify-center items-center ${
-          isDarkMode ? "bg-[#091E37] text-white" : "bg-white text-black"
-        }`}
-      >
-        <p>No subject selected</p>
-      </div>
-    );
-  }
-
+  // Move all hooks to the top - before any conditional returns
   const [visibleChapters, setVisibleChapters] = useState<number>(2); 
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [videos, setVideos] = useState<Video[]>([]);
@@ -89,113 +76,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
   const [scrollPositions, setScrollPositions] = useState<{[key: string]: number}>({});
   const [topicImages, setTopicImages] = useState<{[key: string]: string}>({});
   const [topicVideos, setTopicVideos] = useState<{[key: string]: string}>({});
-
-  // Function to get a stable image for each topic
-  const getStableImage = useCallback((chapterIndex: number, topicIndex: number) => {
-    const key = `${chapterIndex}-${topicIndex}`;
-    
-    // If we already have an image for this topic, return it
-    if (topicImages[key]) {
-      return topicImages[key];
-    }
-    
-    // Otherwise, generate a stable image based on the topic index
-    const imageIndex = (chapterIndex * 100 + topicIndex) % allImages.length;
-    return allImages[imageIndex];
-  }, [topicImages]);
-
-  // Function to get a stable video for each topic
-  const getStableVideo = useCallback((chapterIndex: number, topicIndex: number) => {
-    const key = `${chapterIndex}-${topicIndex}`;
-    
-    // If we already have a video for this topic, return it
-    if (topicVideos[key]) {
-      return topicVideos[key];
-    }
-    
-    // Otherwise, generate a stable video based on the topic index
-    if (videos.length === 0) return "";
-    const videoIndex = (chapterIndex * 100 + topicIndex) % videos.length;
-    return videos[videoIndex].url;
-  }, [topicVideos, videos]);
-
-  // Pre-assign images and videos to all topics on initial render
-  useEffect(() => {
-    const newTopicImages: {[key: string]: string} = {};
-    const newTopicVideos: {[key: string]: string} = {};
-    
-    subject.chapters.forEach((chapter, chapterIndex) => {
-      chapter.topics.forEach((_, topicIndex) => {
-        const key = `${chapterIndex}-${topicIndex}`;
-        
-        // Assign stable image
-        const imageIndex = (chapterIndex * 100 + topicIndex) % allImages.length;
-        newTopicImages[key] = allImages[imageIndex];
-        
-        // Assign stable video
-        if (videos.length > 0) {
-          const videoIndex = (chapterIndex * 100 + topicIndex) % videos.length;
-          newTopicVideos[key] = videos[videoIndex].url;
-        }
-      });
-    });
-    
-    setTopicImages(newTopicImages);
-    setTopicVideos(newTopicVideos);
-  }, [subject, videos]);
-
-  // Fetch videos from API
-  useEffect(() => {
-    async function fetchVideos() {
-      try {
-        setVideoLoading(true);
-        const res = await fetch("http://localhost:4000/videos");
-        if (!res.ok) throw new Error("Network response was not ok");
-        const data: VideosResponse = await res.json();
-        setVideos(data.videos);
-      } catch (err: any) {
-        console.error(err);
-        setVideoError(err.message || "Something went wrong");
-        
-        // Fallback to sample videos if API fails
-        const videoData = {
-          videos: [
-            {
-              key: "Basics Of Bond Formation.mp4",
-              url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Basics%20Of%20Bond%20Formation.mp4"
-            },
-            {
-              key: "Capacitor.mp4",
-              url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Capacitor.mp4"
-            },
-            {
-              key: "Divya Bio.mp4",
-              url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Divya%20Bio.mp4"
-            }
-          ]
-        };
-        setVideos(videoData.videos);
-      } finally {
-        setVideoLoading(false);
-      }
-    }
-
-    fetchVideos();
-  }, []);
-
-  useEffect(() => {
-    setVisibleChapters(2);
-    setLoadingMore(false);
-    const newPositions: {[key: string]: number} = {};
-    subject.chapters.forEach((_, index) => {
-      newPositions[`${index}`] = 0;
-    });
-    setScrollPositions(newPositions);
-  }, [selectedSubjectId, subject]);
-
-  const scrollRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const videoRefs = useRef<{[key: string]: HTMLVideoElement | null}>({});
-  const autoScrollIntervals = useRef<(number | null)[]>([]);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [showMenu, setShowMenu] = useState<string | null>(null);
@@ -212,12 +92,11 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
   const [videoProgress, setVideoProgress] = useState<{[key: string]: number}>({});
   const [videoTimes, setVideoTimes] = useState<{[key: string]: {current: string, total: string}}>({});
 
-  useEffect(() => {
-    const checkIfMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkIfMobile();
-    window.addEventListener("resize", checkIfMobile);
-    return () => window.removeEventListener("resize", checkIfMobile);
-  }, []);
+  const scrollRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const videoRefs = useRef<{[key: string]: HTMLVideoElement | null}>({});
+  const autoScrollIntervals = useRef<(number | null)[]>([]);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -225,48 +104,33 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
+  const getStableImage = useCallback((chapterIndex: number, topicIndex: number) => {
+    const key = `${chapterIndex}-${topicIndex}`;
+    
+    if (topicImages[key]) {
+      return topicImages[key];
+    }
+    
+    const imageIndex = (chapterIndex * 100 + topicIndex) % allImages.length;
+    return allImages[imageIndex];
+  }, [topicImages]);
+  
+  const getStableVideo = useCallback((chapterIndex: number, topicIndex: number) => {
+    const key = `${chapterIndex}-${topicIndex}`;
+    if (topicVideos[key]) {
+      return topicVideos[key];
+    }
+  
+    if (videos.length === 0) return "";
+    const videoIndex = (chapterIndex * 100 + topicIndex) % videos.length;
+    return videos[videoIndex].url;
+  }, [topicVideos, videos]);
+
   const getInfiniteTopics = useCallback((topics: any[]) => {
     return [...topics, ...topics, ...topics];
   }, []);
 
-  const scrollCards = (index: number, direction: "left" | "right") => {
-    const container = scrollRefs.current[index];
-    if (!container) return;
-
-    const cardWidth = container.querySelector(".card-item")?.clientWidth || 300;
-    const gap = 24;
-    const scrollAmount = (cardWidth + gap) * 3;
-    const maxScrollLeft = container.scrollWidth - container.clientWidth;
-    const currentPosition = scrollPositions[`${index}`] || 0;
-
-    let newPosition;
-    
-    if (direction === "right") {
-      newPosition = currentPosition + scrollAmount;
-      
-      if (newPosition >= maxScrollLeft) {
-        newPosition = newPosition - (container.scrollWidth / 3);
-      }
-    } else {
-      newPosition = currentPosition - scrollAmount;
-      
-      if (newPosition <= 0) {
-        newPosition = newPosition + (container.scrollWidth / 3);
-      }
-    }
-
-    container.scrollTo({
-      left: newPosition,
-      behavior: 'smooth'
-    });
-
-    setScrollPositions(prev => ({
-      ...prev,
-      [`${index}`]: newPosition
-    }));
-  };
-
-  const startAutoScroll = (index: number) => {
+  const startAutoScroll = useCallback((index: number) => {
     if (autoScrollIntervals.current[index]) return;
     
     autoScrollIntervals.current[index] = window.setInterval(() => {
@@ -301,28 +165,65 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
         }));
       }
     }, 3000);
-  };
+  }, [scrollPositions]);
 
-  const stopAutoScroll = (index: number) => {
+  const stopAutoScroll = useCallback((index: number) => {
     if (autoScrollIntervals.current[index]) {
       clearInterval(autoScrollIntervals.current[index]!);
       autoScrollIntervals.current[index] = null;
     }
-  };
+  }, []);
 
-  const handleRowMouseEnter = (index: number) => {
+  const scrollCards = useCallback((index: number, direction: "left" | "right") => {
+    const container = scrollRefs.current[index];
+    if (!container) return;
+
+    const cardWidth = container.querySelector(".card-item")?.clientWidth || 300;
+    const gap = 24;
+    const scrollAmount = (cardWidth + gap) * 3;
+    const maxScrollLeft = container.scrollWidth - container.clientWidth;
+    const currentPosition = scrollPositions[`${index}`] || 0;
+
+    let newPosition;
+    
+    if (direction === "right") {
+      newPosition = currentPosition + scrollAmount;
+      
+      if (newPosition >= maxScrollLeft) {
+        newPosition = newPosition - (container.scrollWidth / 3);
+      }
+    } else {
+      newPosition = currentPosition - scrollAmount;
+      
+      if (newPosition <= 0) {
+        newPosition = newPosition + (container.scrollWidth / 3);
+      }
+    }
+
+    container.scrollTo({
+      left: newPosition,
+      behavior: 'smooth'
+    });
+
+    setScrollPositions(prev => ({
+      ...prev,
+      [`${index}`]: newPosition
+    }));
+  }, [scrollPositions]);
+
+  const handleRowMouseEnter = useCallback((index: number) => {
     setHoveredRow(index);
     stopAutoScroll(index);
-  };
+  }, [stopAutoScroll]);
 
-  const handleRowMouseLeave = (index: number) => {
+  const handleRowMouseLeave = useCallback((index: number) => {
     setHoveredRow(null);
     setHoveredContainerSide({ index: -1, side: null });
     setHoveredArrow({ index: -1, side: null });
     startAutoScroll(index);
-  };
+  }, [startAutoScroll]);
 
-  const handleContainerHover = (index: number, e: React.MouseEvent) => {
+  const handleContainerHover = useCallback((index: number, e: React.MouseEvent) => {
     if (isMobile) return;
     
     const container = e.currentTarget;
@@ -338,22 +239,22 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     } else {
       setHoveredContainerSide({ index: -1, side: null });
     }
-  };
+  }, [isMobile]);
 
-  const handleArrowHover = (index: number, side: "left" | "right") => {
+  const handleArrowHover = useCallback((index: number, side: "left" | "right") => {
     setHoveredArrow({ index, side });
-  };
+  }, []);
 
-  const handleArrowLeave = () => {
+  const handleArrowLeave = useCallback(() => {
     setHoveredArrow({ index: -1, side: null });
-  };
+  }, []);
 
-  const handleMenuToggle = (cardId: string, e: React.MouseEvent) => {
+  const handleMenuToggle = useCallback((cardId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setShowMenu(showMenu === cardId ? null : cardId);
-  };
+  }, [showMenu]);
 
-  const handleMenuOption = (option: string, chapter: any, topic: any) => {
+  const handleMenuOption = useCallback((option: string, chapter: any, topic: any) => {
     setShowMenu(null);
     switch (option) {
       case "watch":
@@ -364,9 +265,9 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       case "share":
         break;
     }
-  };
+  }, []);
 
-  const handlePlay = (chapter: any, topic: any) => {
+  const handlePlay = useCallback((chapter: any, topic: any) => {
     const chapterNumberMatch = chapter.chapterId.toString().match(/\d+/);
     const chapterNumber = chapterNumberMatch ? chapterNumberMatch[0] : "1";
 
@@ -380,9 +281,9 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
         duration: topic.duration,
       },
     });
-  };
+  }, [history]);
   
-  const handleCardHover = (uniqueId: string, chapterIndex: number) => {
+  const handleCardHover = useCallback((uniqueId: string, chapterIndex: number) => {
     setHoveredCard(uniqueId);
     setHoveredRow(chapterIndex);
     stopAutoScroll(chapterIndex);
@@ -391,9 +292,9 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       ...prev,
       [uniqueId]: true
     }));
-  };
+  }, [stopAutoScroll]);
 
-  const handleCardLeave = (uniqueId: string, chapterIndex: number) => {
+  const handleCardLeave = useCallback((uniqueId: string, chapterIndex: number) => {
     setHoveredCard(null);
     startAutoScroll(chapterIndex);
   
@@ -401,9 +302,9 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       ...prev,
       [uniqueId]: false
     }));
-  };
+  }, [startAutoScroll]);
   
-  const handleTimeUpdate = (uniqueId: string, e: React.SyntheticEvent<HTMLVideoElement>) => {
+  const handleTimeUpdate = useCallback((uniqueId: string, e: React.SyntheticEvent<HTMLVideoElement>) => {
     const video = e.target as HTMLVideoElement;
     const progress = (video.currentTime / video.duration) * 100;
     
@@ -419,9 +320,9 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
         total: formatTime(video.duration)
       }
     }));
-  };
+  }, [formatTime]);
   
-  const handleLoadedMetadata = (uniqueId: string, e: React.SyntheticEvent<HTMLVideoElement>) => {
+  const handleLoadedMetadata = useCallback((uniqueId: string, e: React.SyntheticEvent<HTMLVideoElement>) => {
     const video = e.target as HTMLVideoElement;
     setVideoTimes(prev => ({
       ...prev,
@@ -430,9 +331,9 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
         total: formatTime(video.duration)
       }
     }));
-  };
+  }, [formatTime]);
   
-  const handleProgressClick = (uniqueId: string, e: React.MouseEvent<HTMLDivElement>) => {
+  const handleProgressClick = useCallback((uniqueId: string, e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     const video = videoRefs.current[uniqueId];
     if (!video) return;
@@ -451,31 +352,109 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
         current: formatTime(newTime)
       }
     }));
-  };
+  }, [formatTime]);
 
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const loadMoreRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (!node) return;
-      if (observerRef.current) observerRef.current.disconnect();
-
-      observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && !loadingMore && visibleChapters < subject.chapters.length) {
-          setLoadingMore(true);
+  useEffect(() => {
+    if (!subject) return;
     
-          setTimeout(() => {
-            setVisibleChapters((prev) =>
-              Math.min(prev + 2, subject.chapters.length)
-            );
-            setLoadingMore(false);
-          }, 1000);
+    const newTopicImages: {[key: string]: string} = {};
+    const newTopicVideos: {[key: string]: string} = {};
+    
+    subject.chapters.forEach((chapter, chapterIndex) => {
+      chapter.topics.forEach((_, topicIndex) => {
+        const key = `${chapterIndex}-${topicIndex}`;
+        const imageIndex = (chapterIndex * 100 + topicIndex) % allImages.length;
+        newTopicImages[key] = allImages[imageIndex];
+        if (videos.length > 0) {
+          const videoIndex = (chapterIndex * 100 + topicIndex) % videos.length;
+          newTopicVideos[key] = videos[videoIndex].url;
         }
       });
+    });
+    
+    setTopicImages(newTopicImages);
+    setTopicVideos(newTopicVideos);
+  }, [subject, videos]);
 
-      observerRef.current.observe(node);
-    },
-    [subject.chapters.length, loadingMore, visibleChapters]
-  );
+  useEffect(() => {
+    async function fetchVideos() {
+      try {
+        setVideoLoading(true);
+        const res = await fetch("http://localhost:4000/videos");
+        if (!res.ok) throw new Error("Network response was not ok");
+        const data: VideosResponse = await res.json();
+        setVideos(data.videos);
+      } catch (err: any) {
+        console.error(err);
+        setVideoError(err.message || "Something went wrong");
+        const videoData = {
+          videos: [
+            {
+              key: "Basics Of Bond Formation.mp4",
+              url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Basics%20Of%20Bond%20Formation.mp4"
+            },
+            {
+              key: "Capacitor.mp4",
+              url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Capacitor.mp4"
+            },
+            {
+              key: "Divya Bio.mp4",
+              url: "https://hawc-sample-video.s3.ap-south-1.amazonaws.com/Divya%20Bio.mp4"
+            }
+          ]
+        };
+        setVideos(videoData.videos);
+      } finally {
+        setVideoLoading(false);
+      }
+    }
+
+    fetchVideos();
+  }, []);
+
+  useEffect(() => {
+    if (!subject) return;
+    
+    setVisibleChapters(2);
+    setLoadingMore(false);
+    const newPositions: {[key: string]: number} = {};
+    subject.chapters.forEach((_, index) => {
+      newPositions[`${index}`] = 0;
+    });
+    setScrollPositions(newPositions);
+  }, [selectedSubjectId, subject]);
+
+  useEffect(() => {
+    const checkIfMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
+
+  useEffect(() => {
+    if (!loadMoreRef.current || !subject) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !loadingMore && visibleChapters < subject.chapters.length) {
+        setLoadingMore(true);
+  
+        setTimeout(() => {
+          setVisibleChapters((prev) =>
+            Math.min(prev + 2, subject.chapters.length)
+          );
+          setLoadingMore(false);
+        }, 1000);
+      }
+    });
+
+    observer.observe(loadMoreRef.current);
+    
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [subject, loadingMore, visibleChapters]);
 
   useEffect(() => {
     for (let i = 0; i < visibleChapters; i++) {
@@ -487,15 +466,28 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
         if (interval) clearInterval(interval);
       });
     };
-  }, [visibleChapters]);
+  }, [visibleChapters, startAutoScroll]);
+
+  // Now the early return can happen after all hooks
+  if (!subject) {
+    return (
+      <div
+        className={`p-6 flex justify-center items-center ${
+          isDarkMode ? "bg-[#091E37] text-white" : "bg-white text-black"
+        }`}
+      >
+        <p>No subject selected</p>
+      </div>
+    );
+  }
 
   return (
     <div
-      className={`px-2 py-10 relative bottom-20 md:bottom-0 ${
+      className={`px-2 py-8 relative bottom-20 md:bottom-0 ${
         isDarkMode ? "bg-transparent text-white" : "bg-white text-black"
       }`}
     >
-      <h2 className="text-3xl font-semibold mb-6">{subject.name} Recorded Lectures</h2>
+      <h2 className="text-3xl font-semibold mb-4">{subject.name} Recorded Lectures</h2>
 
       {videoError && (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
@@ -504,9 +496,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
         </div>
       )}
 
-      <div className="mb-12">
-        <h2 className="text-2xl mb-6">{subject.name}</h2>
-
+      <div className="mb-5">
         {subject.chapters.slice(0, visibleChapters).map((chapter, chapterIndex) => (
           <div
             key={chapter.chapterId}

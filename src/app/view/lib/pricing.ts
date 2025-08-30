@@ -20,16 +20,16 @@ export function getPlans(region:string, planType: 'stranded' | 'premium' = 'stra
       perks:['All classes 24h','No downloads'] 
     },
     { 
-      id:'stranded-month', 
-      name:'Stranded / Month', 
+      id:'standard-month', 
+      name:'Standard / Month', 
       price:3499, 
       originalPrice: 6000,
       discountText: 'One week free',
       perks:['Downloads','Practice sets','Priority support'] 
     },
     { 
-      id:'stranded-year', 
-      name:'Stranded / Year', 
+      id:'standard-year', 
+      name:'Standard / Year', 
       price:34990, 
       originalPrice: 42000,
       discountText: 'Two months free',

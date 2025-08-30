@@ -4,6 +4,9 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import SignupPanel from "./signup"; 
 
+// Set the base URL for API requests
+axios.defaults.baseURL = "http://lms.hawc.in/";
+
 type LoginPanelProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -22,19 +25,27 @@ const LoginPanel: React.FC<LoginPanelProps> = ({ isOpen, onClose, onLoginSuccess
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:5000/login", {
+      const response = await axios.post("/api/login", {
         email,
         password,
       });
 
-      const { message, user } = response.data;
+      const { data } = response.data;
 
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
-        onLoginSuccess(user);
+      if (data) {
+        // Extract token and user info from response
+        const { token, name, role_name } = data;
+        const role = role_name.toLowerCase();
+        const userData = { token, name, role, email };
+        
+        // Store user data in localStorage
+        localStorage.setItem("user", JSON.stringify(userData));
+        
+        // Call the success callback
+        onLoginSuccess(userData);
         onClose();
       } else {
-        setError(message || "Login failed");
+        setError("Login failed: No user data received");
       }
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed. Please check your credentials.");
@@ -47,7 +58,7 @@ const LoginPanel: React.FC<LoginPanelProps> = ({ isOpen, onClose, onLoginSuccess
     setShowSignup(false);
   };
 
-  const handleSignupSuccess = (user:any) => {
+  const handleSignupSuccess = (user: any) => {
     setShowSignup(false);
     onLoginSuccess(user);
     onClose();

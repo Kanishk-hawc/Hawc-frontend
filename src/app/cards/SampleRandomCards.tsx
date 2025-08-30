@@ -92,7 +92,7 @@ const Recommendation: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
   };
 
   return (
-    <div className={`space-y-8 md:space-y-12 ${isDarkMode ? "bg-[#091e37] text-white" : "bg-white text-black"}`}>
+    <div className={`space-y-8 md:space-y-12 ${isDarkMode ? "bg-transparent text-white" : "bg-white text-black"}`}>
       {sections.map((section, sectionIndex) => (
         <div key={section.title}>
           <h2 className="text-xl md:text-3xl font-bold mb-4 md:mb-6">{section.title}</h2>

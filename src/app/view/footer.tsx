@@ -19,15 +19,14 @@ type FooterProps = {
 const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
   return (
     <>
-      {/* Top separator line */}
-      <div className={`w-full h-px ${isDarkMode ? "bg-gray-700" : "bg-gray-300"} ${sidebarOpen ? "ml-80" : "ml-16"}`}></div>
+      <div className={`w-full h-px relative right-16 md:right-0 bottom-14 md:bottom-0 ${isDarkMode ? "bg-gray-700" : "bg-gray-300"} ${sidebarOpen ? "ml-80" : "ml-16"}`}></div>
       
       <footer
-        className={`${
+        className={`relative right-14 md:right-0 bottom-10 ${
           isDarkMode ? "bg-transparent text-gray-300" : "bg-white text-gray-700"
         } transition-colors duration-300 ${
           sidebarOpen ? "ml-80" : "ml-14"
-        } w-full bottom-0 py-6`}  // Reduced padding
+        } w-full md:bottom-0 py-6`}  // Reduced padding
       >
         <div className="w-full px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8 text-left"> 

@@ -136,7 +136,7 @@ const Header: React.FC<HeaderProps> = ({
             
             <Link
               className="subscribe-btn ml-2 flex items-center mr-4 text-sm"
-              to="/plans"
+              to="/plan"
             >
               <FaCrown className="mr-1 text-ecba12" />
               Subscribe
@@ -169,14 +169,14 @@ const Header: React.FC<HeaderProps> = ({
           >
             Weekly Tests
           </button>
-          <button
+          {/* <button
             onClick={() => history.push("/plan")}
             className={`relative pb-1 ${isActivePath("/plan") ? 
               `${isDarkMode ? "text-[#62c2f1]" : "text-[#62c2f1]"} font-medium after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-[#62c2f1]` : 
               "hover:text-[#62c2f1] transition-colors"}`}
           >
             Plans
-          </button>
+          </button> */}
         </nav>
 
         <div className="hidden md:flex items-center gap-2 ml-auto text-gray-800 dark:text-gray-200">
