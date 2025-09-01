@@ -3,7 +3,9 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import AppFront from "./app/appfront";
 import "./index.css";
-import { I18nProvider } from "./app/view/i18n"; // adjust path if needed
+import { I18nProvider } from "./app/student/view/i18n";
+// import { AuthProvider } from "./app/auth/services/Auth"; 
+import { AuthProvider } from './app/auth/AuthContext.tsx';
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);
@@ -11,9 +13,11 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <I18nProvider>
-        <AppFront />
-      </I18nProvider>
+      <AuthProvider>
+        <I18nProvider>
+          <AppFront />
+        </I18nProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
