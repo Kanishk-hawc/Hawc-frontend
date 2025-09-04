@@ -58,17 +58,17 @@ const Schedule: React.FC = () => {
         ))}
       </div>
       
-      {/* Schedule Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      {/* Desktop Table */}
+      <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Day</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Day</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Course</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Room</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -88,6 +88,23 @@ const Schedule: React.FC = () => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="md:hidden space-y-4">
+        {filteredSchedule.map(item => (
+          <div key={item.id} className="bg-white p-4 rounded-lg shadow">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-lg font-semibold text-gray-800">{item.course}</h2>
+              <span className={`px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(item.type)}`}>
+                {item.type}
+              </span>
+            </div>
+            <p className="text-sm text-gray-600"><b>Day:</b> {item.day}</p>
+            <p className="text-sm text-gray-600"><b>Time:</b> {item.time}</p>
+            <p className="text-sm text-gray-600"><b>Room:</b> {item.room}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

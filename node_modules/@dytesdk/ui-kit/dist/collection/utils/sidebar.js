@@ -1,0 +1,42 @@
+import { isLiveStreamViewer } from "./livestream";
+export const canViewChat = (meeting) => {
+    if (meeting && !meeting.chat)
+        return false;
+    const { chatPublic, chatPrivate } = meeting.self.permissions;
+    return (chatPublic.canSend ||
+        chatPublic.canReceive || // TODO(ravindra-dyte): add web-core equivalent of chatPublic.canReceive, remove type casting
+        chatPublic.text ||
+        chatPublic.files ||
+        chatPrivate.canSend ||
+        chatPrivate.canReceive ||
+        chatPrivate.files ||
+        chatPrivate.text);
+};
+export const canViewPolls = (meeting) => {
+    if (meeting && !meeting.polls)
+        return false;
+    const { polls } = meeting.self.permissions;
+    return polls.canCreate || polls.canView || polls.canVote;
+};
+export const canViewParticipants = (meeting) => {
+    var _a;
+    if (!((_a = meeting.self.permissions) === null || _a === void 0 ? void 0 : _a.showParticipantList)) {
+        return false;
+    }
+    if (meeting && !meeting.participants)
+        return false;
+    const config = meeting === null || meeting === void 0 ? void 0 : meeting.self.config;
+    if (config && !config.controlBar.elements.participants)
+        return false;
+    return true;
+};
+export const canViewPlugins = (meeting) => {
+    if (isLiveStreamViewer(meeting))
+        return false;
+    if (meeting && !meeting.plugins)
+        return false;
+    if (meeting.meta.viewType === 'LIVESTREAM')
+        return meeting.stage.status === 'ON_STAGE';
+    const { plugins } = meeting.self.permissions;
+    return plugins.canClose || plugins.canStart;
+};

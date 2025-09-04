@@ -12,7 +12,7 @@ interface Student {
 
 const Students: React.FC = () => {
   const [selectedCourse, setSelectedCourse] = useState<string>("All");
-  
+
   const students: Student[] = [
     { id: 1, name: "John Doe", studentId: "S12345", email: "john.doe@example.com", course: "Advanced Programming", attendance: 92, grade: 85 },
     { id: 2, name: "Jane Smith", studentId: "S12346", email: "jane.smith@example.com", course: "Advanced Programming", attendance: 88, grade: 92 },
@@ -23,7 +23,7 @@ const Students: React.FC = () => {
   ];
 
   const courses = ["All", "Advanced Programming", "Data Structures", "Web Development"];
-  
+
   const filteredStudents = selectedCourse === "All" 
     ? students 
     : students.filter(student => student.course === selectedCourse);
@@ -37,7 +37,7 @@ const Students: React.FC = () => {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Students</h1>
-      
+
       {/* Course Filter */}
       <div className="mb-6">
         <label htmlFor="course-filter" className="block text-sm font-medium text-gray-700 mb-2">
@@ -54,9 +54,9 @@ const Students: React.FC = () => {
           ))}
         </select>
       </div>
-      
-      {/* Students Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+
+      {/* Desktop Table */}
+      <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -92,6 +92,28 @@ const Students: React.FC = () => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {filteredStudents.map((student) => (
+          <div key={student.id} className="bg-white shadow rounded-lg p-4">
+            <p className="text-sm text-gray-500"><b>ID:</b> {student.studentId}</p>
+            <p className="text-lg font-semibold text-gray-800">{student.name}</p>
+            <p className="text-sm text-gray-500">{student.email}</p>
+            <p className="text-sm text-gray-600 mt-1"><b>Course:</b> {student.course}</p>
+            <p className={`text-sm font-medium mt-1 ${getAttendanceColor(student.attendance)}`}>
+              Attendance: {student.attendance}%
+            </p>
+            <p className="text-sm text-gray-600 mt-1">
+              Grade: {student.grade ? `${student.grade}%` : "N/A"}
+            </p>
+            <div className="mt-3 flex space-x-4">
+              <button className="text-blue-600 hover:text-blue-900">View</button>
+              <button className="text-green-600 hover:text-green-900">Message</button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

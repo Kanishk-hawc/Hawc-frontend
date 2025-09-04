@@ -16,6 +16,7 @@ import {
   FaUserCircle,
   FaCog,
   FaCrown,
+  FaCloud ,
   FaBell as FaBellSolid
 } from "react-icons/fa";
 import { useHistory, Link, useLocation } from "react-router-dom";
@@ -583,9 +584,9 @@ const Header: React.FC<HeaderProps> = ({
             </div>
             <div className="space-y-4">
               <SidebarIcon
-                icon={<FaCog size={16} />}
+                icon={<FaCloud  size={16} />}
                 to="/settings"
-                label="Settings"
+                label="Subscribe"
                 isDarkMode={isDarkMode}
                 showLabel={false}
                 isActive={isActivePath("/settings")}
@@ -690,9 +691,9 @@ const Header: React.FC<HeaderProps> = ({
 
           <div className="py-3 border-t border-gray-300 dark:border-gray-700">
             <SidebarItem
-              icon={<FaCog size={16} />}
+              icon={<FaCloud size={16} />}
               to="/settings"
-              label="Settings"
+              label="Subscribe"
               isDarkMode={isDarkMode}
               isActive={isActivePath("/settings")}
             />

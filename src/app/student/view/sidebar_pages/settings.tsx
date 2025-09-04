@@ -1,330 +1,226 @@
 import React, { useState } from "react";
-import { FaRegCreditCard, FaRegEnvelope, FaUser, FaCalendar, FaBell, FaShieldAlt, FaPlug } from "react-icons/fa";
+import { useHistory } from "react-router-dom";
+import { FiEye, FiDownload } from "react-icons/fi";
 
-interface SettingsPageProps {
-  isDarkMode?: boolean;
+interface Payment {
+  id: number;
+  billFor: string;
+  issueDate: string;
+  dueDate: string;
+  total: string;
+  status: "Paid" | "Due" | "Cancel";
 }
 
-const SettingsPage: React.FC<SettingsPageProps> = ({ isDarkMode = false }) => {
-  const tabs = ["General", "Meetings", "Plan & Billing", "Notifications", "Apps", "Security"];
-  const [activeTab, setActiveTab] = useState("General");
+const payments: Payment[] = [
+  { id: 4947, billFor: "Enterprize Year Subscription", issueDate: "10-05-2019", dueDate: "10-13-2019", total: "$599.00", status: "Due" },
+  { id: 4904, billFor: "Maintenance Year Subscription", issueDate: "06-19-2019", dueDate: "06-26-2019", total: "$99.00", status: "Paid" },
+  { id: 4829, billFor: "Enterprize Year Subscription", issueDate: "10-04-2018", dueDate: "10-12-2018", total: "$599.00", status: "Paid" },
+  { id: 4830, billFor: "Enterprize Anniversary Subscription", issueDate: "12-04-2018", dueDate: "12-14-2018", total: "$399.00", status: "Paid" },
+  { id: 4840, billFor: "Enterprize Coverage Subscription", issueDate: "12-08-2018", dueDate: "12-22-2018", total: "$99.00", status: "Cancel" },
+  { id: 4844, billFor: "Manual Subscription Adjustments", issueDate: "12-08-2018", dueDate: "12-22-2018", total: "$99.00", status: "Paid" },
+  { id: 4847, billFor: "Automatic Subscription Adjustments", issueDate: "12-08-2018", dueDate: "12-22-2018", total: "$99.00", status: "Paid" },
+  { id: 4748, billFor: "Tiered Subscription", issueDate: "12-08-2018", dueDate: "12-22-2018", total: "$99.00", status: "Paid" },
+];
 
-  // Theme classes based on dark mode
-  const bgColor = isDarkMode ? "bg-gray-900" : "bg-gray-100";
-  const textColor = isDarkMode ? "text-gray-100" : "text-gray-800";
-  const secondaryTextColor = isDarkMode ? "text-gray-300" : "text-gray-600";
-  const cardBg = isDarkMode ? "bg-gray-800" : "bg-white";
-  const borderColor = isDarkMode ? "border-gray-700" : "border-gray-200";
-  const tableHeaderColor = isDarkMode ? "text-gray-400" : "text-gray-500";
-  const hoverColor = isDarkMode ? "hover:text-indigo-400" : "hover:text-indigo-600";
-  const activeTabColor = isDarkMode ? "text-indigo-400 border-indigo-400" : "text-indigo-600 border-indigo-600";
+const SubscriptionManagement: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<"subscriptions" | "paymentHistory">("subscriptions");
+  const history = useHistory();
+
+  const handleViewPricing = () => history.push("/plan");
+
+  const handleViewInvoice = () => {
+    window.open("/sample_invoice.pdf"); // 👈 open in new tab
+  };
+
+  const handleDownloadInvoice = () => {
+    const link = document.createElement("a");
+    link.href = "/sample_invoice.pdf"; 
+    link.download = "sample_invoice.pdf";
+    link.click();
+  };
 
   return (
-    <div className={`min-h-screen p-6 ${bgColor} ${textColor}`}>
-      <div className="max-w-[1700px] mx-auto">
-        {/* Page Title */}
-        <h1 className="text-2xl font-bold mb-6">Settings</h1>
+    <div className="p-6 max-w-5xl mx-auto">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-sm text-gray-500">Manage Subscription</h2>
+          <h1 className="text-3xl font-semibold text-gray-800">My Subscriptions</h1>
+          <p className="text-gray-500 text-sm mt-1">
+            {activeTab === "subscriptions"
+              ? "Here is list of package/product that you have subscribed."
+              : "Here is your payment history of account."}
+          </p>
+        </div>
+        {activeTab === "subscriptions" && (
+          <button
+            className="px-4 py-2 border border-indigo-400 text-indigo-600 rounded-md hover:bg-indigo-50 transition"
+            onClick={handleViewPricing}
+          >
+            View Pricing
+          </button>
+        )}
+      </div>
 
-        {/* Tabs */}
-        <div className={`flex space-x-6 border-b mb-6 ${secondaryTextColor} ${borderColor}`}>
-          {tabs.map((tab) => (
+      {/* Navigation Tabs - Centered */}
+      <div className="flex justify-center border-b border-gray-200 mb-6">
+        <div className="flex">
+          {(["subscriptions", "paymentHistory"] as const).map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-2 ${
-                activeTab === tab
-                  ? `border-b-2 font-medium ${activeTabColor}`
-                  : `${hoverColor}`
+              className={`py-2 px-4 font-medium text-sm ${
+                activeTab === tab ? "text-indigo-600 border-b-2 border-indigo-600" : "text-gray-500"
               }`}
+              onClick={() => setActiveTab(tab)}
             >
-              {tab}
+              {tab === "subscriptions" ? "My Subscriptions" : "Payment History"}
             </button>
           ))}
         </div>
-
-        {/* Tab Content */}
-        {activeTab === "General" && (
-          <section className={`${cardBg} rounded-xl shadow p-6`}>
-            <h2 className="font-semibold mb-4 flex items-center gap-2">
-              <FaUser /> General Settings
-            </h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                <div>
-                  <h3 className="font-medium">Language</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>English (US)</p>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Change</button>
-              </div>
-              
-              <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                <div>
-                  <h3 className="font-medium">Time Zone</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>Pacific Time (PT)</p>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Change</button>
-              </div>
-              
-              <div className="flex justify-between items-center py-3">
-                <div>
-                  <h3 className="font-medium">Auto-logout</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>After 24 hours of inactivity</p>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Change</button>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {activeTab === "Meetings" && (
-          <section className={`${cardBg} rounded-xl shadow p-6`}>
-            <h2 className="font-semibold mb-4 flex items-center gap-2">
-              <FaCalendar /> Meetings Settings
-            </h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                <div>
-                  <h3 className="font-medium">Default Meeting Duration</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>30 minutes</p>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Change</button>
-              </div>
-              
-              <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                <div>
-                  <h3 className="font-medium">Buffer Time Between Meetings</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>10 minutes</p>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Change</button>
-              </div>
-              
-              <div className="flex justify-between items-center py-3">
-                <div>
-                  <h3 className="font-medium">Advance Scheduling</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>Up to 60 days in advance</p>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Change</button>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {activeTab === "Plan & Billing" && (
-          <>
-            {/* Subscription Section */}
-            <section className={`${cardBg} rounded-xl shadow p-6 mb-6`}>
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="font-semibold mb-1">Free</h2>
-                  <span className="px-2 py-1 text-xs bg-green-100 text-green-600 rounded-md">
-                    Active
-                  </span>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Change</button>
-              </div>
-              <p className={`text-sm ${secondaryTextColor} mt-4`}>80 credits left (20 / 100 used)</p>
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-14 h-14 rounded-full border-4 border-indigo-500 flex items-center justify-center font-bold text-indigo-600">
-                    80
-                  </div>
-                  <span className={secondaryTextColor}>Credits Left</span>
-                </div>
-                <div className="text-right">
-                  <p className={`text-sm ${secondaryTextColor}`}>Subscription end date:</p>
-                  <p className="font-medium">12 Mar 2025</p>
-                </div>
-                <div className="text-right">
-                  <p className={`text-sm ${secondaryTextColor}`}>Balance</p>
-                  <p className="text-xl font-bold">$0.00</p>
-                </div>
-              </div>
-            </section>
-
-            {/* Promo Section */}
-            <section className={`${cardBg} rounded-xl shadow p-6 mb-6 flex justify-between items-center`}>
-              <div>
-                <h2 className="font-semibold">Get 1 month FREE</h2>
-                <p className={`text-sm ${secondaryTextColor}`}>Pay annually and get more credits</p>
-              </div>
-              <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
-                View Details
-              </button>
-            </section>
-
-            {/* Payment Info */}
-            <section className={`${cardBg} rounded-xl shadow p-6 mb-6`}>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="font-semibold">Payment Information</h2>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Edit</button>
-              </div>
-              <div className="space-y-2">
-                <p className={`flex items-center gap-2 ${secondaryTextColor}`}>
-                  <FaRegCreditCard /> Payment Method: **** 9007
-                </p>
-                <p className={`flex items-center gap-2 ${secondaryTextColor}`}>
-                  <FaRegEnvelope /> Billing Email:{" "}
-                  <span className="ml-1 font-medium">matthew****@gmail.com</span>
-                </p>
-              </div>
-            </section>
-
-            {/* Billing History */}
-            <section className={`${cardBg} rounded-xl shadow p-6`}>
-              <h2 className="font-semibold mb-4">Billing History</h2>
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className={`text-sm border-b ${borderColor} ${tableHeaderColor}`}>
-                    <th className="py-2">Invoices</th>
-                    <th className="py-2">Date</th>
-                    <th className="py-2">Total</th>
-                    <th className="py-2">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className={`border-b ${borderColor}`}>
-                    <td className="py-3">Free Plan</td>
-                    <td className="py-3">12 Feb 2025, 08:00 am</td>
-                    <td className="py-3">$0.00</td>
-                    <td className="py-3 text-green-600">Paid</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3">Free Plan</td>
-                    <td className="py-3">12 Dec 2024, 08:00 am</td>
-                    <td className="py-3">$0.00</td>
-                    <td className="py-3 text-green-600">Paid</td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </>
-        )}
-
-        {activeTab === "Notifications" && (
-          <section className={`${cardBg} rounded-xl shadow p-6`}>
-            <h2 className="font-semibold mb-4 flex items-center gap-2">
-              <FaBell /> Notification Settings
-            </h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                <div>
-                  <h3 className="font-medium">Email Notifications</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>Receive updates via email</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" defaultChecked />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></div>
-                </label>
-              </div>
-              
-              <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                <div>
-                  <h3 className="font-medium">Push Notifications</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>Receive browser notifications</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" defaultChecked />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></div>
-                </label>
-              </div>
-              
-              <div className="flex justify-between items-center py-3">
-                <div>
-                  <h3 className="font-medium">SMS Alerts</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>Receive text message alerts</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></div>
-                </label>
-                </div>
-            </div>
-          </section>
-        )}
-
-        {activeTab === "Apps" && (
-          <section className={`${cardBg} rounded-xl shadow p-6`}>
-            <h2 className="font-semibold mb-4 flex items-center gap-2">
-              <FaPlug /> Connected Apps
-            </h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-blue-600 font-bold">G</span>
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Google Calendar</h3>
-                    <p className={`text-sm ${secondaryTextColor}`}>Connected</p>
-                  </div>
-                </div>
-                <button className={`text-red-600 hover:underline`}>Disconnect</button>
-              </div>
-              
-              <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                    <span className="text-gray-800 font-bold">O</span>
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Outlook Calendar</h3>
-                    <p className={`text-sm ${secondaryTextColor}`}>Not connected</p>
-                  </div>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Connect</button>
-              </div>
-              
-              <div className="flex justify-between items-center py-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                    <span className="text-gray-800 font-bold">S</span>
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Slack</h3>
-                    <p className={`text-sm ${secondaryTextColor}`}>Not connected</p>
-                  </div>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Connect</button>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {activeTab === "Security" && (
-          <section className={`${cardBg} rounded-xl shadow p-6`}>
-            <h2 className="font-semibold mb-4 flex items-center gap-2">
-              <FaShieldAlt /> Security Settings
-            </h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                <div>
-                  <h3 className="font-medium">Two-Factor Authentication</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>Add an extra layer of security</p>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Enable</button>
-              </div>
-              
-              <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                <div>
-                  <h3 className="font-medium">Password</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>Last changed 3 months ago</p>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>Change</button>
-              </div>
-              
-              <div className="flex justify-between items-center py-3">
-                <div>
-                  <h3 className="font-medium">Active Sessions</h3>
-                  <p className={`text-sm ${secondaryTextColor}`}>3 active sessions</p>
-                </div>
-                <button className={`${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} hover:underline`}>View All</button>
-              </div>
-            </div>
-          </section>
-        )}
       </div>
+
+      {activeTab === "subscriptions" ? (
+        <>
+          {/* Enterprise Plan */}
+          <div className="border rounded-lg mb-4 p-6 flex justify-between items-center shadow-sm">
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold text-indigo-600">Enterprise Plan</h2>
+                <span className="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">Active</span>
+              </div>
+              <p className="text-sm text-gray-500">Subscription ID: 100394949</p>
+
+              <div className="grid grid-cols-2 gap-6 mt-4 text-sm">
+                <p><span className="font-semibold text-gray-700">Started On:</span> Oct 12, 2018</p>
+                <p><span className="font-semibold text-gray-700">Recurring:</span> Yes</p>
+                <p><span className="font-semibold text-gray-700">Price:</span> $599.00</p>
+                <p><span className="font-semibold text-gray-700">Access:</span> Unlimited</p>
+              </div>
+            </div>
+
+            <div className="text-right">
+              <div className="flex items-center justify-end gap-2 text-sm text-gray-500">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" className="hidden" defaultChecked />
+                  <div className="w-10 h-5 bg-indigo-200 rounded-full relative">
+                    <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition"></div>
+                  </div>
+                  Auto Renew
+                </label>
+              </div>
+              <button className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
+                Change Plan
+              </button>
+              <p className="text-sm text-gray-500 mt-2">Next Billing on Oct 11, 2020</p>
+            </div>
+          </div>
+
+          {/* Pro Plan */}
+          <div className="border rounded-lg mb-4 p-6 flex justify-between items-center shadow-sm">
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold text-indigo-600">Pro Plan</h2>
+                <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">Expired</span>
+              </div>
+              <p className="text-sm text-gray-500">Subscription ID: 100142725</p>
+
+              <div className="grid grid-cols-2 gap-6 mt-4 text-sm">
+                <p><span className="font-semibold text-gray-700">Started On:</span> Oct 12, 2017</p>
+                <p><span className="font-semibold text-gray-700">Recurring:</span> Yes</p>
+                <p><span className="font-semibold text-gray-700">Price:</span> $249.00</p>
+                <p><span className="font-semibold text-gray-700">Access:</span> Up to 10 Members</p>
+              </div>
+            </div>
+
+            <div className="text-right">
+              <div className="flex items-center justify-end gap-2 text-sm text-gray-500">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" className="hidden" />
+                  <div className="w-10 h-5 bg-gray-200 rounded-full relative">
+                    <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition"></div>
+                  </div>
+                  Auto Renew
+                </label>
+              </div>
+              <button className="mt-4 px-4 py-2 border border-indigo-400 text-indigo-600 rounded-md hover:bg-indigo-50 transition">
+                Renew Plan
+              </button>
+              <p className="text-sm text-gray-500 mt-2">You can renew the plan anytime.</p>
+            </div>
+          </div>
+
+          {/* Support Section */}
+          <div className="border rounded-lg p-6 flex justify-between items-center shadow-sm">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-800">We're here to help you!</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Ask a question or file a support ticket or report an issue. Our team support team will get back to you by email.
+              </p>
+            </div>
+            <button className="px-4 py-2 border border-indigo-400 text-indigo-600 rounded-md hover:bg-indigo-50 transition">
+              Get Support Now
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="overflow-x-auto shadow-md rounded-lg border border-gray-200">
+          <table className="w-full text-sm text-left text-gray-700">
+            <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
+              <tr>
+                <th className="px-6 py-3">#</th>
+                <th className="px-6 py-3">Bill For</th>
+                <th className="px-6 py-3">Issue Date</th>
+                <th className="px-6 py-3">Due Date</th>
+                <th className="px-6 py-3">Total</th>
+                <th className="px-6 py-3">Status</th>
+                <th className="px-6 py-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {payments.map((payment) => (
+                <tr key={payment.id} className="border-b hover:bg-gray-50">
+                  <td className="px-6 py-3 text-indigo-600 font-medium">{payment.id}</td>
+                  <td className="px-6 py-3">{payment.billFor}</td>
+                  <td className="px-6 py-3">{payment.issueDate}</td>
+                  <td className="px-6 py-3">{payment.dueDate}</td>
+                  <td className="px-6 py-3 font-medium">{payment.total}</td>
+                  <td className="px-6 py-3">
+                    <span
+                      className={`font-semibold ${
+                        payment.status === "Paid"
+                          ? "text-green-500"
+                          : payment.status === "Due"
+                          ? "text-yellow-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      ● {payment.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-3">
+                    <div className="flex space-x-3">
+                      <button
+                        className="text-indigo-600 hover:text-indigo-800"
+                        onClick={handleViewInvoice}
+                      >
+                        <FiEye size={18} />
+                      </button>
+                      <button
+                        className="text-gray-600 hover:text-gray-800"
+                        onClick={handleDownloadInvoice}
+                      >
+                        <FiDownload size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
 
-export default SettingsPage;
+export default SubscriptionManagement;

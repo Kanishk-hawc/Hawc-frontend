@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dytesdk/react-ui-kit": "^3.0.8",
+    "@dytesdk/react-web-core": "^3.1.7",
     "@react-google-maps/api": "^2.20.7",
     "@react-three/drei": "^10.7.4",
     "@react-three/fiber": "^9.3.0",

@@ -193,7 +193,7 @@
 
 
 import React, { useState, useEffect } from "react";
-import { Route, Switch, useHistory, useLocation, Redirect } from "react-router-dom";
+import { Route, Switch, useHistory, useLocation,  } from "react-router-dom";
 import Header from "./student/view/header";
 import Footer from "./student/view/footer";
 import Home from "./student/view/Dashbord";
@@ -224,7 +224,7 @@ const AppFront: React.FC = () => {
   const [theme, setTheme] = useState("dark");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const { user, isLoggedIn } = useAuth(); // Use the auth context
+  const { user,  } = useAuth(); // Use the auth context
   const history = useHistory();
   const location = useLocation();
 
@@ -247,8 +247,6 @@ const AppFront: React.FC = () => {
     setCheckoutOpen(false);
     history.push("/");
   };
-
-  // Redirect to lecturer app if user is a lecturer
   if (user && (user.role === "main_lecturer" || user.role === "sub_lecturer")) {
     return <LecturerApp />;
   }
@@ -340,7 +338,7 @@ const AppFront: React.FC = () => {
               <ProfilePage isDarkMode={isDarkMode}/>
             </Route>
             <Route path="/settings">
-              <SettingsPage isDarkMode={isDarkMode} />
+              <SettingsPage  />
             </Route>
             <Route path="/contact">
               <ContactPage isDarkMode={isDarkMode} />
