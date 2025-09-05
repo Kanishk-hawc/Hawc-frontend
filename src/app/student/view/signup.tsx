@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import axios from "axios";
 
@@ -7,14 +7,16 @@ type SignupPanelProps = {
   onClose: () => void;
   onSignupSuccess: (user: any) => void; 
 };
+
 interface BoardOption {
-  id: string;
+  id: number;
   name: string;
 }
 
 interface ClassOption {
-  id: string;
+  id: number;
   name: string;
+  boardId: number;
 }
 
 const SignupPanel: React.FC<SignupPanelProps> = ({
@@ -27,72 +29,118 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [selectedBoard, setSelectedBoard] = useState("");
-  const [selectedClass, setSelectedClass] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [selectedBoard, setSelectedBoard] = useState<number | "">("");
+  const [selectedClass, setSelectedClass] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [filteredClasses, setFilteredClasses] = useState<ClassOption[]>([]);
   const boards: BoardOption[] = [
-    { id: "cbse", name: "CBSE" },
-    { id: "icse", name: "ICSE" },
-    { id: "state", name: "State Board" },
+    { id: 1, name: "ICSE" },
+    { id: 3, name: "CBSE" },
+  ];
+  const allClasses: ClassOption[] = [
+    { id: 2, name: "Class 10", boardId: 1 }, 
+    { id: 4, name: "Class 10", boardId: 3 },
+    { id: 5, name: "Class 11", boardId: 3 }, 
   ];
 
-  const classes: ClassOption[] = [
-    { id: "9", name: "Class 9" },
-    { id: "10", name: "Class 10" },
-    { id: "11", name: "Class 11" },
-    { id: "12", name: "Class 12" },
-  ];
+  useEffect(() => {
+    if (selectedBoard) {
+      const filtered = allClasses.filter(cls => cls.boardId === selectedBoard);
+      setFilteredClasses(filtered);
+      if (selectedClass && !filtered.some(cls => cls.id === selectedClass)) {
+        setSelectedClass("");
+      }
+    } else {
+      setFilteredClasses([]);
+      setSelectedClass("");
+    }
+  }, [selectedBoard, selectedClass]);
 
-  const handleSignup = async () => {
-    if (!firstName || !lastName || !email || !mobile || !password || !selectedBoard || !selectedClass) {
+  const validateForm = () => {
+    if (!firstName || !lastName || !email || !mobile || !password || !passwordConfirmation || !selectedBoard || !selectedClass) {
       setError("All fields are required.");
-      return;
+      return false;
     }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
+    const nameRegex = /^[A-Za-z\s]+$/;
+    if (!nameRegex.test(firstName)) {
+      setError("First name should not contain numbers or special characters.");
+      return false;
     }
-    const mobileRegex = /^[0-9]{10}$/;
-    if (!mobileRegex.test(mobile)) {
-      setError("Please enter a valid 10-digit mobile number.");
-      return;
+    
+    if (!nameRegex.test(lastName)) {
+      setError("Last name should not contain numbers or special characters.");
+      return false;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address.");
+      return false;
+    }
+    const mobileRegex = /^[0-9]{10}$/;
+    if (!mobileRegex.test(mobile)) {
+      setError("Please enter a valid 10-digit mobile number.");
+      return false;
+    }
+    if (password.length < 8 || password.length > 14) {
+      setError("Password must be between 8 and 14 characters.");
+      return false;
+    }
+    if (password !== passwordConfirmation) {
+      setError("Passwords do not match.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSignup = async () => {
+    setError("");
+    if (!validateForm()) {
       return;
     }
 
     setLoading(true);
-    setError("");
     setMessage("");
 
     try {
-      const response = await axios.post("http://lms.hawc.in/api/register/student", {
-        first_name: firstName,
-        last_name: lastName,
+      // Convert mobile to number as your API expects
+      const mobileNumber = parseInt(mobile, 10);
+      
+      const requestData = {
+        name: `${firstName} ${lastName}`,
         email: email,
-        mobile: mobile,
         password: password,
-        board: selectedBoard,
-        class: selectedClass,
+        password_confirmation: passwordConfirmation,
+        mobile: mobileNumber,  // Convert to number
+        board_id: selectedBoard,  
+        class_id: selectedClass,  
+      };
+
+      console.log("Sending data:", requestData); // For debugging
+
+      const response = await axios.post("http://lms.hawc.in/api/register/student", requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
       });
 
       const { message: responseMessage, user } = response.data;
-
       setMessage(responseMessage);
+      
+      // Reset form
       setFirstName("");
       setLastName("");
       setEmail("");
       setMobile("");
       setPassword("");
-      setConfirmPassword("");
+      setPasswordConfirmation("");
       setSelectedBoard("");
       setSelectedClass("");
+      
       if (user) {
         localStorage.setItem("user", JSON.stringify(user));
         onSignupSuccess(user);
@@ -100,8 +148,28 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
       
       onClose();
     } catch (err: any) {
+      console.error("Registration error:", err); // Detailed error logging
+      
       if (err.response) {
-        setError(err.response.data.message || "Registration failed. Please try again.");
+        console.error("Error response data:", err.response.data);
+        console.error("Error response status:", err.response.status);
+        
+        if (err.response.status === 404) {
+          setError("Registration endpoint not found. Please contact support.");
+        } else if (err.response.status >= 500) {
+          setError("Server error. Please try again later.");
+        } else if (err.response.data && err.response.data.errors) {
+          // Handle validation errors from server
+          const serverErrors = err.response.data.errors;
+          const errorMessage = Object.keys(serverErrors)
+            .map(key => `${key}: ${serverErrors[key].join(', ')}`)
+            .join('\n');
+          setError(errorMessage);
+        } else if (err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError("Registration failed. Please try again.");
+        }
       } else if (err.request) {
         setError("Network error. Please check your connection and try again.");
       } else {
@@ -135,8 +203,8 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
         </div>
 
         <div className="flex flex-col items-center justify-start flex-1 p-4 gap-3 -mt-4">
-          {error && <p className="text-red-500 text-xs">{error}</p>}
-          {message && <p className="text-green-600 text-xs">{message}</p>}
+          {error && <p className="text-red-500 text-xs p-2 bg-red-50 rounded-md w-64 sm:w-72 md:w-80 whitespace-pre-line">{error}</p>}
+          {message && <p className="text-green-600 text-xs p-2 bg-green-50 rounded-md w-64 sm:w-72 md:w-80">{message}</p>}
 
           <div className="flex gap-4 w-64 sm:w-72 md:w-80">
             <div className="flex-1">
@@ -186,7 +254,12 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
               type="tel"
               placeholder="Enter your mobile number"
               value={mobile}
-              onChange={(e) => setMobile(e.target.value)}
+              onChange={(e) => {
+                // Only allow numbers
+                const value = e.target.value.replace(/\D/g, '');
+                setMobile(value);
+              }}
+              maxLength={10}
               className="w-full p-2 text-sm rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
             />
           </div>
@@ -198,7 +271,7 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
               </label>
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="Password (8-14 chars)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full p-2 text-sm rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
@@ -211,8 +284,8 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
               <input
                 type="password"
                 placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={passwordConfirmation}
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
                 className="w-full p-2 text-sm rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
               />
             </div>
@@ -225,7 +298,7 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
               </label>
               <select
                 value={selectedBoard}
-                onChange={(e) => setSelectedBoard(e.target.value)}
+                onChange={(e) => setSelectedBoard(e.target.value ? Number(e.target.value) : "")}
                 className="w-full p-2 text-sm rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
               >
                 <option value="">Select Board</option>
@@ -242,11 +315,12 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
               </label>
               <select
                 value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
+                onChange={(e) => setSelectedClass(e.target.value ? Number(e.target.value) : "")}
+                disabled={!selectedBoard}
                 className="w-full p-2 text-sm rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
               >
                 <option value="">Select Class</option>
-                {classes.map((cls) => (
+                {filteredClasses.map((cls) => (
                   <option key={cls.id} value={cls.id}>
                     {cls.name}
                   </option>
@@ -259,7 +333,7 @@ const SignupPanel: React.FC<SignupPanelProps> = ({
             onClick={handleSignup}
             disabled={loading}
             style={{ backgroundColor: "#595959" }}
-            className="w-64 sm:w-72 md:w-80 text-white py-2 text-sm rounded mt-4 hover:opacity-90 transition-opacity duration-200"
+            className="w-64 sm:w-72 md:w-80 text-white py-2 text-sm rounded mt-4 hover:opacity-90 transition-opacity duration-200 disabled:opacity-50"
           >
             {loading ? "Signing up..." : "Continue"}
           </button>

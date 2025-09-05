@@ -58,50 +58,58 @@ const Header: React.FC<HeaderProps> = ({
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [hasUnread, setHasUnread] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   // Use auth context
   const { isLoggedIn, user, login, logout } = useAuth();
 
   useEffect(() => {
-    // Load mock notifications
-    const mockNotifications: Notification[] = [
-      {
-        id: '1',
-        title: 'New Test Available',
-        message: 'Weekly physics test is now available. You can take it from the Tests section.',
-        timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-        isRead: true,
-        type: 'info'
-      },
-      {
-        id: '2',
-        title: 'Assignment Reminder',
-        message: 'Your chemistry assignment is due tomorrow. Please submit it before the deadline.',
-        timestamp: new Date(Date.now() - 1000 * 60 * 120), // 2 hours ago
-        isRead: false,
-        type: 'warning'
-      },
-      {
-        id: '3',
-        title: 'Subscription Update',
-        message: 'Your premium subscription has been activated. You now have access to all features.',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-        isRead: true,
-        type: 'success'
-      },
-      {
-        id: '4',
-        title: 'New Content Added',
-        message: 'New practice questions have been added to the Biology section.',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
-        isRead: false,
-        type: 'info'
-      }
-    ];
-    
-    setNotifications(mockNotifications);
-    setHasUnread(mockNotifications.some(n => !n.isRead));
-  }, []);
+    // Only load notifications if user is logged in
+    if (isLoggedIn) {
+      // Load mock notifications
+      const mockNotifications: Notification[] = [
+        {
+          id: '1',
+          title: 'New Test Available',
+          message: 'Weekly physics test is now available. You can take it from the Tests section.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+          isRead: true,
+          type: 'info'
+        },
+        {
+          id: '2',
+          title: 'Assignment Reminder',
+          message: 'Your chemistry assignment is due tomorrow. Please submit it before the deadline.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 120), // 2 hours ago
+          isRead: false,
+          type: 'warning'
+        },
+        {
+          id: '3',
+          title: 'Subscription Update',
+          message: 'Your premium subscription has been activated. You now have access to all features.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
+          isRead: true,
+          type: 'success'
+        },
+        {
+          id: '4',
+          title: 'New Content Added',
+          message: 'New practice questions have been added to the Biology section.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
+          isRead: false,
+          type: 'info'
+        }
+      ];
+      
+      setNotifications(mockNotifications);
+      setHasUnread(mockNotifications.some(n => !n.isRead));
+    } else {
+      // Clear notifications if user is not logged in
+      setNotifications([]);
+      setHasUnread(false);
+    }
+  }, [isLoggedIn]);
 
   const handleLoginSuccess = (userData: any) => {
     login(userData);
@@ -114,6 +122,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleLogout = () => {
     logout();
+    setIsMenuOpen(false);
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -136,7 +145,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleDesktopProfileClick = () => {
     if (isLoggedIn && user) {
-      history.push(`/profile/${user.name || user.email}`);
+      setIsMenuOpen(!isMenuOpen);
     } else {
       setLoginOpen(true);
     }
@@ -152,7 +161,11 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   const handleNotificationClick = () => {
-    setShowNotifications(!showNotifications);
+    if (isLoggedIn) {
+      setShowNotifications(!showNotifications);
+    } else {
+      setLoginOpen(true);
+    }
   };
 
   const handleViewAllNotifications = () => {
@@ -230,95 +243,96 @@ const Header: React.FC<HeaderProps> = ({
 
         <div className="hidden md:flex items-center gap-2 ml-auto text-gray-800 dark:text-gray-200">
           <LanguageSwitcher isDarkMode={isDarkMode} />
-          
-          <div className="relative">
-            <button
-              onClick={handleNotificationClick}
-              className={`relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors`}
-            >
-              {hasUnread ? (
-                <FaBellSolid className="text-xl animate-pulse text-blue-400" />
-              ) : (
-                <FiBell className="text-xl" />
-              )}
-              
-              {hasUnread && (
-                <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                </span>
-              )}
-            </button>
+          {isLoggedIn && (
+            <div className="relative">
+              <button
+                onClick={handleNotificationClick}
+                className={`relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors`}
+              >
+                {hasUnread ? (
+                  <FaBellSolid className="text-xl animate-pulse text-blue-400" />
+                ) : (
+                  <FiBell className="text-xl" />
+                )}
+                
+                {hasUnread && (
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  </span>
+                )}
+              </button>
 
-            {showNotifications && (
-              <div className={`absolute right-0 top-12 w-80 overflow-y-auto rounded-lg shadow-lg z-50 ${
-                isDarkMode ? "bg-gray-800 border border-gray-700" : "bg-white border border-gray-200"
-              }`}>
-                <div className={`p-3 border-b ${
-                  isDarkMode ? "border-gray-700" : "border-gray-200"
-                } flex justify-between items-center`}>
-                  <h3 className="font-semibold">Notifications</h3>
-                  <button 
-                    onClick={() => setShowNotifications(false)}
-                    className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-                  >
-                    <FiX size={16} />
-                  </button>
-                </div>
-                
-                <div className="max-h-72 scrollbar-hide overflow-y-auto">
-                  {notifications.length === 0 ? (
-                    <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-                      No notifications
-                    </div>
-                  ) : (
-                    notifications.map((notification) => (
-                      <div 
-                        key={notification.id}
-                        className={`p-3 border-b ${
-                          isDarkMode ? "border-gray-700 hover:bg-gray-750" : "border-gray-200 hover:bg-gray-50"
-                        } ${!notification.isRead ? (isDarkMode ? "bg-blue-900/20" : "bg-blue-50") : ""}`}
-                        onClick={() => markAsRead(notification.id)}
-                      >
-                        <div className="flex items-start">
-                          <div className={`w-2 h-2 rounded-full mt-2 mr-2 flex-shrink-0 ${
-                            notification.type === 'info' ? 'bg-blue-500' :
-                            notification.type === 'success' ? 'bg-green-500' :
-                            notification.type === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
-                          }`}></div>
-                          <div className="flex-1">
-                            <h4 className="font-medium text-sm">{notification.title}</h4>
-                            <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
-                              {notification.message.length > 80 
-                                ? `${notification.message.substring(0, 80)}...` 
-                                : notification.message}
-                            </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                              {notification.timestamp.toLocaleDateString()} at {notification.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                            </p>
-                          </div>
-                          {!notification.isRead && (
-                            <span className="w-2 h-2 rounded-full bg-blue-500 ml-2 flex-shrink-0"></span>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-                
-                <div className={`p-2 border-t ${
-                  isDarkMode ? "border-gray-700" : "border-gray-200"
+              {showNotifications && (
+                <div className={`absolute right-0 top-12 w-80 overflow-y-auto rounded-lg shadow-lg z-50 ${
+                  isDarkMode ? "bg-gray-800 border border-gray-700" : "bg-white border border-gray-200"
                 }`}>
-                  <button 
-                    onClick={handleViewAllNotifications}
-                    className="w-full py-2 text-sm text-center text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-                  >
-                    View all notifications
-                  </button>
+                  <div className={`p-3 border-b ${
+                    isDarkMode ? "border-gray-700" : "border-gray-200"
+                  } flex justify-between items-center`}>
+                    <h3 className="font-semibold">Notifications</h3>
+                    <button 
+                      onClick={() => setShowNotifications(false)}
+                      className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+                    >
+                      <FiX size={16} />
+                    </button>
+                  </div>
+                  
+                  <div className="max-h-72 scrollbar-hide overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                        No notifications
+                      </div>
+                    ) : (
+                      notifications.map((notification) => (
+                        <div 
+                          key={notification.id}
+                          className={`p-3 border-b ${
+                            isDarkMode ? "border-gray-700 hover:bg-gray-750" : "border-gray-200 hover:bg-gray-50"
+                          } ${!notification.isRead ? (isDarkMode ? "bg-blue-900/20" : "bg-blue-50") : ""}`}
+                          onClick={() => markAsRead(notification.id)}
+                        >
+                          <div className="flex items-start">
+                            <div className={`w-2 h-2 rounded-full mt-2 mr-2 flex-shrink-0 ${
+                              notification.type === 'info' ? 'bg-blue-500' :
+                              notification.type === 'success' ? 'bg-green-500' :
+                              notification.type === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}></div>
+                            <div className="flex-1">
+                              <h4 className="font-medium text-sm">{notification.title}</h4>
+                              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                                {notification.message.length > 80 
+                                  ? `${notification.message.substring(0, 80)}...` 
+                                  : notification.message}
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                {notification.timestamp.toLocaleDateString()} at {notification.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                              </p>
+                            </div>
+                            {!notification.isRead && (
+                              <span className="w-2 h-2 rounded-full bg-blue-500 ml-2 flex-shrink-0"></span>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  
+                  <div className={`p-2 border-t ${
+                    isDarkMode ? "border-gray-700" : "border-gray-200"
+                  }`}>
+                    <button 
+                      onClick={handleViewAllNotifications}
+                      className="w-full py-2 text-sm text-center text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                    >
+                      View all notifications
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
           <button
             onClick={toggleTheme}
@@ -354,15 +368,56 @@ const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-1">
+            <div className="relative flex items-center gap-1">
               <button
                 onClick={handleDesktopProfileClick}
-                className="flex items-center gap-1 p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+                className="flex items-center gap-2 p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
                 title={`Logged in as ${user.name || user.email}`}
               >
-                <FaUserCircle size={20} className="text-blue-500" />
-                <span className="hidden lg:inline text-sm">{user.name || user.email}</span>
+                <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
+                  <span className="text-white font-medium text-sm">
+                    {user?.name?.charAt(0) || "L"}
+                  </span>
+                </div>
+                <span className="hidden lg:inline text-sm">{user?.name }</span>
               </button>
+
+              {isMenuOpen && (
+                <div
+                  className={`origin-top-right absolute right-0 top-12 mt-2 w-48 rounded-md shadow-lg py-1 ${
+                    isDarkMode ? "bg-gray-800" : "bg-white"
+                  } ring-1 ring-black ring-opacity-5 focus:outline-none z-50`}
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="user-menu"
+                >
+                  <div className={`px-4 py-2 text-xs border-b ${
+                    isDarkMode ? "text-gray-400 border-gray-700" : "text-gray-400 border-gray-200"
+                  }`}>
+                    Hello! {user?.name}
+                    <h1 className="select-none">{user?.email}</h1>
+                  </div>
+                  <Link
+                    to="/profile"
+                    className={`block px-4 py-2 text-sm ${
+                      isDarkMode ? "text-gray-300 hover:bg-gray-700" : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                    role="menuitem"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Your Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      isDarkMode ? "text-gray-300 hover:bg-gray-700" : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                    role="menuitem"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -551,11 +606,11 @@ const Header: React.FC<HeaderProps> = ({
               />
               <SidebarIcon
                 icon={<FaClipboardList size={16} />}
-                to="/tests"
+                to="/test"
                 label="Tests"
                 isDarkMode={isDarkMode}
                 showLabel={false}
-                isActive={isActivePath("/tests")}
+                isActive={isActivePath("/test")}
               />
               <SidebarIcon
                 icon={<FaTasks size={16} />}
@@ -627,13 +682,15 @@ const Header: React.FC<HeaderProps> = ({
                   </span>
                   <span className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
                     {user.email}
+                  <div className="absolute top-3 right-3 bg-[#6695e2] text-white text-xs font-bold px-3 py-1 rounded-full">
+                        class 10
+                  </div>
                   </span>
                 </div>
               </div>
             </div>
           ) : (
             <div className={` ${isDarkMode ? "bg-transparent" : "bg-white"} shadow-sm`}>
-              {/* Login/Signup prompt can be added here if needed */}
             </div>
           )}
 

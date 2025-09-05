@@ -460,6 +460,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ isDarkMode }) => {
   return (
     <div className={`min-h-screen p-6 ${isDarkMode ? "bg-transparent text-gray-100" : "bg-white"}`}>
       <div className="max-w-5xl mx-auto">
+        {/* Header */}
         <div className="mb-6">
           <h2 className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Account Setting</h2>
           <h1 className="text-2xl font-semibold">My Profile</h1>
@@ -467,6 +468,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ isDarkMode }) => {
             You have full control to manage your own account setting.
           </p>
         </div>
+
+        {/* Tabs */}
         <div className="flex space-x-6 border-b mb-6">
           {['Personal', 'Billing', 'Settings', 'Notifications'].map((tab) => (
             <button
@@ -482,8 +485,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ isDarkMode }) => {
             </button>
           ))}
         </div>
+
+        {/* Personal Tab Content */}
         {activeTab === 'Personal' && (
           <>
+            {/* Personal Information */}
             <div className="mb-8">
               <h2 className="text-lg font-semibold mb-4">Personal Information</h2>
               <p className={`text-sm mb-4 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
@@ -513,6 +519,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ isDarkMode }) => {
                 ))}
               </div>
             </div>
+
+            {/* Personal Preferences */}
             <div>
               <h2 className="text-lg font-semibold mb-4">Personal Preferences</h2>
               <p className={`text-sm mb-4 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
@@ -520,6 +528,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ isDarkMode }) => {
               </p>
               
               <div className={`border rounded-lg divide-y ${isDarkMode ? "border-gray-600 divide-gray-600" : ""}`}>
+                {/* Language Preference */}
                 <div className={`p-4 ${isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-50"}`}>
                   <div className="flex justify-between items-center">
                     <div>
@@ -560,6 +569,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ isDarkMode }) => {
                     )}
                   </div>
                 </div>
+
+                {/* Date Format Preference */}
                 <div className={`p-4 ${isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-50"}`}>
                   <div className="flex justify-between items-center">
                     <div>
@@ -600,6 +611,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ isDarkMode }) => {
                     )}
                   </div>
                 </div>
+
+                {/* Timezone Preference */}
                 <div className={`p-4 ${isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-50"}`}>
                   <div className="flex justify-between items-center">
                     <div>
@@ -642,6 +655,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ isDarkMode }) => {
                 </div>
               </div>
             </div>
+
+            {/* Sign Out Button */}
             <div className="mt-8 flex justify-end">
               <button
                 onClick={handleSignOut}
@@ -656,12 +671,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ isDarkMode }) => {
             </div>
           </>
         )}
+
+        {/* Billing Tab Content */}
         {activeTab === 'Billing' && (
           <BillingPage />
         )}
+
+        {/* Settings Tab Content */}
         {activeTab === 'Settings' && (
           <SettingsPage />
         )}
+
+        {/* Notifications Tab Content */}
         {activeTab === 'Notifications' && (
           <NotificationsPage />
         )}

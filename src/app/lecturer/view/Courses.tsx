@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { liveCourses } from "../data/live";
 import { recordedCourses } from "../data/recorded";
-
-// Import all your images
 import image1 from "../assets/chemistry/01.png";
 import image2 from "../assets/chemistry/02.png";
 import image3 from "../assets/chemistry/03.png";
@@ -35,21 +33,17 @@ import image28 from "../assets/chemistry/20@2x.png";
 import image29 from "../assets/chemistry/25@2x.png";
 import image30 from "../assets/chemistry/Lecture 05.png";
 import image31 from "../assets/chemistry/Lecture 04.png";
-
-// Array of all imported images
 const allImages = [
   image1, image2, image3, image4, image5, image6, image7, image8, image9, image10,
   image11, image12, image13, image14, image15, image16, image17, image18, image19, image20,
   image21, image22, image23, image24, image25, image26, image27, image28, image29, image30, image31
 ];
 
-// Function to get a random image
 const getRandomImage = () => {
   const randomIndex = Math.floor(Math.random() * allImages.length);
   return allImages[randomIndex];
 };
 
-// Course Card Component
 interface CourseCardProps {
   course: {
     id: number;
@@ -119,11 +113,30 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, type }) => {
   );
 };
 
+// Helper function to parse duration string to minutes
+const parseDurationToMinutes = (duration: string): number => {
+  const parts = duration.split(' ');
+  let totalMinutes = 0;
+  
+  for (const part of parts) {
+    if (part.includes('h')) {
+      totalMinutes += parseInt(part.replace('h', '')) * 60;
+    } else if (part.includes('m')) {
+      totalMinutes += parseInt(part.replace('m', ''));
+    }
+  }
+  
+  return totalMinutes;
+};
+
 // Main Component
 const ExploreCourses: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"all" | "live" | "recorded">("all");
+  const [activeTab, setActiveTab] = useState<"live" | "recorded">("live");
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [sortOption, setSortOption] = useState<string>("default");
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 10;
 
   // Filter courses based on search query (only by topic)
   const filterCourses = (courses: any[]) => {
@@ -134,77 +147,124 @@ const ExploreCourses: React.FC = () => {
     );
   };
 
-  const allCourses = [...liveCourses, ...recordedCourses];
-  const filteredLiveCourses = filterCourses(liveCourses);
-  const filteredRecordedCourses = filterCourses(recordedCourses);
-  const filteredAllCourses = filterCourses(allCourses);
+  // Sort courses based on selected option
+  const sortCourses = (courses: any[]) => {
+    switch (sortOption) {
+      case "time-low-to-high":
+        return [...courses].sort((a, b) => {
+          const aMinutes = parseDurationToMinutes(a.duration);
+          const bMinutes = parseDurationToMinutes(b.duration);
+          return aMinutes - bMinutes;
+        });
+      case "time-high-to-low":
+        return [...courses].sort((a, b) => {
+          const aMinutes = parseDurationToMinutes(a.duration);
+          const bMinutes = parseDurationToMinutes(b.duration);
+          return bMinutes - aMinutes;
+        });
+      case "views-low-to-high":
+        return [...courses].sort((a, b) => {
+          const aViews = a.views || a.viewers || 0;
+          const bViews = b.views || b.viewers || 0;
+          return aViews - bViews;
+        });
+      case "views-high-to-low":
+        return [...courses].sort((a, b) => {
+          const aViews = a.views || a.viewers || 0;
+          const bViews = b.views || b.viewers || 0;
+          return bViews - aViews;
+        });
+      default:
+        return courses;
+    }
+  };
+
+  const filteredLiveCourses = sortCourses(filterCourses(liveCourses));
+  const filteredRecordedCourses = sortCourses(filterCourses(recordedCourses));
+
+  // Get current courses for pagination
+  const getCurrentCourses = () => {
+    const courses = activeTab === "live" ? filteredLiveCourses : filteredRecordedCourses;
+    const indexOfLastCourse = currentPage * coursesPerPage;
+    const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+    return courses.slice(indexOfFirstCourse, indexOfLastCourse);
+  };
+
+  // Change page
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const renderContent = () => {
-    switch (activeTab) {
-      case "all":
-        return filteredAllCourses.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredAllCourses.map(course => (
-              <CourseCard 
-                key={course.id} 
-                course={course} 
-                type={liveCourses.some(lc => lc.id === course.id) ? "live" : "recorded"} 
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center text-gray-500 py-10">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/751/751463.png"
-              alt="All"
-              className="w-20 opacity-50 mb-4"
-            />
-            <p>
-              No results found in <strong>All Courses</strong>.
-            </p>
-          </div>
-        );
-      case "live":
-        return filteredLiveCourses.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredLiveCourses.map(course => (
-              <CourseCard key={course.id} course={course} type="live" />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center text-gray-500 py-10">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png"
-              alt="Live"
-              className="w-20 opacity-50 mb-4"
-            />
-            <p>
-              No results found in <strong>Live Classes</strong>.
-            </p>
-          </div>
-        );
-      case "recorded":
-        return filteredRecordedCourses.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredRecordedCourses.map(course => (
-              <CourseCard key={course.id} course={course} type="recorded" />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center text-gray-500 py-10">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/2910/2910768.png"
-              alt="Recorded"
-              className="w-20 opacity-50 mb-4"
-            />
-            <p>
-              No results found in <strong>Recorded Courses</strong>.
-            </p>
-          </div>
-        );
-      default:
-        return null;
+    const courses = activeTab === "live" ? filteredLiveCourses : filteredRecordedCourses;
+    const currentCourses = getCurrentCourses();
+
+    if (courses.length === 0) {
+      return (
+        <div className="flex flex-col items-center text-gray-500 py-10">
+          <img
+            src={activeTab === "live" 
+              ? "https://cdn-icons-png.flaticon.com/512/1048/1048953.png" 
+              : "https://cdn-icons-png.flaticon.com/512/2910/2910768.png"
+            }
+            alt={activeTab}
+            className="w-20 opacity-50 mb-4"
+          />
+          <p>
+            No results found in <strong>{activeTab === "live" ? "Live Classes" : "Recorded Courses"}</strong>.
+          </p>
+        </div>
+      );
     }
+
+    return (
+      <>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {currentCourses.map(course => (
+            <CourseCard 
+              key={course.id} 
+              course={course} 
+              type={activeTab} 
+            />
+          ))}
+        </div>
+        
+        {/* Pagination */}
+        {courses.length > coursesPerPage && (
+          <div className="flex justify-center mt-8">
+            <nav className="flex items-center gap-2">
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
+              >
+                Previous
+              </button>
+              
+              {Array.from({ length: Math.ceil(courses.length / coursesPerPage) }, (_, i) => i + 1).map(number => (
+                <button
+                  key={number}
+                  onClick={() => paginate(number)}
+                  className={`px-3 py-1 rounded border ${
+                    currentPage === number 
+                      ? 'bg-black text-white border-black' 
+                      : 'border-gray-300'
+                  }`}
+                >
+                  {number}
+                </button>
+              ))}
+              
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === Math.ceil(courses.length / coursesPerPage)}
+                className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
+              >
+                Next
+              </button>
+            </nav>
+          </div>
+        )}
+      </>
+    );
   };
 
   return (
@@ -221,7 +281,10 @@ const ExploreCourses: React.FC = () => {
             placeholder="Search for courses by topic"
             className="flex-1 p-2 rounded-md outline-none text-gray-800 text-sm md:text-base"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1); // Reset to first page when search changes
+            }}
           />
           <button className="bg-black text-white px-3 md:px-4 py-2 rounded-md text-sm md:text-base">
             Search
@@ -231,17 +294,10 @@ const ExploreCourses: React.FC = () => {
       <div className="flex justify-start border-b border-gray-300 px-4 md:px-0 overflow-x-auto">
         <div className="flex min-w-full md:min-w-0 md:ml-64">
           <button
-            onClick={() => setActiveTab("all")}
-            className={`px-4 md:px-6 py-3 whitespace-nowrap ${
-              activeTab === "all"
-                ? "border-b-4 border-black font-semibold"
-                : "text-gray-600"
-            }`}
-          >
-            All
-          </button>
-          <button
-            onClick={() => setActiveTab("live")}
+            onClick={() => {
+              setActiveTab("live");
+              setCurrentPage(1); // Reset to first page when tab changes
+            }}
             className={`px-4 md:px-6 py-3 whitespace-nowrap ${
               activeTab === "live"
                 ? "border-b-4 border-black font-semibold"
@@ -251,7 +307,10 @@ const ExploreCourses: React.FC = () => {
             Live Classes
           </button>
           <button
-            onClick={() => setActiveTab("recorded")}
+            onClick={() => {
+              setActiveTab("recorded");
+              setCurrentPage(1); // Reset to first page when tab changes
+            }}
             className={`px-4 md:px-6 py-3 whitespace-nowrap ${
               activeTab === "recorded"
                 ? "border-b-4 border-black font-semibold"
@@ -267,7 +326,7 @@ const ExploreCourses: React.FC = () => {
           onClick={() => setShowFilters(!showFilters)}
           className="w-full p-3 bg-gray-100 rounded-lg flex items-center justify-between"
         >
-          <span>FILTERS</span>
+          <span>FILTERS & SORT</span>
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
             className={`h-5 w-5 transition-transform ${showFilters ? 'rotate-180' : ''}`}
@@ -280,43 +339,42 @@ const ExploreCourses: React.FC = () => {
       </div>
       <div className="flex flex-col md:flex-row gap-6 mt-4 md:mt-8 px-4 md:px-6 pb-8">
         <div className={`${showFilters ? 'block' : 'hidden'} md:block w-full md:w-52 mb-4 md:mb-0`}>
-          <h3 className="text-lg font-medium mb-2 hidden md:block">FILTERS</h3>
+          <h3 className="text-lg font-medium mb-2 hidden md:block">SORT BY</h3>
           <div className="bg-gray-50 p-4 rounded-lg md:bg-transparent md:p-0">
-            <label htmlFor="price" className="block mb-1 text-sm">
-              Price
+            <label htmlFor="sort" className="block mb-1 text-sm">
+              Sort Options
             </label>
             <select
-              id="price"
+              id="sort"
+              value={sortOption}
+              onChange={(e) => {
+                setSortOption(e.target.value);
+                setCurrentPage(1); // Reset to first page when sort changes
+              }}
               className="w-full p-2 border border-gray-300 rounded-md text-sm md:text-base"
             >
-              <option>All</option>
-              <option>Free</option>
-              <option>Paid</option>
+              <option value="default">Default</option>
+              <option value="time-low-to-high">Duration: Low to High</option>
+              <option value="time-high-to-low">Duration: High to Low</option>
+              <option value="views-low-to-high">Views: Low to High</option>
+              <option value="views-high-to-low">Views: High to Low</option>
             </select>
-            <div className="mt-4 md:hidden">
-              <label htmlFor="subject" className="block mb-1 text-sm">
-                Subject
-              </label>
-              <select
-                id="subject"
-                className="w-full p-2 border border-gray-300 rounded-md text-sm"
-              >
-                <option>All Subjects</option>
-                <option>Chemistry</option>
-                <option>Physics</option>
-                <option>Mathematics</option>
-              </select>
-            </div>
             
             <div className="mt-4 md:hidden flex justify-between">
-              <button className="px-4 py-2 bg-gray-200 rounded-md text-sm">
+              <button 
+                className="px-4 py-2 bg-gray-200 rounded-md text-sm"
+                onClick={() => {
+                  setSortOption("default");
+                  setCurrentPage(1);
+                }}
+              >
                 Reset
               </button>
               <button 
                 className="px-4 py-2 bg-black text-white rounded-md text-sm"
                 onClick={() => setShowFilters(false)}
               >
-                Apply Filters
+                Apply
               </button>
             </div>
           </div>

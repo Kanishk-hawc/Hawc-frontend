@@ -97,7 +97,7 @@ const DyteMeetingPage: React.FC = () => {
 
   return (
     <DyteProvider value={meeting} fallback={<p>Joining meeting...</p>}>
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center mt-10">
         <MyMeeting />
       </div>
     </DyteProvider>

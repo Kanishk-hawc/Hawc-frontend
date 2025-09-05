@@ -219,7 +219,6 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
             </div>
           </div>
           
-          {/* Footer line separator */}
           <div className={`w-full h-px my-6 ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}></div>
           
           <div

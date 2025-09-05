@@ -411,8 +411,6 @@ const LecturerHeader: React.FC<LecturerHeaderProps> = ({
           <span className="text-xs mt-0.5">Theme</span>
         </button>
       </div>
-
-      {/* Sidebar when open */}
       {sidebarOpen && (
         <div
           className={`fixed left-0 top-16 bottom-0 z-30 w-64 flex flex-col ${
@@ -488,8 +486,6 @@ const LecturerHeader: React.FC<LecturerHeaderProps> = ({
           </div>
         </div>
       )}
-
-      {/* Mini sidebar when not open */}
       {!sidebarOpen && (
         <div
           className={`fixed left-0 top-16 bottom-0 z-30 w-14 flex flex-col items-center py-3 ${
@@ -558,11 +554,11 @@ const LecturerHeader: React.FC<LecturerHeaderProps> = ({
             <div className="space-y-4">
               <SidebarIcon
                 icon={<FaCog size={16} />}
-                to="/settings"
-                label="Settings"
+                to="/profile"
+                label="Profile"
                 isDarkMode={isDarkMode}
                 showLabel={false}
-                isActive={isActivePath("/settings")}
+                isActive={isActivePath("/profile")}
               />
             </div>
           </div>

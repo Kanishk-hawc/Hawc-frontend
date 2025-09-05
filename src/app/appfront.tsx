@@ -202,6 +202,7 @@ import Test from "./student/view/header/Test";
 import TestsWeekly from "./student/view/header/TestWeekly";
 import LiveVedio from "./student/cards/LiveVideo";
 import CourseClass from "./student/components/CourseClass";
+import Dyte from "./student/components/dyte";
 import VideoPlayer from "./student/cards/VideoPlayer";
 import Assignments from "./student/view/sidebar_pages/Assignments";
 import Demos from "./student/view/sidebar_pages/Demos";
@@ -300,6 +301,9 @@ const AppFront: React.FC = () => {
             </Route>
             <Route path="/assignments">
               <Assignments />
+            </Route>
+            <Route path="/live-class">
+              <Dyte />
             </Route>
             <Route path="/demos">
               <Demos isDarkMode={isDarkMode} />

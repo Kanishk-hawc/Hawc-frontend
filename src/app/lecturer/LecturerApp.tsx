@@ -7,6 +7,7 @@ import LecturerCourses from "./view/Courses";
 import LecturerSchedule from "./view/Schedule"; 
 import LecturerStudents from "./view/Students";
 import DyteJoin from "./view/components/dyte";
+import ProfilePage from "./view/Profile";
 
 const LecturerAppContent: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -54,6 +55,9 @@ const LecturerAppContent: React.FC = () => {
               </Route>
               <Route path="/live">
                 <DyteJoin />
+              </Route>
+              <Route path="/profile">
+                <ProfilePage isDarkMode={isDarkMode} />
               </Route>
             </Switch>
           </div>
