@@ -427,7 +427,7 @@ const LecturerHeader: React.FC<LecturerHeaderProps> = ({
                     <span className="text-white font-medium">
                       {user?.name?.charAt(0) || "L"}
                       <div className="absolute top-3 right-3 bg-[#a9f0c8] text-white text-xs font-bold px-3 py-1 rounded-full">
-                        Lecturer
+                        {user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ""}
                       </div>
                     </span>
                   </div>

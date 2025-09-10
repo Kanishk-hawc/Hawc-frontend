@@ -14,7 +14,7 @@ import {
   FaBars,
   FaTimes,
   FaUserCircle,
-  FaCog,
+  
   FaCrown,
   FaCloud ,
   FaBell as FaBellSolid
@@ -24,7 +24,7 @@ import LoginPanel from "./login";
 import SignupPanel from "./signup";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import Asset106 from "./icons/Asset.png"; 
-import NotificationsPage from "./components/NotificationsPage";
+// import NotificationsPage from "./components/NotificationsPage";
 import { useAuth } from "../../auth/AuthContext";
 
 type HeaderProps = {
@@ -60,19 +60,16 @@ const Header: React.FC<HeaderProps> = ({
   const [hasUnread, setHasUnread] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  // Use auth context
   const { isLoggedIn, user, login, logout } = useAuth();
 
   useEffect(() => {
-    // Only load notifications if user is logged in
     if (isLoggedIn) {
-      // Load mock notifications
       const mockNotifications: Notification[] = [
         {
           id: '1',
           title: 'New Test Available',
           message: 'Weekly physics test is now available. You can take it from the Tests section.',
-          timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+          timestamp: new Date(Date.now() - 1000 * 60 * 30), 
           isRead: true,
           type: 'info'
         },
@@ -105,7 +102,6 @@ const Header: React.FC<HeaderProps> = ({
       setNotifications(mockNotifications);
       setHasUnread(mockNotifications.some(n => !n.isRead));
     } else {
-      // Clear notifications if user is not logged in
       setNotifications([]);
       setHasUnread(false);
     }
@@ -398,7 +394,7 @@ const Header: React.FC<HeaderProps> = ({
                     <h1 className="select-none">{user?.email}</h1>
                   </div>
                   <Link
-                    to="/profile"
+                    to={`profile/${user.username}`}
                     className={`block px-4 py-2 text-sm ${
                       isDarkMode ? "text-gray-300 hover:bg-gray-700" : "text-gray-700 hover:bg-gray-100"
                     }`}

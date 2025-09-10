@@ -912,7 +912,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       let newPosition = currentPosition + scrollAmount;
       
       if (newPosition >= maxScrollLeft) {
-        // Stop at the end instead of looping back
         newPosition = maxScrollLeft;
         stopAutoScroll(index);
       }
@@ -950,15 +949,11 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     
     if (direction === "right") {
       newPosition = currentPosition + scrollAmount;
-      
-      // Don't loop back, stop at the end
       if (newPosition >= maxScrollLeft) {
         newPosition = maxScrollLeft;
       }
     } else {
       newPosition = currentPosition - scrollAmount;
-      
-      // Don't loop back, stop at the beginning
       if (newPosition <= 0) {
         newPosition = 0;
       }
@@ -1122,10 +1117,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
     }));
   }, [formatTime]);
 
-  const handleLockClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowLoginPrompt(true);
-  }, []);
 
   useEffect(() => {
     if (!subject) return;
@@ -1204,8 +1195,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
       });
     };
   }, [visibleChapters, startAutoScroll]);
-
-  // Now the early return can happen after all hooks
   if (!subject) {
     return (
       <div
@@ -1327,8 +1316,6 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                   const videoUrl = getStableVideo(chapterIndex, topicIndex % chapter.topics.length);
                   const progress = videoProgress[uniqueId] || 0;
                   const videoTime = videoTimes[uniqueId] || {current: "0:00", total: "0:00"};
-                  
-                  // Show only first card if not logged in, others as locked
                   const isLocked = !isLoggedIn && topicIndex >= 1;
 
                   return (
@@ -1405,7 +1392,7 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                       <div className="mt-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
-                            <FaUserCircle className="text-gray-500 mr-2" size={18} />
+                            <FaUserCircle className="text-gray-500 mr-2 relative top-5" size={20} />
                             <h4 className="font-semibold text-base">{topic.name}</h4>
                           </div>
                           {!isLocked && (
@@ -1464,8 +1451,8 @@ const SubjectTopic: React.FC<SubjectTopicProps> = ({
                             </div>
                           )}
                         </div>
-                        <div className="justify-between mt-2">
-                          <h1 className="text-sm opacity-70">
+                        <div className="justify   r-between mt-2">
+                          <h1 className="text-sm relative left-7 opacity-70">
                             pts
                           </h1>
                           <span className="text-sm opacity-70">

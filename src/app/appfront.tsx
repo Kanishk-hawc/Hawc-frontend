@@ -220,12 +220,13 @@ import ContactPage from "./student/view/footer/ContectUs";
 import NotificationsPage from "./student/view/components/NotificationsPage";
 import LecturerApp from "./lecturer/LecturerApp"; 
 import { useAuth } from "./auth/AuthContext";
+import DyteDoubt from "./student/components/dyte_doubt"
 
 const AppFront: React.FC = () => {
   const [theme, setTheme] = useState("dark");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const { user,  } = useAuth(); // Use the auth context
+  const { user,  } = useAuth();
   const history = useHistory();
   const location = useLocation();
 
@@ -248,7 +249,7 @@ const AppFront: React.FC = () => {
     setCheckoutOpen(false);
     history.push("/");
   };
-  if (user && (user.role === "main_lecturer" || user.role === "sub_lecturer")) {
+  if (user && (user.role === "main_lecturer" || user.role === "jr_lecturer")) {
     return <LecturerApp />;
   }
 
@@ -304,6 +305,9 @@ const AppFront: React.FC = () => {
             </Route>
             <Route path="/live-class">
               <Dyte />
+              </Route>
+            <Route path="/doubt-class">
+              <DyteDoubt/>
             </Route>
             <Route path="/demos">
               <Demos isDarkMode={isDarkMode} />

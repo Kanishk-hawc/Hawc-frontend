@@ -2,26 +2,25 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useDyteClient, DyteProvider, useDyteMeeting } from "@dytesdk/react-web-core";
-import { DyteMeeting } from "@dytesdk/react-ui-kit";
-const MyMeeting: React.FC = () => {
-  const { meeting } = useDyteMeeting();
+import { useDyteClient, DyteProvider } from "@dytesdk/react-web-core";
+import { DyteUiProvider, DyteMeeting } from "@dytesdk/react-ui-kit";
+import { X, FileText, HelpCircle, List } from "lucide-react";
+import { useHistory } from "react-router-dom";
+import logo from "../assets/logo.png"
 
-  if (!meeting) {
-    return <p className="text-center text-gray-500">Loading meeting...</p>;
-  }
-
-  return (
-    <div className="h-[600px] w-full border rounded-2xl shadow-lg overflow-hidden">
-      <DyteMeeting mode="fill" meeting={meeting} />
-    </div>
-  );
-};
+const HEADER_HEIGHT = 80;
 
 const DyteMeetingPage: React.FC = () => {
   const [meeting, setMeeting] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [meetingId, setMeetingId] = useState<string | null>(null);
   const [dyteClient, initDyteClient] = useDyteClient();
+  const [showSubTopics, setShowSubTopics] = useState(false);
+  const [subTopics, setSubTopics] = useState<any[]>([]);
+
+  const history = useHistory();
 
   useEffect(() => {
     const fetchMeeting = async () => {
@@ -33,7 +32,6 @@ const DyteMeetingPage: React.FC = () => {
           try {
             const parsedUserData = JSON.parse(userData);
             bearerToken = parsedUserData.token || "";
-            console.log("User from localStorage:", parsedUserData);
           } catch (error) {
             console.error("Error parsing user data:", error);
           }
@@ -44,38 +42,42 @@ const DyteMeetingPage: React.FC = () => {
           setLoading(false);
           return;
         }
-        const res = await axios.get("http://lms.hawc.in/api/staff/myclasses", {
-          headers: {
-            Authorization: `Bearer ${bearerToken}`,
-          },
-        });
-
-        console.log("Full API response:", res.data);
+        const res = await axios.get(
+          "http://lms.hawc.in/api/student/myclassdetails?live_class_id=2",
+          {
+            headers: { Authorization: `Bearer ${bearerToken}` },
+          }
+        );
+        console.log("API response:", res.data);
 
         if (res.data?.success) {
-          const liveClasses = res.data.data.liveClasses;
-          console.log("Live Classes:", liveClasses);
-          const validClass = liveClasses.find(
-            (cls: any) => cls?.token?.length > 0 && cls?.meeting_id
-          );
+          const liveClassDetails = res.data?.data?.liveClassDetails;
 
-          if (validClass) {
-            console.log("Joining Class:", validClass.short_name);
-            console.log("Meeting ID:", validClass.meeting_id);
-            console.log("Auth Token:", validClass.token[0]);
-
-            const meetingInstance = await initDyteClient({
-              authToken: validClass.token[0],
-              defaults: {
-                audio: true,
-                video: true,
-              },
-            });
-
-            setMeeting(meetingInstance);
-          } else {
-            console.error("No valid class with token + meeting_id found");
+          if (!liveClassDetails) {
+            console.error("No liveClassDetails found in API response");
+            setLoading(false);
+            return;
           }
+          setSubTopics(liveClassDetails.my_sub_topic_list || []);
+
+          const token: string = liveClassDetails.token;
+          const meetingId: string = liveClassDetails.meeting_id;
+          setMeetingId(meetingId);
+
+          const meetingInstance = await initDyteClient({
+            authToken: token,
+            defaults: { audio: true, video: true },
+          });
+
+          if (!meetingInstance) throw new Error("Failed to init Dyte client");
+
+          await meetingInstance.join();
+          setMeeting(meetingInstance);
+
+          localStorage.setItem("dyte_token", token);
+          localStorage.setItem("dyte_meetingId", meetingId);
+        } else {
+          console.log("API call not successful:", res.data);
         }
       } catch (err) {
         console.error("Error fetching meeting:", err);
@@ -87,6 +89,53 @@ const DyteMeetingPage: React.FC = () => {
     fetchMeeting();
   }, [initDyteClient]);
 
+  useEffect(() => {
+    if (!meetingId) return;
+    const socket = new WebSocket("ws://localhost:3001");
+
+    socket.onopen = () => {
+      socket.send(
+        JSON.stringify({
+          type: "join_notification",
+          meetingId: meetingId,
+          userRole: "participant",
+        })
+      );
+    };
+
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === "PAUSE_TOGGLE" && data.meetingId === meetingId) {
+          setIsPaused(data.isPaused);
+          if (data.isPaused) setShowSidebar(true);
+        } else if (data.type === "PAUSE_STATE") {
+          setIsPaused(data.isPaused);
+          if (data.isPaused) setShowSidebar(true);
+        }
+      } catch (err) {
+        console.error("WebSocket message error:", err);
+      }
+    };
+
+    socket.onclose = () => console.log("WebSocket disconnected");
+    return () => socket.close();
+  }, [meetingId]);
+
+  const handleSubTopicClick = (sub: any) => {
+    console.log("Sub-topic clicked:");
+    console.log("Meeting ID:", sub.meeting_id);
+    console.log("Token:", sub.token);
+    
+    // Store the data in localStorage so the next page can access it
+    localStorage.setItem("currentLiveClass", JSON.stringify({
+      meetingId: sub.meeting_id,
+      token: sub.token
+    }));
+    
+    history.push('/doubt-class');
+  };
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -95,12 +144,106 @@ const DyteMeetingPage: React.FC = () => {
     );
   }
 
-  return (
-    <DyteProvider value={meeting} fallback={<p>Joining meeting...</p>}>
-      <div className="flex flex-col items-center justify-center mt-10">
-        <MyMeeting />
+  if (!meeting) {
+      return (
+    <div className="flex items-center justify-center min-h-screen bg-transparent">
+      <div className="text-center p-8 max-w-[90%] w-[400px]">
+        <div className="relative mx-auto mb-8 w-[150px] h-[150px]">
+          <div className="absolute top-0 left-0 w-full h-full rounded-full border-10 border-t-10 border-blue-400 border-opacity-20 animate-spinLoader"></div>
+          <div className="absolute top-1/2 left-1/2 w-[70px] h-[70px] rounded-full bg-white flex items-center justify-center -translate-x-1/2 -translate-y-1/2 overflow-hidden">
+            <img src={logo} alt="Loader Logo" className="w-[80%] h-[80%] object-contain" />
+          </div>
+        </div>
+
+        <div className="text-blue-400 font-medium mt-5 tracking-widest animate-pulse">
+          LOADING
+        </div>
       </div>
-    </DyteProvider>
+    </div>
+  );
+  }
+
+  return (
+    <div className="md:mt-10">
+      <DyteProvider value={meeting}>
+        <DyteUiProvider>
+          <div className="h-screen w-full flex bg-transparent relative">
+            <div
+              className={`flex-1 transition-all duration-300`}
+              style={{ marginRight: showSidebar ? 384 : 0 }}
+            >
+              <DyteMeeting mode="fill" meeting={dyteClient} />
+            </div>
+            {!showSidebar && isPaused && (
+              <button
+                onClick={() => setShowSidebar(true)}
+                className="absolute right-6"
+                style={{ bottom: 20 + HEADER_HEIGHT, zIndex: 40 }}
+                aria-label="Open meeting info"
+              >
+                <FileText className="text-white" size={28} />
+              </button>
+            )}
+            {isPaused && showSidebar && (
+              <div className="w-96 bg-white text-black p-4 shadow-xl absolute right-0 z-50 flex flex-col h-full">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-bold">Meeting Paused</h2>
+                  <button
+                    onClick={() => setShowSidebar(false)}
+                    className="p-1 rounded-full hover:bg-gray-200 transition-colors"
+                    aria-label="Close sidebar"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <button
+                    className="flex items-center gap-2 p-2 rounded hover:bg-gray-100"
+                    onClick={() => history.push("/queue")}
+                  >
+                    <List size={20} />
+                    Queue
+                  </button>
+                  <button
+                    className="flex items-center gap-2 p-2 rounded hover:bg-gray-100"
+                    onClick={() => setShowSubTopics(!showSubTopics)}
+                  >
+                    <HelpCircle size={20} />
+                    Doubt Section
+                  </button>
+
+                  {showSubTopics && (
+                    <div className="ml-6 flex flex-col gap-1 mt-1">
+                      {subTopics.length > 0 ? (
+                        subTopics.map((sub) => (
+                          <button
+                            key={sub.sub_topic_id}
+                            className="text-sm text-left p-1 rounded hover:bg-gray-200"
+                            onClick={() => handleSubTopicClick(sub)}
+                          >
+                            {sub.sub_topic_name}
+                          </button>
+                        ))
+                      ) : (
+                        <p className="text-sm text-gray-500">
+                          No subtopics available
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 mt-4">
+                  <p>The meeting has been paused by another participant.</p>
+                  <p className="mt-4 text-sm">
+                    Please wait until it is resumed.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </DyteUiProvider>
+      </DyteProvider>
+    </div>
   );
 };
 

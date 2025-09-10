@@ -766,7 +766,7 @@
 
 
 
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef,  } from "react";
 import { useHistory } from "react-router-dom";
 import biology from "../assets/images/biology.jpg";
 import zoology1 from "../assets/images/zoology.jpg";
@@ -784,7 +784,7 @@ import {
   FaClock,
   FaGlobe
 } from "react-icons/fa";
-import { useAuth } from "../../auth/AuthContext"; // Import the auth context
+import { useAuth } from "../../auth/AuthContext"; 
 
 interface LiveClassProps {
   isDarkMode: boolean;
@@ -813,7 +813,7 @@ const LiveClass: React.FC<LiveClassProps> = ({
   onSubjectSelect,
 }) => {
   const history = useHistory();
-  const { isLoggedIn } = useAuth(); // Get login status from auth context
+  const { isLoggedIn } = useAuth(); 
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);

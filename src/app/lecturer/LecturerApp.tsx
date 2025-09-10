@@ -6,8 +6,10 @@ import LecturerDashboard from "./view/Dashboard";
 import LecturerCourses from "./view/Courses";
 import LecturerSchedule from "./view/Schedule"; 
 import LecturerStudents from "./view/Students";
-import DyteJoin from "./view/components/dyte";
+import DyteMain from "./view/components/dyte_main";
+import DyteJr from "./view/components/dyte_jr"
 import ProfilePage from "./view/Profile";
+
 
 const LecturerAppContent: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,7 +17,6 @@ const LecturerAppContent: React.FC = () => {
   const {  } = useAuth();
 
   useEffect(() => {
-    // Apply dark mode class to document
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
     } else {
@@ -36,7 +37,6 @@ const LecturerAppContent: React.FC = () => {
         toggleTheme={toggleTheme}
       />
       <div className="flex pt-16">
-        {/* Main content area - adjusts based on sidebar state */}
         <main className={`flex-1 transition-all duration-300 ${sidebarOpen ? "md:ml-64" : "md:ml-8"}`}>
           <div className="container mx-auto py-4 px-4 md:px-6">
             <Switch>
@@ -54,7 +54,10 @@ const LecturerAppContent: React.FC = () => {
                 <LecturerStudents />
               </Route>
               <Route path="/live">
-                <DyteJoin />
+                <DyteMain />
+              </Route>
+              <Route path="/live-doubt">
+                <DyteJr />
               </Route>
               <Route path="/profile">
                 <ProfilePage isDarkMode={isDarkMode} />
