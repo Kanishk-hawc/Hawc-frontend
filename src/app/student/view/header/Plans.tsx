@@ -160,6 +160,9 @@ export default function Plans() {
   const calculateBasePrice = () => {
     if (!selectedPlan || !selectedBoardGrade) return 0;
     
+    // Handle free plan (price 0)
+    if (selectedPlan.price === 0) return 0;
+    
     const subjectCount = selectedSubjects.length;
     const planId = selectedPlan.id;
     const period = getPeriodForDisplay(planId);
@@ -217,6 +220,15 @@ export default function Plans() {
 
   const getSubjectPrices = () => {
     if (!selectedPlan || !selectedBoardGrade) return {};
+    
+    // Handle free plan (price 0)
+    if (selectedPlan.price === 0) {
+      const prices: { [key: string]: number } = {};
+      selectedSubjects.forEach(subject => {
+        prices[subject] = 0;
+      });
+      return prices;
+    }
     
     const subjectCount = selectedSubjects.length;
     const basePrice = calculateBasePrice();

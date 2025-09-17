@@ -7,9 +7,6 @@ import { DyteUiProvider, DyteMeeting } from "@dytesdk/react-ui-kit";
 import { X, FileText, HelpCircle, List } from "lucide-react";
 import { useHistory } from "react-router-dom";
 import logo from "../assets/logo.png"
-
-const HEADER_HEIGHT = 80;
-
 const DyteMeetingPage: React.FC = () => {
   const [meeting, setMeeting] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -43,7 +40,7 @@ const DyteMeetingPage: React.FC = () => {
           return;
         }
         const res = await axios.get(
-          "http://lms.hawc.in/api/student/myclassdetails?live_class_id=2",
+          "https://lms.hawc.in/api/student/myclassdetails?live_class_id=2",
           {
             headers: { Authorization: `Bearer ${bearerToken}` },
           }
@@ -91,7 +88,7 @@ const DyteMeetingPage: React.FC = () => {
 
   useEffect(() => {
     if (!meetingId) return;
-    const socket = new WebSocket("ws://localhost:3001");
+    const socket = new WebSocket("wss://livesocket.hawc.in");
 
     socket.onopen = () => {
       socket.send(
@@ -126,8 +123,6 @@ const DyteMeetingPage: React.FC = () => {
     console.log("Sub-topic clicked:");
     console.log("Meeting ID:", sub.meeting_id);
     console.log("Token:", sub.token);
-    
-    // Store the data in localStorage so the next page can access it
     localStorage.setItem("currentLiveClass", JSON.stringify({
       meetingId: sub.meeting_id,
       token: sub.token
@@ -146,8 +141,8 @@ const DyteMeetingPage: React.FC = () => {
 
   if (!meeting) {
       return (
-    <div className="flex items-center justify-center min-h-screen bg-transparent">
-      <div className="text-center p-8 max-w-[90%] w-[400px]">
+    <div className="flex items-center justify-center min-h-screen bg-transparent ">
+      <div className="text-center p-8 max-w-[90%] w-[400px] ">
         <div className="relative mx-auto mb-8 w-[150px] h-[150px]">
           <div className="absolute top-0 left-0 w-full h-full rounded-full border-10 border-t-10 border-blue-400 border-opacity-20 animate-spinLoader"></div>
           <div className="absolute top-1/2 left-1/2 w-[70px] h-[70px] rounded-full bg-white flex items-center justify-center -translate-x-1/2 -translate-y-1/2 overflow-hidden">
@@ -164,7 +159,7 @@ const DyteMeetingPage: React.FC = () => {
   }
 
   return (
-    <div className="md:mt-10">
+    <div className="md:mt-10 mb-20 md:mb-0">
       <DyteProvider value={meeting}>
         <DyteUiProvider>
           <div className="h-screen w-full flex bg-transparent relative">
@@ -177,15 +172,18 @@ const DyteMeetingPage: React.FC = () => {
             {!showSidebar && isPaused && (
               <button
                 onClick={() => setShowSidebar(true)}
-                className="absolute right-6"
-                style={{ bottom: 20 + HEADER_HEIGHT, zIndex: 40 }}
+                className="absolute right-9 bottom-20"
+                style={{   }}
                 aria-label="Open meeting info"
               >
                 <FileText className="text-white" size={28} />
               </button>
             )}
             {isPaused && showSidebar && (
-              <div className="w-96 bg-white text-black p-4 shadow-xl absolute right-0 z-50 flex flex-col h-full">
+              <div
+                className="w-96 bg-[#141414] text-white p-4 shadow-xl absolute right-0  flex flex-col"
+                style={{ top: 0, height: `calc(100% - 0px)` }}
+              >
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-bold">Meeting Paused</h2>
                   <button

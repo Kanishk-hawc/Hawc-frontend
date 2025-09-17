@@ -66,13 +66,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, type }) => {
   const image = getRandomImage();
 
   const handleCardClick = () => {
-    // Navigate to course detail page
     history.push(`/course/${type}/${course.id}`);
   };
 
   return (
     <div 
-      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105"
+      className="bg-transparent rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105"
       onClick={handleCardClick}
     >
       <img 
@@ -112,8 +111,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, type }) => {
     </div>
   );
 };
-
-// Helper function to parse duration string to minutes
 const parseDurationToMinutes = (duration: string): number => {
   const parts = duration.split(' ');
   let totalMinutes = 0;
@@ -129,7 +126,6 @@ const parseDurationToMinutes = (duration: string): number => {
   return totalMinutes;
 };
 
-// Main Component
 const ExploreCourses: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"live" | "recorded">("live");
   const [searchQuery, setSearchQuery] = useState("");
@@ -137,8 +133,6 @@ const ExploreCourses: React.FC = () => {
   const [sortOption, setSortOption] = useState<string>("default");
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 10;
-
-  // Filter courses based on search query (only by topic)
   const filterCourses = (courses: any[]) => {
     if (!searchQuery) return courses;
     
@@ -146,8 +140,6 @@ const ExploreCourses: React.FC = () => {
       course.topic.toLowerCase().includes(searchQuery.toLowerCase())
     );
   };
-
-  // Sort courses based on selected option
   const sortCourses = (courses: any[]) => {
     switch (sortOption) {
       case "time-low-to-high":
@@ -181,16 +173,12 @@ const ExploreCourses: React.FC = () => {
 
   const filteredLiveCourses = sortCourses(filterCourses(liveCourses));
   const filteredRecordedCourses = sortCourses(filterCourses(recordedCourses));
-
-  // Get current courses for pagination
   const getCurrentCourses = () => {
     const courses = activeTab === "live" ? filteredLiveCourses : filteredRecordedCourses;
     const indexOfLastCourse = currentPage * coursesPerPage;
     const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
     return courses.slice(indexOfFirstCourse, indexOfLastCourse);
   };
-
-  // Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const renderContent = () => {
@@ -217,7 +205,7 @@ const ExploreCourses: React.FC = () => {
 
     return (
       <>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
           {currentCourses.map(course => (
             <CourseCard 
               key={course.id} 
@@ -226,8 +214,6 @@ const ExploreCourses: React.FC = () => {
             />
           ))}
         </div>
-        
-        {/* Pagination */}
         {courses.length > coursesPerPage && (
           <div className="flex justify-center mt-8">
             <nav className="flex items-center gap-2">
@@ -268,7 +254,7 @@ const ExploreCourses: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-800">
+    <div className="min-h-screen bg-white text-gray-800 mb-14 md:mb-0">
       <div className="bg-black text-white px-4 md:px-6 py-12 md:py-16 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]">
         <h1 className="text-3xl md:text-4xl font-bold mb-3">Explore Courses</h1>
         <p className="mb-6 max-w-lg text-sm md:text-base">
@@ -283,7 +269,7 @@ const ExploreCourses: React.FC = () => {
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
-              setCurrentPage(1); // Reset to first page when search changes
+              setCurrentPage(1);
             }}
           />
           <button className="bg-black text-white px-3 md:px-4 py-2 rounded-md text-sm md:text-base">
@@ -296,7 +282,7 @@ const ExploreCourses: React.FC = () => {
           <button
             onClick={() => {
               setActiveTab("live");
-              setCurrentPage(1); // Reset to first page when tab changes
+              setCurrentPage(1);
             }}
             className={`px-4 md:px-6 py-3 whitespace-nowrap ${
               activeTab === "live"
@@ -309,7 +295,7 @@ const ExploreCourses: React.FC = () => {
           <button
             onClick={() => {
               setActiveTab("recorded");
-              setCurrentPage(1); // Reset to first page when tab changes
+              setCurrentPage(1); 
             }}
             className={`px-4 md:px-6 py-3 whitespace-nowrap ${
               activeTab === "recorded"
@@ -349,7 +335,7 @@ const ExploreCourses: React.FC = () => {
               value={sortOption}
               onChange={(e) => {
                 setSortOption(e.target.value);
-                setCurrentPage(1); // Reset to first page when sort changes
+                setCurrentPage(1);
               }}
               className="w-full p-2 border border-gray-300 rounded-md text-sm md:text-base"
             >

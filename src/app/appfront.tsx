@@ -298,10 +298,10 @@ const AppFront: React.FC = () => {
               <Doubts />
             </Route>
             <Route path="/practice">
-              <Practice />
+              <Practice isDarkMode={isDarkMode}/>
             </Route>
             <Route path="/assignments">
-              <Assignments />
+              <Assignments isDarkMode={isDarkMode}/>
             </Route>
             <Route path="/live-class">
               <Dyte />

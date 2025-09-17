@@ -176,8 +176,7 @@ const UpcomingLive = () => {
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Tab Selection */}
+    <div className="min-h-screen mb-14 md:mb-0">
       <div className="flex justify-center  mb-8">
         <div className="flex rounded-lg gap-2 p-1">
           <button
@@ -215,8 +214,6 @@ const UpcomingLive = () => {
           </button>
         </div>
       </div>
-
-      {/* Content based on active tab */}
       {activeTab === "upcoming" && (
         <div className="flex flex-wrap gap-6 justify-center">
           {Upcominglive.map((classItem) => (
@@ -224,7 +221,6 @@ const UpcomingLive = () => {
               key={classItem.id}
               className="bg-[#1a1a1a] rounded-xl shadow-lg overflow-hidden w-80 flex flex-col"
             >
-              {/* Card Header */}
               <div className="relative p-4">
                 <img
                   src={classItem.src}
@@ -238,8 +234,6 @@ const UpcomingLive = () => {
                   Upcoming
                 </div>
               </div>
-
-              {/* Card Body */}
               <div className="p-5 flex-1">
                 <div className="flex gap-2 mb-3 flex-wrap">
                   {classItem.genres.map((genre, index) => (
@@ -269,8 +263,6 @@ const UpcomingLive = () => {
                   <span>{classItem.language}</span>
                 </div>
               </div>
-
-              {/* Card Footer */}
               <div className="flex justify-center p-4 border-t border-gray-700">
                 <button className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 font-semibold text-sm flex items-center">
                   <FaPlay className="mr-2 text-xs" /> Need to Make Changes
@@ -288,7 +280,6 @@ const UpcomingLive = () => {
               key={classItem.id}
               className="bg-[#1a1a1a] rounded-xl shadow-lg overflow-hidden w-80 flex flex-col"
             >
-              {/* Card Header */}
               <div className="relative p-4">
                 <img
                   src={classItem.src}
@@ -302,8 +293,6 @@ const UpcomingLive = () => {
                   Uploaded
                 </div>
               </div>
-
-              {/* Card Body */}
               <div className="p-5 flex-1">
                 <div className="flex gap-2 mb-3 flex-wrap">
                   {classItem.genres.map((genre, index) => (
@@ -338,7 +327,6 @@ const UpcomingLive = () => {
                 </div>
               </div>
 
-              {/* Card Footer */}
               <div className="flex justify-center p-4 border-t border-gray-700">
                 <button className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 font-semibold text-sm flex items-center">
                   <FaPlay className="mr-2 text-xs" /> Watch Now
@@ -356,7 +344,6 @@ const UpcomingLive = () => {
               key={classItem.id}
               className="bg-[#1a1a1a] rounded-xl shadow-lg overflow-hidden w-80 flex flex-col"
             >
-              {/* Card Header */}
               <div className="relative p-4">
                 <img
                   src={classItem.src}
@@ -367,8 +354,6 @@ const UpcomingLive = () => {
                   {classItem.subject}
                 </div>
               </div>
-
-              {/* Card Body */}
               <div className="p-5 flex-1">
                 <div className="flex gap-2 mb-3 flex-wrap">
                   {classItem.genres.map((genre, index) => (
@@ -402,8 +387,6 @@ const UpcomingLive = () => {
                   <span>{classItem.views} views</span>
                 </div>
               </div>
-
-              {/* Card Footer */}
               <div className="flex justify-center p-4 border-t border-gray-700">
                 <button className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 font-semibold text-sm flex items-center">
                   <FaPlay className="mr-2 text-xs" /> Watch Now

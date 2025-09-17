@@ -61,9 +61,9 @@ const Students: React.FC = () => {
   };
 
   return (
-    <div className="p-5 px-36">
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">Maths Dashboard</h1>
-      <p className="text-gray-600 mb-6">View and manage all students enrolled in Maths</p>
+    <div className="p-4 md:p-5 md:px-36 mb-10 md:mb-10">
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Maths Dashboard</h1>
+      <p className="text-gray-600 mb-4 md:mb-6">View and manage all students enrolled in Maths</p>
 
       <div className="mb-6 flex flex-col md:flex-row md:items-center gap-4">
         <div className="w-full md:w-64">
@@ -82,28 +82,26 @@ const Students: React.FC = () => {
           </select>
         </div>
         
-        {/* Summary Stats */}
-        <div className="flex flex-wrap gap-4">
-          <div className="bg-blue-50 px-4 py-2 rounded-md">
-            <p className="text-sm text-blue-700">Total Students</p>
-            <p className="text-xl font-bold text-blue-900">{sortedStudents.length}</p>
+        <div className="flex flex-wrap gap-2 md:gap-4">
+          <div className="bg-blue-50 px-3 py-2 md:px-4 md:py-2 rounded-md">
+            <p className="text-xs md:text-sm text-blue-700">Total Students</p>
+            <p className="text-lg md:text-xl font-bold text-blue-900">{sortedStudents.length}</p>
           </div>
-          <div className="bg-green-50 px-4 py-2 rounded-md">
-            <p className="text-sm text-green-700">Avg. Grade</p>
-            <p className="text-xl font-bold text-green-900">
+          <div className="bg-green-50 px-3 py-2 md:px-4 md:py-2 rounded-md">
+            <p className="text-xs md:text-sm text-green-700">Avg. Grade</p>
+            <p className="text-lg md:text-xl font-bold text-green-900">
               {Math.round(sortedStudents.reduce((sum, student) => sum + (student.grade || 0), 0) / sortedStudents.length)}%
             </p>
           </div>
-          <div className="bg-purple-50 px-4 py-2 rounded-md">
-            <p className="text-sm text-purple-700">Avg. Attendance</p>
-            <p className="text-xl font-bold text-purple-900">
+          <div className="bg-purple-50 px-3 py-2 md:px-4 md:py-2 rounded-md">
+            <p className="text-xs md:text-sm text-purple-700">Avg. Attendance</p>
+            <p className="text-lg md:text-xl font-bold text-purple-900">
               {Math.round(sortedStudents.reduce((sum, student) => sum + student.attendance, 0) / sortedStudents.length)}%
             </p>
           </div>
         </div>
       </div>
 
-      {/* Desktop Table */}
       <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -144,18 +142,24 @@ const Students: React.FC = () => {
       <div className="grid grid-cols-1 gap-4 md:hidden">
         {sortedStudents.map((student) => (
           <div key={student.id} className="bg-white shadow rounded-lg p-4">
-            <p className="text-sm text-gray-500"><b>ID:</b> {student.studentId}</p>
-            <p className="text-lg font-semibold text-gray-800">{student.name}</p>
-            <p className="text-sm text-gray-500">{student.email}</p>
-            <p className={`text-sm font-medium mt-1 ${getAttendanceColor(student.attendance)}`}>
-              Attendance: {student.attendance}%
-            </p>
-            <p className={`text-sm font-medium mt-1 ${getGradeColor(student.grade)}`}>
-              Grade: {student.grade ? `${student.grade}%` : "N/A"}
-            </p>
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm text-gray-500"><b>ID:</b> {student.studentId}</p>
+                <p className="text-lg font-semibold text-gray-800">{student.name}</p>
+                <p className="text-sm text-gray-500 truncate">{student.email}</p>
+              </div>
+              <div className="flex flex-col items-end">
+                <p className={`text-sm font-medium ${getAttendanceColor(student.attendance)}`}>
+                  {student.attendance}%
+                </p>
+                <p className={`text-sm font-medium ${getGradeColor(student.grade)}`}>
+                  {student.grade ? `${student.grade}%` : "N/A"}
+                </p>
+              </div>
+            </div>
             <div className="mt-3 flex space-x-4">
-              <button className="text-blue-600 hover:text-blue-900">View</button>
-              <button className="text-green-600 hover:text-green-900">Message</button>
+              <button className="text-blue-600 hover:text-blue-900 text-sm">View</button>
+              <button className="text-green-600 hover:text-green-900 text-sm">Message</button>
             </div>
           </div>
         ))}

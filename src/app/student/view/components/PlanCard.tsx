@@ -143,18 +143,16 @@ export default function PlanCard({
       if (showClassCategory) {
         onToggleDropdown(isDropdownOpen ? "" : id);
       } else {
-        // Toggle this card's expansion state
         if (expandedCardId === id) {
-          setExpandedCardId(""); // Collapse if already expanded
+          setExpandedCardId("");
         } else {
-          setExpandedCardId(id); // Expand this card
+          setExpandedCardId(id); 
         }
       }
       if (onCardClick) {
         onCardClick();
       }
     } else {
-      // Desktop selection logic
       if (onCardClick) {
         onCardClick();
       }

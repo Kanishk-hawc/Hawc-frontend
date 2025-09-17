@@ -18,17 +18,13 @@ type FooterProps = {
 
 const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
   return (
-    <>
-      <div className={`w-full h-px relative right-16 md:right-0 bottom-14 md:bottom-0 ${isDarkMode ? "bg-gray-700" : "bg-gray-300"} ${sidebarOpen ? "ml-80" : "ml-16"}`}></div>
+    <div className={`${sidebarOpen ? "md:ml-80" : "md:ml-16"} transition-all duration-300 relative bottom-20 md:bottom-0 `}>
+      <div className={`w-full h-px ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}></div>
       
       <footer
-        className={`relative right-14 md:right-0 bottom-10 ${
-          isDarkMode ? "bg-transparent text-gray-300" : "bg-white text-gray-700"
-        } transition-colors duration-300 ${
-          sidebarOpen ? "ml-80" : "ml-14"
-        } w-full md:bottom-0 py-6`}  
+        className={`w-full ${isDarkMode ? "bg-transparent text-gray-300" : "bg-white text-gray-700"} transition-colors duration-300 py-6`}  
       >
-        <div className="w-full px-4">
+        <div className="w-full px-4 mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8 text-left"> 
             <div>
               <div className="flex items-center mb-2">
@@ -304,12 +300,10 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode, sidebarOpen }) => {
                 </a>
               </div>
             </div>
-            
-          
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 };
 

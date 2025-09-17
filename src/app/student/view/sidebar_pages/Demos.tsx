@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-// Define types
 interface SubjectData {
   title: string;
   description: string;
@@ -112,12 +111,12 @@ const SubjectCard: React.FC<SubjectCardProps> = ({ subject, isSelected, onClick,
       className={`p-4 rounded-xl cursor-pointer transition-all duration-300 transform ${
         isSelected 
           ? `scale-105 shadow-2xl ${isDarkMode ? subject.darkColor : subject.color}`
-          : `shadow-lg hover:shadow-xl ${isDarkMode ? 'bg-gray-800' : subject.color}`
-      } text-white`}
+          : `shadow-lg hover:shadow-xl ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : subject.color + ' hover:bg-opacity-80'}`
+      } text-white flex flex-col items-center justify-center`}
       onClick={onClick}
     >
       <div className="text-3xl mb-2">{subject.icon}</div>
-      <h3 className="text-xl font-bold">{subject.title}</h3>
+      <h3 className="text-xl font-bold text-center">{subject.title}</h3>
     </div>
   );
 };
@@ -130,6 +129,8 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
   const animationRef = useRef<number | null>(null);
+  const [showLabels, setShowLabels] = useState(true);
+  const [animationSpeed, setAnimationSpeed] = useState(1);
 
   // Helper function to create cylinders between two points
   const createCylinderBetweenPoints = (
@@ -155,6 +156,7 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
     mesh.rotateX(Math.PI / 2); // Cylinder is oriented along Y-axis by default
     
     scene.add(mesh);
+    return mesh;
   };
 
   useEffect(() => {
@@ -175,7 +177,7 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-    renderer.setClearColor(0x000000, 0);
+    renderer.setClearColor(0x000000, 0); // Transparent background
     rendererRef.current = renderer;
     
     mountRef.current.appendChild(renderer.domElement);
@@ -187,11 +189,11 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
     controlsRef.current = controls;
 
     // Add ambient light
-    const ambientLight = new THREE.AmbientLight(0x404040, 1);
+    const ambientLight = new THREE.AmbientLight(isDarkMode ? 0x404040 : 0x808080, 1);
     scene.add(ambientLight);
 
     // Add directional light
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    const directionalLight = new THREE.DirectionalLight(isDarkMode ? 0x606060 : 0xffffff, 0.8);
     directionalLight.position.set(1, 1, 1);
     scene.add(directionalLight);
 
@@ -225,7 +227,7 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
       renderer.dispose();
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [isDarkMode]);
 
   useEffect(() => {
     if (!sceneRef.current || !subject) return;
@@ -255,7 +257,7 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
       default:
         createDefaultModel(sceneRef.current);
     }
-  }, [subject]);
+  }, [subject, showLabels, animationSpeed]);
 
   const createSolarSystem = (scene: THREE.Scene) => {
     // Sun
@@ -266,12 +268,12 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
 
     // Planets
     const planets = [
-      { size: 0.2, color: 0x888888, distance: 2, speed: 0.01 },
-      { size: 0.4, color: 0xffa500, distance: 3, speed: 0.008 },
-      { size: 0.4, color: 0x0000ff, distance: 4, speed: 0.006 },
-      { size: 0.3, color: 0xff0000, distance: 5, speed: 0.004 },
-      { size: 1, color: 0xffd700, distance: 6, speed: 0.002 },
-      { size: 0.8, color: 0x00ffff, distance: 7, speed: 0.001 }
+      { size: 0.2, color: 0x888888, distance: 2, speed: 0.01, name: "Mercury" },
+      { size: 0.4, color: 0xffa500, distance: 3, speed: 0.008, name: "Venus" },
+      { size: 0.4, color: 0x0000ff, distance: 4, speed: 0.006, name: "Earth" },
+      { size: 0.3, color: 0xff0000, distance: 5, speed: 0.004, name: "Mars" },
+      { size: 1, color: 0xffd700, distance: 6, speed: 0.002, name: "Jupiter" },
+      { size: 0.8, color: 0x00ffff, distance: 7, speed: 0.001, name: "Saturn" }
     ];
 
     planets.forEach((planet) => {
@@ -288,7 +290,7 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
       // Add orbit line
       const orbitGeometry = new THREE.RingGeometry(planet.distance - 0.01, planet.distance + 0.01, 64);
       const orbitMaterial = new THREE.MeshBasicMaterial({ 
-        color: 0xffffff, 
+        color: isDarkMode ? 0x888888 : 0x000000, 
         side: THREE.DoubleSide,
         transparent: true,
         opacity: 0.3
@@ -297,12 +299,41 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
       orbit.rotation.x = Math.PI / 2;
       scene.add(orbit);
       
+      // Add planet name label if enabled
+      if (showLabels) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        if (context) {
+          canvas.width = 128;
+          canvas.height = 64;
+          context.fillStyle = isDarkMode ? '#ffffff' : '#000000';
+          context.font = 'bold 20px Arial';
+          context.textAlign = 'center';
+          context.textBaseline = 'middle';
+          context.fillText(planet.name, 64, 32);
+          
+          const texture = new THREE.CanvasTexture(canvas);
+          const labelMaterial = new THREE.SpriteMaterial({ 
+            map: texture,
+            transparent: true
+          });
+          const sprite = new THREE.Sprite(labelMaterial);
+          sprite.position.set(
+            planet.distance,
+            planet.size + 0.5,
+            0
+          );
+          sprite.scale.set(1.5, 0.75, 1);
+          scene.add(sprite);
+        }
+      }
+      
       // Animation
       const animatePlanet = () => {
         if (animationRef.current) {
           requestAnimationFrame(animatePlanet);
-          mesh.position.x = Math.cos(Date.now() * planet.speed * 0.001) * planet.distance;
-          mesh.position.z = Math.sin(Date.now() * planet.speed * 0.001) * planet.distance;
+          mesh.position.x = Math.cos(Date.now() * planet.speed * 0.001 * animationSpeed) * planet.distance;
+          mesh.position.z = Math.sin(Date.now() * planet.speed * 0.001 * animationSpeed) * planet.distance;
         }
       };
       animatePlanet();
@@ -350,28 +381,33 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
       scene.add(mesh);
       atomMeshes.push(mesh);
       
-      // Add atom label
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      if (context) {
-        canvas.width = 128;
-        canvas.height = 128;
-        context.fillStyle = '#000000';
-        context.font = 'bold 80px Arial';
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-        context.fillText(atom, 64, 64);
-        
-        const texture = new THREE.CanvasTexture(canvas);
-        const labelMaterial = new THREE.SpriteMaterial({ map: texture });
-        const sprite = new THREE.Sprite(labelMaterial);
-        sprite.position.set(
-          positions[i][0],
-          positions[i][1] + 0.7,
-          positions[i][2]
-        );
-        sprite.scale.set(1, 1, 1);
-        scene.add(sprite);
+      // Add atom label if enabled
+      if (showLabels) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        if (context) {
+          canvas.width = 128;
+          canvas.height = 128;
+          context.fillStyle = isDarkMode ? '#ffffff' : '#000000';
+          context.font = 'bold 80px Arial';
+          context.textAlign = 'center';
+          context.textBaseline = 'middle';
+          context.fillText(atom, 64, 64);
+          
+          const texture = new THREE.CanvasTexture(canvas);
+          const labelMaterial = new THREE.SpriteMaterial({ 
+            map: texture,
+            transparent: true
+          });
+          const sprite = new THREE.Sprite(labelMaterial);
+          sprite.position.set(
+            positions[i][0],
+            positions[i][1] + 0.7,
+            positions[i][2]
+          );
+          sprite.scale.set(1, 1, 1);
+          scene.add(sprite);
+        }
       }
     });
     
@@ -386,14 +422,26 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
       // Create cylinder for bond using our helper function
       createCylinderBetweenPoints(scene, start, end, 0.1, 0xCCCCCC);
     });
+    
+    // Add rotation animation to entire molecule
+    const animateMolecule = () => {
+      if (animationRef.current) {
+        requestAnimationFrame(animateMolecule);
+        atomMeshes.forEach(mesh => {
+          mesh.rotation.x += 0.005 * animationSpeed;
+          mesh.rotation.y += 0.005 * animationSpeed;
+        });
+      }
+    };
+    animateMolecule();
   };
 
   const createGeometricShapes = (scene: THREE.Scene) => {
     const shapes = [
-      { type: 'sphere', position: [-2, 0, 0], color: 0xff0000 },
-      { type: 'cube', position: [0, 0, 0], color: 0x00ff00 },
-      { type: 'cone', position: [2, 0, 0], color: 0x0000ff },
-      { type: 'torus', position: [0, -2, 0], color: 0xffff00 }
+      { type: 'sphere', position: [-2, 0, 0], color: 0xff0000, name: "Sphere" },
+      { type: 'cube', position: [0, 0, 0], color: 0x00ff00, name: "Cube" },
+      { type: 'cone', position: [2, 0, 0], color: 0x0000ff, name: "Cone" },
+      { type: 'torus', position: [0, -2, 0], color: 0xffff00, name: "Torus" }
     ];
     
     shapes.forEach(shape => {
@@ -427,12 +475,41 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
       
       scene.add(mesh);
       
+      // Add shape name label if enabled
+      if (showLabels) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        if (context) {
+          canvas.width = 128;
+          canvas.height = 64;
+          context.fillStyle = isDarkMode ? '#ffffff' : '#000000';
+          context.font = 'bold 20px Arial';
+          context.textAlign = 'center';
+          context.textBaseline = 'middle';
+          context.fillText(shape.name, 64, 32);
+          
+          const texture = new THREE.CanvasTexture(canvas);
+          const labelMaterial = new THREE.SpriteMaterial({ 
+            map: texture,
+            transparent: true
+          });
+          const sprite = new THREE.Sprite(labelMaterial);
+          sprite.position.set(
+            shape.position[0],
+            shape.position[1] - 1.2,
+            shape.position[2]
+          );
+          sprite.scale.set(1.5, 0.75, 1);
+          scene.add(sprite);
+        }
+      }
+      
       // Add rotation animation
       const animateShape = () => {
         if (animationRef.current) {
           requestAnimationFrame(animateShape);
-          mesh.rotation.x += 0.01;
-          mesh.rotation.y += 0.01;
+          mesh.rotation.x += 0.01 * animationSpeed;
+          mesh.rotation.y += 0.01 * animationSpeed;
         }
       };
       animateShape();
@@ -470,6 +547,7 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
         helixRadius * Math.sin(angle + Math.PI)
       );
       scene.add(backbone2);
+      
       if (i > 0) {
         const prevAngle = (i - 1) * Math.PI / 4;
         const prevYPos = (i - 1) * heightStep - (basePairs * heightStep) / 2;
@@ -489,6 +567,7 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
         createCylinderBetweenPoints(scene, backbone1.position, prevBackbone1Pos, 0.05, 0x3366cc);
         createCylinderBetweenPoints(scene, backbone2.position, prevBackbone2Pos, 0.05, 0x3366cc);
       }
+      
       const basePairGeometry = new THREE.CylinderGeometry(0.05, 0.05, helixRadius * 2, 8);
       const basePairMaterial = new THREE.MeshPhongMaterial({ color: 0xcc3366 });
       const basePair = new THREE.Mesh(basePairGeometry, basePairMaterial);
@@ -496,6 +575,19 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
       basePair.rotation.z = Math.PI / 2;
       scene.add(basePair);
     }
+    
+    // Add rotation animation to entire DNA
+    const animateDNA = () => {
+      if (animationRef.current) {
+        requestAnimationFrame(animateDNA);
+        scene.children.forEach(child => {
+          if (child.type === 'Mesh') {
+            child.rotation.y += 0.005 * animationSpeed;
+          }
+        });
+      }
+    };
+    animateDNA();
   };
 
   const createAnimalCell = (scene: THREE.Scene) => {
@@ -509,6 +601,8 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
     });
     const cell = new THREE.Mesh(cellGeometry, cellMaterial);
     scene.add(cell);
+
+    // Nucleus
     const nucleusGeometry = new THREE.SphereGeometry(0.7, 32, 32);
     const nucleusMaterial = new THREE.MeshPhongMaterial({
       color: 0xcc8888,
@@ -518,6 +612,8 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
     const nucleus = new THREE.Mesh(nucleusGeometry, nucleusMaterial);
     nucleus.position.set(0.5, 0.5, 0.5);
     scene.add(nucleus);
+
+    // Mitochondria
     const mitochondriaGeometry = new THREE.SphereGeometry(0.3, 32, 32);
     const mitochondriaMaterial = new THREE.MeshPhongMaterial({ color: 0xccaa44 });
     const mitochondria = new THREE.Mesh(mitochondriaGeometry, mitochondriaMaterial);
@@ -535,14 +631,45 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
     vacuole.position.set(0.8, -1, -0.5);
     scene.add(vacuole);
     
+    // Add labels if enabled
+    if (showLabels) {
+      const addLabel = (text: string, position: [number, number, number]) => {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        if (context) {
+          canvas.width = 128;
+          canvas.height = 64;
+          context.fillStyle = isDarkMode ? '#ffffff' : '#000000';
+          context.font = 'bold 16px Arial';
+          context.textAlign = 'center';
+          context.textBaseline = 'middle';
+          context.fillText(text, 64, 32);
+          
+          const texture = new THREE.CanvasTexture(canvas);
+          const labelMaterial = new THREE.SpriteMaterial({ 
+            map: texture,
+            transparent: true
+          });
+          const sprite = new THREE.Sprite(labelMaterial);
+          sprite.position.set(position[0], position[1], position[2]);
+          sprite.scale.set(1.2, 0.6, 1);
+          scene.add(sprite);
+        }
+      };
+      
+      addLabel("Nucleus", [0.5, 1.3, 0.5]);
+      addLabel("Mitochondria", [-1, -0.9, 0.8]);
+      addLabel("Vacuole", [0.8, -1.5, -0.5]);
+    }
+    
     // Add rotation animation to entire cell
     const animateCell = () => {
       if (animationRef.current) {
         requestAnimationFrame(animateCell);
-        cell.rotation.y += 0.003;
-        nucleus.rotation.y += 0.005;
-        mitochondria.rotation.y += 0.007;
-        vacuole.rotation.y += 0.004;
+        cell.rotation.y += 0.003 * animationSpeed;
+        nucleus.rotation.y += 0.005 * animationSpeed;
+        mitochondria.rotation.y += 0.007 * animationSpeed;
+        vacuole.rotation.y += 0.004 * animationSpeed;
       }
     };
     animateCell();
@@ -551,7 +678,7 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
   const createDefaultModel = (scene: THREE.Scene) => {
     const geometry = new THREE.IcosahedronGeometry(1, 0);
     const material = new THREE.MeshPhongMaterial({
-      color: 0xffffff,
+      color: isDarkMode ? 0xffffff : 0x000000,
       wireframe: true
     });
     const mesh = new THREE.Mesh(geometry, material);
@@ -561,19 +688,41 @@ const Scene: React.FC<SceneProps> = ({ subject, isDarkMode }) => {
     const animate = () => {
       if (animationRef.current) {
         requestAnimationFrame(animate);
-        mesh.rotation.x += 0.01;
-        mesh.rotation.y += 0.01;
+        mesh.rotation.x += 0.01 * animationSpeed;
+        mesh.rotation.y += 0.01 * animationSpeed;
       }
     };
     animate();
   };
 
   return (
-    <div 
-      ref={mountRef} 
-      className="w-full h-96 rounded-xl overflow-hidden"
-      style={{ background: isDarkMode ? '#1a202c' : '#edf2f7' }}
-    />
+    <div className="relative">
+      <div 
+        ref={mountRef} 
+        className="w-full h-96 rounded-xl overflow-hidden"
+        style={{ background: 'transparent' }}
+      />
+      <div className={`absolute bottom-4 left-4 flex space-x-2 p-2 rounded-lg ${isDarkMode ? 'bg-gray-800 bg-opacity-70' : 'bg-white bg-opacity-70'}`}>
+        <button 
+          onClick={() => setShowLabels(!showLabels)}
+          className={`px-3 py-1 rounded ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-800'}`}
+        >
+          {showLabels ? 'Hide Labels' : 'Show Labels'}
+        </button>
+        <div className="flex items-center space-x-2">
+          <span className={isDarkMode ? 'text-white' : 'text-gray-800'}>Speed:</span>
+          <input 
+            type="range" 
+            min="0.1" 
+            max="2" 
+            step="0.1"
+            value={animationSpeed}
+            onChange={(e) => setAnimationSpeed(parseFloat(e.target.value))}
+            className="w-20"
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -584,7 +733,7 @@ const SciencePage: React.FC<SciencePageProps> = ({ isDarkMode }) => {
   return (
     <div className={`min-h-screen p-4 md:p-8 transition-colors duration-300 ${
       isDarkMode 
-        ? 'bg-gradient-to-br from-gray-900 to-gray-800 text-white' 
+        ? 'bg-transparent text-white' 
         : 'bg-gradient-to-br from-indigo-50 to-purple-100 text-gray-800'
     }`}>
       <div className="max-w-6xl mx-auto">
@@ -610,7 +759,7 @@ const SciencePage: React.FC<SciencePageProps> = ({ isDarkMode }) => {
         </div>
 
         <div className={`rounded-2xl shadow-xl p-4 md:p-6 mb-8 md:mb-12 transition-colors duration-300 ${
-          isDarkMode ? 'bg-gray-800' : 'bg-white'
+          isDarkMode ? 'bg-gray-800 bg-opacity-70' : 'bg-white'
         }`}>
           <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-center">
             {selectedSubject?.title} Explorer
@@ -630,23 +779,29 @@ const SciencePage: React.FC<SciencePageProps> = ({ isDarkMode }) => {
 
         <div className="text-center mt-8">
           <h3 className="text-xl font-bold mb-4">How to Interact with Models</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-md`}>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800 bg-opacity-70' : 'bg-white'} shadow-md`}>
               <div className="text-2xl mb-2">🖱️</div>
               <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
                 <strong>Drag</strong> to rotate the model
               </p>
             </div>
-            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-md`}>
+            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800 bg-opacity-70' : 'bg-white'} shadow-md`}>
               <div className="text-2xl mb-2">🔍</div>
               <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
                 <strong>Scroll</strong> to zoom in and out
               </p>
             </div>
-            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-md`}>
-              <div className="text-2xl mb-2">🔄</div>
+            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800 bg-opacity-70' : 'bg-white'} shadow-md`}>
+              <div className="text-2xl mb-2">🏷️</div>
               <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
-                Models <strong>animate automatically</strong>
+                <strong>Toggle labels</strong> for details
+              </p>
+            </div>
+            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800 bg-opacity-70' : 'bg-white'} shadow-md`}>
+              <div className="text-2xl mb-2">🎚️</div>
+              <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+                <strong>Adjust speed</strong> of animations
               </p>
             </div>
           </div>

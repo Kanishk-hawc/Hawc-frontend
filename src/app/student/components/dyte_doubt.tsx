@@ -103,7 +103,7 @@ const DyteMeetingPage: React.FC = () => {
   return (
     <DyteProvider value={meeting}>
       <DyteUiProvider>
-        <div className="flex flex-col bg-transparent min-h-screen mt-10">
+        <div className="flex flex-col bg-transparent min-h-screen mt-10 mb-20 md:mb-0">
           <div className="flex-1">
             <div className="mx-auto">
               <div className="h-[600px] w-full border border-gray-700 rounded-2xl shadow-lg overflow-hidden">

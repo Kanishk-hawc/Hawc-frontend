@@ -45,10 +45,9 @@ const Schedule: React.FC = () => {
   return (
     <div className="p-6 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Mathematics Teaching Schedule</h1>
-        <p className="text-gray-600 mb-6">Professor Anderson's Weekly Schedule</p>
-        
-        {/* Day Filter */}
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Your class Schedule</h1>
+        <p className="text-gray-600 mb-6">Professor Weekly Schedule</p>
+
         <div className="flex flex-wrap gap-2 mb-8">
           {days.map(day => (
             <button
@@ -65,7 +64,6 @@ const Schedule: React.FC = () => {
           ))}
         </div>
         
-        {/* Desktop Table */}
         <div className="hidden md:block bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">

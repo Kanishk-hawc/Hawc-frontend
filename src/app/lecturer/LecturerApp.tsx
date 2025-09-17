@@ -29,7 +29,7 @@ const LecturerAppContent: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? "bg-gray-900" : "bg-gray-100"} transition-colors duration-300`}>
+    <div className={`min-h-screen ${isDarkMode ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)]" : "bg-gray-100"} transition-colors duration-300`}>
       <LecturerHeader 
         sidebarOpen={sidebarOpen} 
         setSidebarOpen={setSidebarOpen}

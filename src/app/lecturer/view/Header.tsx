@@ -33,6 +33,7 @@ const LecturerHeader: React.FC<LecturerHeaderProps> = ({
   const [hasUnread, setHasUnread] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showMobileProfilePopup, setShowMobileProfilePopup] = useState(false);
   // const history = useHistory();
   const location = useLocation();
   
@@ -350,7 +351,7 @@ const LecturerHeader: React.FC<LecturerHeaderProps> = ({
       
       <div
         className={`fixed bottom-0 left-0 right-0 ${
-          isDarkMode ? "bg-[#091E37] border-gray-700" : "bg-white border-gray-200"
+          isDarkMode ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)] border-gray-700" : "bg-white border-gray-200"
         } border-t flex justify-around items-center py-2 z-40 md:hidden`}
       >
         <Link
@@ -410,11 +411,87 @@ const LecturerHeader: React.FC<LecturerHeaderProps> = ({
           )}
           <span className="text-xs mt-0.5">Theme</span>
         </button>
+        <button
+          onClick={() => setShowMobileProfilePopup(true)}
+          className={`flex flex-col items-center ${
+            isDarkMode ? "text-gray-300" : "text-gray-600"
+          }`}
+        >
+          <FaUserCircle size={18} />
+          <span className="text-xs mt-0.5">Profile</span>
+        </button>
       </div>
+
+      {showMobileProfilePopup && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div 
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setShowMobileProfilePopup(false)}
+          ></div>
+          <div className={`absolute bottom-0 left-0 right-0 rounded-t-lg p-4 ${
+            isDarkMode ? "bg-gray-800" : "bg-white"
+          }`}>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-800"}`}>Profile</h3>
+              <button 
+                onClick={() => setShowMobileProfilePopup(false)}
+                className="p-1 rounded-full"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
+            
+            <div className="flex items-center mb-4">
+              <div className="h-12 w-12 rounded-full bg-blue-500 flex items-center justify-center mr-3">
+                <span className="text-white font-medium text-lg">
+                  {user?.name?.charAt(0) || "L"}
+                </span>
+              </div>
+              <div>
+                <p className={`font-medium ${isDarkMode ? "text-white" : "text-gray-800"}`}>{user?.name || "Lecturer"}</p>
+                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>{user?.email}</p>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Link
+                to="/profile"
+                className={`block w-full text-left px-4 py-3 rounded-lg ${
+                  isDarkMode ? "bg-[#65c7f7] text-white" : "bg-gray-100 text-gray-800"
+                }`}
+                onClick={() => setShowMobileProfilePopup(false)}
+              >
+                Your Profile
+              </Link>
+              {/* <Link
+                to="/setting"
+                className={`block w-full text-left px-4 py-3 rounded-lg ${
+                  isDarkMode ? "bg-[#65c7f7] text-white" : "bg-gray-100 text-gray-800"
+                }`}
+                onClick={() => setShowMobileProfilePopup(false)}
+              >
+                Settings
+              </Link> */}
+              <button
+                onClick={() => {
+                  handleSignOut();
+                  setShowMobileProfilePopup(false);
+                }}
+                className={`block w-full text-left px-4 py-3 rounded-lg ${
+                  isDarkMode ? "bg-[#65c7f7] text-white" : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {sidebarOpen && (
         <div
           className={`fixed left-0 top-16 bottom-0 z-30 w-64 flex flex-col ${
-            isDarkMode ? "bg-gray-800" : "bg-gray-100"
+            isDarkMode ? "bg-[radial-gradient(circle,_rgba(26,_92,_173,_1)_0%,_rgba(2,_8,_41,_1)_100%)]" : "bg-gray-100"
           } border-r ${
             isDarkMode ? "border-gray-700" : "border-gray-200"
           } hidden md:flex`}
@@ -446,9 +523,9 @@ const LecturerHeader: React.FC<LecturerHeaderProps> = ({
 
           <div className="flex-1 overflow-y-auto py-4">
             <SidebarItem
-              icon={<FaUserCircle size={16} />}
+              icon={<FaHome size={16} />}
               to="/lecturer"
-              label="Dashboard"
+              label="Home"
               isDarkMode={isDarkMode}
               isActive={isActivePath("/lecturer")}
             />
@@ -478,10 +555,10 @@ const LecturerHeader: React.FC<LecturerHeaderProps> = ({
           <div className="py-4 border-t border-gray-300 dark:border-gray-700">
             <SidebarItem
               icon={<FaCog size={16} />}
-              to="/settings"
+              to="/profile"
               label="Settings"
               isDarkMode={isDarkMode}
-              isActive={isActivePath("/settings")}
+              isActive={isActivePath("/profile")}
             />
           </div>
         </div>
@@ -521,7 +598,7 @@ const LecturerHeader: React.FC<LecturerHeaderProps> = ({
               <SidebarIcon
                 icon={<FaUserCircle size={16} />}
                 to="/lecturer"
-                label="Dashboard"
+                label="Profile"
                 isDarkMode={isDarkMode}
                 showLabel={false}
                 isActive={isActivePath("/lecturer")}
@@ -555,7 +632,7 @@ const LecturerHeader: React.FC<LecturerHeaderProps> = ({
               <SidebarIcon
                 icon={<FaCog size={16} />}
                 to="/profile"
-                label="Profile"
+                label="Settings"
                 isDarkMode={isDarkMode}
                 showLabel={false}
                 isActive={isActivePath("/profile")}

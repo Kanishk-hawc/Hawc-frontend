@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext"; 
-
 type User = {
   name: string;
   email: string;
@@ -103,13 +102,10 @@ const SettingsPage: React.FC = () => {
 
   return (
     <div className="w-full max-w-5xl mx-auto p-6">
-      {/* Security Settings */}
       <h3 className="text-lg font-semibold mb-4">Security Settings</h3>
       <p className="text-sm text-gray-500 mb-6">
         These settings are helps you keep your account secure.
       </p>
-
-      {/* Save Activity Logs */}
       <div className="border rounded-lg p-6 mb-4 flex justify-between items-center">
         <div>
           <p className="font-medium">Save my Activity Logs</p>
@@ -133,8 +129,6 @@ const SettingsPage: React.FC = () => {
           ></div>
         </label>
       </div>
-
-      {/* Change Password */}
       <div className="border rounded-lg p-6 mb-4 flex justify-between items-center">
         <div>
           <p className="font-medium">Change Password</p>
@@ -149,8 +143,6 @@ const SettingsPage: React.FC = () => {
           Change Password
         </button>
       </div>
-
-      {/* 2FA Authentication */}
       <div className="border rounded-lg p-6 mb-8 flex justify-between items-center">
         <div>
           <p className="font-medium">
@@ -178,8 +170,6 @@ const SettingsPage: React.FC = () => {
           {twoFA ? "Disable" : "Enable"}
         </button>
       </div>
-
-      {/* Recent Activity */}
       <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
       <p className="text-sm text-gray-500 mb-4">
         This information about the last login activity on your account.
@@ -214,8 +204,6 @@ const SettingsPage: React.FC = () => {
     </div>
   );
 };
-
-// NotificationsPage component
 const NotificationsPage: React.FC = () => {
   const [alerts, setAlerts] = useState({
     unusualActivity: true,
@@ -230,13 +218,10 @@ const NotificationsPage: React.FC = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6">
-      {/* Notification Settings */}
       <h3 className="text-lg font-semibold mb-4">Notification Settings</h3>
       <p className="text-sm text-gray-500 mb-6">
         You will get only notification what have enabled.
       </p>
-
-      {/* Security Alerts */}
       <div className="mb-6">
         <h4 className="font-medium mb-2">Security Alerts</h4>
         <p className="text-sm text-gray-500 mb-4">
@@ -300,8 +285,6 @@ const NotificationsPage: React.FC = () => {
           </label>
         </div>
       </div>
-
-      {/* News Section */}
       <div>
         <h4 className="font-medium mb-2">News</h4>
         <p className="text-sm text-gray-500 mb-4">
@@ -458,7 +441,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ isDarkMode }) => {
   }
 
   return (
-    <div className={`min-h-screen p-6 ${isDarkMode ? "bg-transparent text-gray-100" : "bg-white"}`}>
+    <div className={`min-h-screen mb-10 md:mb-0 p-6 ${isDarkMode ? "bg-transparent text-gray-100" : "bg-white"}`}>
       <div className="max-w-5xl mx-auto">
         <div className="mb-6">
           <h2 className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Account Setting</h2>
